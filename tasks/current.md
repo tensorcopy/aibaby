@@ -5,7 +5,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Active
 
 ### Foundation
-- AIB-001 `in_progress` Choose the application stack
 - AIB-002 `todo` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
@@ -13,15 +12,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-006 `todo` Document local development setup and environment variables
 
 ### Data model
-- AIB-010 `todo` Define the baby profile entity
-- AIB-011 `todo` Define the caregiver / account entity
-- AIB-012 `todo` Define the feeding record entity
-- AIB-013 `todo` Define the milk and supplement record entity
-- AIB-014 `todo` Define the photo asset entity
-- AIB-015 `todo` Define the daily summary entity
-- AIB-016 `todo` Define the weekly summary entity
-- AIB-017 `todo` Define the reminder entity
-- AIB-018 `todo` Define the age-stage / milestone entity
 - AIB-019 `todo` Define the Markdown export shape for diary output
 
 ### MVP vertical slice
@@ -59,13 +49,25 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-001 `in_progress` Stack direction is now documented in `docs/architecture.md`; implementation scaffold is still pending
+- AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
+- AIB-005 `in_progress` Stack direction is accepted; implementation scaffold is still pending
 
 ## Done
 
 - AIB-000 `done` Move product requirements and shared project state into repository-managed files
+- AIB-001 `done` Write and accept the MVP stack baseline in `docs/architecture.md` and `docs/stack-decision.md`
+- AIB-010 `done` Define the baby profile entity in `docs/data-model.md`
+- AIB-011 `done` Define the caregiver / account entity in `docs/data-model.md`
+- AIB-012 `done` Define the feeding record entity in `docs/data-model.md`
+- AIB-013 `done` Define the milk and supplement record entity in `docs/data-model.md`
+- AIB-014 `done` Define the photo asset entity in `docs/data-model.md`
+- AIB-015 `done` Define the daily summary entity in `docs/data-model.md`
+- AIB-016 `done` Define the weekly summary entity in `docs/data-model.md`
+- AIB-017 `done` Define the reminder entity in `docs/data-model.md`
+- AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
+- AIB-102 `done` Split stack and data model decisions into dedicated implementation docs
 
 ## Blockers
 
@@ -73,6 +75,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## Coordination notes
 
-- Start with foundation tasks before assigning implementation tasks to multiple agents
-- After AIB-001 through AIB-006 are settled, data model and vertical-slice tasks can be split across agents
-- Update task status in the same branch where the work happens
+- Foundation choices are now documented well enough to start assigning implementation work
+- Next best parallel workstreams: app scaffold, auth wiring, media upload path, and daily-summary rules
+- Keep architecture and task files updated in the same branch as implementation work
