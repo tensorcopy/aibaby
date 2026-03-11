@@ -5,7 +5,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Active
 
 ### Foundation
-- AIB-001 `todo` Choose the application stack
+- AIB-001 `in_progress` Choose the application stack
 - AIB-002 `todo` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
@@ -59,7 +59,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- None
+- AIB-001 `in_progress` Stack direction is now documented in `docs/architecture.md`; implementation scaffold is still pending
 
 ## Done
 
@@ -69,8 +69,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## Blockers
 
-- No technical stack decision yet
-- Parallel coding should wait until the stack decision and first-pass data model are documented
+- No current blockers
 
 ## Coordination notes
 
