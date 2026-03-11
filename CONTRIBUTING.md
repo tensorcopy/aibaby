@@ -24,6 +24,13 @@ Every pull request should:
 
 Keep pull requests small enough that a reviewer, human or AI, can evaluate them quickly.
 
+If the PR changes project intent, architecture, or task status, update the relevant repo state files in the same branch:
+
+- `docs/prd.md`
+- `docs/architecture.md`
+- `AGENT_CONTEXT.md`
+- `tasks/current.md`
+
 ## Reviews
 
 `main` requires review before merge. Treat approvals as stale after new commits and re-request review when the change materially changes.
