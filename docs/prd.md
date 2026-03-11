@@ -1,582 +1,582 @@
-# 宝宝养育助手 PRD v1
+# Baby Parenting Assistant PRD v1
 
-## 1. 文档信息
-- 产品名称：宝宝养育助手（暂定）
-- 版本：PRD v1
-- 文档日期：2026-03-10
-- 产品形态：聊天式 AI 育儿 App
-- 当前目标：定义 MVP 范围，验证核心用户价值与可实现性
-
----
-
-## 2. 产品背景
-
-有辅食宝宝的家庭每天都在重复几件事：
-- 记录今天吃了什么
-- 判断营养够不够
-- 想知道这个月龄该重点注意什么
-- 回顾过去一周或一个月的饮食与成长情况
-
-现有方案通常有几个问题：
-- 手动记录成本高，需要点很多表单
-- 图片能存，但不能真正变成结构化记录
-- 育儿提醒碎片化，缺乏与宝宝月龄、近期摄入情况联动
-- 很少有产品能同时兼顾“高频记录”和“长期回顾”
-
-本产品希望用最自然的方式解决这些问题：
-**父母只需要发照片、发一句话，系统自动完成记录、分析、提醒与回顾。**
+## 1. Document Information
+- Product name: Baby Parenting Assistant (working title)
+- Version: PRD v1
+- Document date: 2026-03-10
+- Product format: Conversational AI parenting app
+- Current goal: Define the MVP scope and validate core user value and feasibility
 
 ---
 
-## 3. 产品目标
+## 2. Product Background
 
-### 3.1 MVP 目标
-在不增加父母负担的前提下，完成以下闭环：
-1. 快速记录宝宝每日进食内容
-2. 自动生成每日/每周营养分析
-3. 按月龄提供成长阶段提醒
-4. 通过聊天方式完成主要交互
-5. 通过页面查看近 7 天 / 30 天成长与饮食情况
+Families with babies who have started solids repeat the same tasks every day:
+- Record what the baby ate today
+- Judge whether nutrition intake is sufficient
+- Understand what deserves extra attention at the baby’s current age
+- Review diet and growth over the past week or month
 
-### 3.2 非目标（MVP 暂不覆盖）
-- 医疗诊断或疾病判断
-- 替代儿科医生/营养师建议
-- 电商、社区、问诊等复杂业务
-- 精确到克/毫克级的专业营养计算
-- 多宝宝复杂协作权限系统
-- 全量睡眠训练、排便、疫苗、发育测评等完整母婴平台能力
+Existing solutions usually have several problems:
+- Manual logging is expensive in time and effort, with too many forms to fill out
+- Photos can be stored, but they do not become structured records
+- Parenting reminders are fragmented and are not linked to the baby’s age or recent intake
+- Few products handle both high-frequency logging and long-term review well
 
----
-
-## 4. 目标用户
-
-### 4.1 核心用户
-- 6 个月–3 岁宝宝的父母
-- 已进入辅食或混合喂养阶段
-- 希望掌握宝宝饮食和成长情况
-- 日常较忙，无法接受复杂手工记录
-
-### 4.2 次级用户
-- 祖父母
-- 保姆 / nany
-- 其他家庭照护者
-
-### 4.3 用户特征
-- 高度依赖手机
-- 更偏好拍照、说一句话，而不是填表
-- 对“是否吃得均衡”“这个阶段该注意什么”很敏感
-- 愿意持续使用前提是：输入足够轻、反馈足够有价值
+This product aims to solve those problems in the most natural way:
+**Parents only need to send a photo or a short message, and the system automatically handles logging, analysis, reminders, and review.**
 
 ---
 
-## 5. 核心用户痛点
+## 3. Product Goals
 
-1. **记录难**
-   - 记吃了什么本身不难，但长期坚持很难
-   - 拍照容易，手填重量和分类麻烦
+### 3.1 MVP Goals
+Without increasing the burden on parents, complete the following loop:
+1. Quickly log the baby’s daily food intake
+2. Automatically generate daily and weekly nutrition analysis
+3. Provide stage-specific reminders based on age
+4. Complete the primary interaction through chat
+5. Let users review the last 7 or 30 days of growth and feeding data in dedicated pages
 
-2. **分析难**
-   - 父母知道吃了什么，但不容易判断营养结构
-   - 尤其不清楚铁、蔬菜多样性、蛋白质覆盖等是否足够
-
-3. **提醒碎片化**
-   - 月龄发育、辅食重点、安全提醒分散在短视频、公众号、群聊里
-   - 缺少一个与宝宝年龄和近期实际情况结合的提醒系统
-
-4. **回顾难**
-   - 过了一周就记不清宝宝到底吃了什么、尝试了哪些新食材
-   - 想看趋势时，没有结构化时间线
-
----
-
-## 6. 核心价值主张
-
-### 6.1 对用户的价值
-- 用聊天而不是表单来记录
-- 用照片 + AI 来降低记录成本
-- 用每天/每周总结给家长即时反馈
-- 用月龄提醒把“现在该注意什么”主动告诉家长
-
-### 6.2 一句话描述
-**像和一个懂育儿、会记录、会提醒的助手聊天一样带娃。**
+### 3.2 Non-goals (not included in MVP)
+- Medical diagnosis or disease assessment
+- Replacing advice from pediatricians or nutritionists
+- Complex business areas such as commerce, community, or online consultation
+- Professional nutrition calculations accurate to grams or milligrams
+- Complex permissions or collaboration systems for multiple babies
+- A full maternal and infant platform covering sleep training, bowel movements, vaccines, developmental assessment, and more
 
 ---
 
-## 7. 产品原则
+## 4. Target Users
 
-1. **输入极简**：尽量让用户发图或发一句话就完成记录
-2. **反馈及时**：当天记录，当天就有价值回报
-3. **建议保守**：只做辅助建议，不做医疗判断
-4. **可回顾**：所有记录最终都能变成结构化历史
-5. **以聊天为主，以页面为辅**：输入靠聊天，回顾靠页面
+### 4.1 Core Users
+- Parents of babies aged 6 months to 3 years
+- Families already in the solids or mixed-feeding stage
+- Users who want a clear picture of diet and growth
+- Busy parents who cannot tolerate complicated manual logging
 
----
+### 4.2 Secondary Users
+- Grandparents
+- Nannies / caregivers
+- Other family caregivers
 
-## 8. MVP 功能范围
-
-### 8.1 模块 A：宝宝档案
-
-#### 功能说明
-用户创建并维护宝宝基础资料，供分析与提醒使用。
-
-#### 字段
-- 宝宝昵称
-- 出生日期
-- 性别（可选）
-- 喂养方式（母乳 / 配方奶 / 混合 / 已辅食）
-- 已知过敏原或忌口（可选）
-- 日常补充剂（如铁剂、维D）
-- 主要照护者（可选）
-
-#### 用户价值
-- 自动计算月龄
-- 支撑阶段性提醒
-- 支撑营养建议个性化
-
-#### 验收标准
-- 用户可创建 1 个宝宝档案
-- 可编辑出生日期、补充剂、过敏信息
-- 创建后系统可正确显示当前月龄
+### 4.3 User Characteristics
+- Highly dependent on mobile phones
+- Prefer taking a photo or saying one sentence instead of filling out forms
+- Highly sensitive to questions like "Is the baby eating a balanced diet?" and "What matters most at this stage?"
+- Will keep using the product only if input is lightweight and feedback is genuinely valuable
 
 ---
 
-### 8.2 模块 B：聊天式喂养记录
+## 5. Core User Pain Points
 
-#### 功能说明
-用户通过聊天发送照片、文字或两者组合，系统自动生成喂养记录。
+1. **Logging is hard**
+   - Recording what the baby ate is not hard once, but keeping it up over time is
+   - Taking a photo is easy; entering weights and categories manually is tedious
 
-#### 支持输入
-- 仅图片
-- 仅文字
-- 图片 + 文字
-- 语音转文字（MVP 可选，默认不做）
+2. **Analysis is hard**
+   - Parents know what the baby ate, but they cannot easily judge the nutritional structure
+   - It is especially hard to know whether iron, vegetable variety, and protein coverage are sufficient
 
-#### 示例输入
-- “早餐吃了三片西葫芦鸡蛋饼，1/6 个牛油果”
-- 上传一张餐盘图
-- “牛肉吃了两块，面吃了小半碗”
+3. **Reminders are fragmented**
+   - Age-specific development tips, solid-food priorities, and safety reminders are spread across short videos, public accounts, and chat groups
+   - There is no unified reminder system tied to both the baby’s age and recent real intake
 
-#### 系统行为
-1. 识别食物名称
-2. 尝试估计份量
-3. 自动归类到餐次（早餐 / 午餐 / 晚餐 / 加餐 / 奶）
-4. 生成结构化记录
-5. 信息不完整时进行追问
-
-#### 结构化记录字段
-- 记录时间
-- 餐次类型
-- 食物项列表
-- 份量描述
-- 图片附件
-- 用户原始输入
-- AI 识别摘要
-- 是否已确认
-
-#### 验收标准
-- 用户上传图片后，系统能生成至少 1 条候选食物记录
-- 用户发文字后，系统能提取餐次和食物项
-- 用户可修正 AI 识别结果
-- 所有记录可进入“今日时间线”
+4. **Review is hard**
+   - After a week, parents can no longer clearly remember what the baby ate or which new foods were tried
+   - There is no structured timeline when they want to review trends
 
 ---
 
-### 8.3 模块 C：奶量与补充剂记录
+## 6. Core Value Proposition
 
-#### 功能说明
-除了辅食，支持家长记录奶量与补充剂，作为日分析的重要基础。
+### 6.1 User Value
+- Use chat instead of forms for logging
+- Use photos plus AI to reduce logging cost
+- Use daily and weekly summaries to provide immediate feedback
+- Use age-based reminders to proactively tell parents what to focus on now
 
-#### 记录内容
-- 奶粉 / 母乳 / 混合喂养
-- 单次奶量（如 120ml / 180ml）
-- 补铁、维D 等补充剂
-
-#### 用户价值
-- 日总结更完整
-- 钙、能量和铁补充判断更靠谱
-
-#### 验收标准
-- 用户可快速记录单次奶量
-- 用户可设置“默认日常补充剂”
-- 日报中可展示奶量与补充剂是否已覆盖
+### 6.2 One-line Description
+**Raise your baby as if you were chatting with an assistant who understands parenting, keeps records, and sends reminders.**
 
 ---
 
-### 8.4 模块 D：每日营养分析
+## 7. Product Principles
 
-#### 功能说明
-系统在每日固定时间自动生成当日营养总结。
-
-#### 输出内容
-- 今日进食概览
-- 已覆盖的营养方向
-  - 蛋白质
-  - 脂肪
-  - 主食/碳水
-  - 蔬菜
-  - 水果
-  - 高铁食物
-- 可能不足项
-- 次日建议
-
-#### 输出风格要求
-- 清晰、简短、可执行
-- 避免夸大和绝对化判断
-- 明确是“辅助建议”
-
-#### 验收标准
-- 系统支持用户自定义日报时间
-- 可根据当天记录自动生成摘要
-- 总结可被保存并回看
+1. **Ultra-simple input**: Whenever possible, a photo or one sentence should be enough to complete a record
+2. **Immediate feedback**: A record created today should generate value today
+3. **Conservative recommendations**: Offer supportive guidance only, never medical judgment
+4. **Reviewable history**: Every record should eventually become part of a structured history
+5. **Chat first, pages second**: Use chat for input and pages for review
 
 ---
 
-### 8.5 模块 E：每周营养总结
+## 8. MVP Feature Scope
 
-#### 功能说明
-系统每周自动汇总近 7 天记录并给出趋势分析。
+### 8.1 Module A: Baby Profile
 
-#### 输出内容
-- 饮食多样性
-- 高铁食物出现频率
-- 蔬菜/水果覆盖频率
-- 奶量与补充剂完成情况
-- 本周建议重点
+#### Description
+Users create and maintain the baby’s basic profile, which supports analysis and reminders.
 
-#### 用户价值
-- 不只看单天，而是看趋势
-- 更容易发现长期短板
+#### Fields
+- Baby nickname
+- Date of birth
+- Gender (optional)
+- Feeding mode (breast milk / formula / mixed / solids started)
+- Known allergens or dietary restrictions (optional)
+- Routine supplements (such as iron or vitamin D)
+- Primary caregiver (optional)
 
-#### 验收标准
-- 能对最近 7 天记录进行聚合
-- 能生成至少 1 条趋势性建议
-- 用户可从页面查看历史周报
+#### User Value
+- Automatically calculate age stage
+- Support stage-based reminders
+- Personalize nutrition guidance
 
----
-
-### 8.6 模块 F：月龄成长提醒
-
-#### 功能说明
-基于宝宝出生日期，系统按月龄阶段主动推送提醒。
-
-#### 内容范围
-- 饮食重点
-- 发育里程碑
-- 安全注意事项
-- 互动/陪玩建议
-- 作息观察重点
-
-#### 触发方式
-- 定时提醒（如每两周 / 每月）
-- 用户主动询问：
-  - “现在这个月龄该注意什么？”
-
-#### 用户价值
-- 降低父母查资料成本
-- 提醒与当前阶段更相关
-
-#### 验收标准
-- 系统能基于出生日期计算阶段
-- 能按计划生成提醒内容
-- 可在聊天中随时调用阶段建议
+#### Acceptance Criteria
+- The user can create one baby profile
+- The user can edit birth date, supplements, and allergy information
+- After creation, the system correctly shows the current age stage
 
 ---
 
-### 8.7 模块 G：成长回顾页面
+### 8.2 Module B: Conversational Feeding Logs
 
-#### 功能说明
-通过页面查看近 1 天、7 天、30 天的饮食与成长记录。
+#### Description
+Users send photos, text, or both in chat, and the system automatically generates feeding records.
 
-#### 页面范围
+#### Supported Inputs
+- Image only
+- Text only
+- Image plus text
+- Voice-to-text (optional for MVP, not included by default)
 
-##### 今日页
-- 今日吃了什么
-- 今日奶量
-- 今日水果/蔬菜/蛋白质覆盖
-- 今日总结
+#### Example Inputs
+- "For breakfast, she had three slices of zucchini egg pancake and one-sixth of an avocado"
+- Upload a photo of a meal plate
+- "He ate two pieces of beef and half a small bowl of noodles"
 
-##### 近 7 天页
-- 每天摘要
-- 新食材尝试
-- 高铁食物次数
-- 日报列表
+#### System Behavior
+1. Recognize food names
+2. Estimate portion size when possible
+3. Automatically classify the meal type (breakfast / lunch / dinner / snack / milk)
+4. Generate a structured record
+5. Ask follow-up questions when information is incomplete
 
-##### 近 30 天页
-- 常见食物统计
-- 食物多样性趋势
-- 周报汇总
-- 月龄提醒时间线
+#### Structured Record Fields
+- Record time
+- Meal type
+- Food item list
+- Portion description
+- Image attachment
+- Original user input
+- AI recognition summary
+- Confirmation status
 
-#### 验收标准
-- 用户可查看最近 7 天和 30 天记录
-- 每天记录可点开查看详情
-- 统计数据与原始记录一致
-
----
-
-## 9. 用户故事
-
-### 9.1 记录类
-- 作为一个妈妈，我希望直接上传一张宝宝餐盘照片，让系统识别食物并帮我记录，这样我不用手动填写很多项。
-- 作为一个爸爸，我希望发送一句“中午吃了半碗面，两块牛肉”，系统就能归类成午餐记录。
-- 作为照护者，我希望系统在识别不确定时追问“吃了多少”，而不是直接瞎记。
-
-### 9.2 分析类
-- 作为家长，我希望每天晚上收到一句明白的话，告诉我今天营养结构大致怎么样。
-- 作为家长，我希望每周看到趋势，而不是每天都自己记忆和判断。
-
-### 9.3 提醒类
-- 作为新手父母，我希望系统根据宝宝月龄提醒我这阶段的饮食重点和安全注意事项。
-- 作为家长，我希望系统能结合最近饮食记录，给更贴近实际的提醒，而不是千篇一律的模板。
-
-### 9.4 回顾类
-- 作为家长，我希望一眼看到最近 7 天宝宝吃过什么、缺过什么、尝试过什么新食物。
-- 作为家长，我希望将来的儿科复盘时，能快速回看历史记录。
+#### Acceptance Criteria
+- After the user uploads an image, the system generates at least one candidate food record
+- After the user sends text, the system extracts the meal type and food items
+- The user can correct AI recognition results
+- All records can enter the "Today Timeline"
 
 ---
 
-## 10. 关键使用流程
+### 8.3 Module C: Milk Intake and Supplement Logging
 
-### 10.1 首次使用流程
-1. 用户安装并打开 App
-2. 注册 / 登录
-3. 创建宝宝档案
-4. 设置每日总结时间
-5. 进入聊天首页
+#### Description
+In addition to solid foods, parents can log milk intake and supplements, which are important inputs for daily analysis.
 
-### 10.2 日常记录流程
-1. 用户发图 / 发一句话
-2. 系统识别并生成草稿记录
-3. 如信息不足，进行追问
-4. 用户确认 / 修正
-5. 写入今日时间线
+#### Logged Content
+- Formula / breast milk / mixed feeding
+- Single serving amount (such as 120 ml / 180 ml)
+- Supplements such as iron or vitamin D
 
-### 10.3 日报流程
-1. 到达用户设定时间
-2. 系统拉取当日记录
-3. 进行规则分析
-4. 生成自然语言总结
-5. 推送给用户
+#### User Value
+- Makes the daily summary more complete
+- Improves the reliability of calcium, energy, and iron intake assessment
 
-### 10.4 周报流程
-1. 每周固定时间触发
-2. 汇总过去 7 天数据
-3. 生成周趋势和建议
-4. 存档并推送
+#### Acceptance Criteria
+- The user can quickly log a single milk feeding
+- The user can set default routine supplements
+- The daily report can show whether milk intake and supplements were covered
 
 ---
 
-## 11. 页面需求
+### 8.4 Module D: Daily Nutrition Analysis
 
-### 11.1 聊天首页
-#### 核心元素
-- 消息流
-- 图片上传按钮
-- 文本输入框
-- 快捷操作
-  - 记早餐
-  - 记午饭
-  - 记晚饭
-  - 记奶量
-  - 看今天总结
+#### Description
+The system automatically generates a nutrition summary for the day at a fixed time.
 
-#### 目标
-- 让 80% 以上高频操作都在这一页完成
+#### Output
+- Overview of today’s intake
+- Nutritional areas covered today
+  - Protein
+  - Fat
+  - Staple foods / carbohydrates
+  - Vegetables
+  - Fruit
+  - Iron-rich foods
+- Possible gaps
+- Suggestions for the next day
 
----
+#### Style Requirements
+- Clear, concise, and actionable
+- Avoid exaggerated or absolute conclusions
+- Explicitly frame outputs as supportive suggestions
 
-### 11.2 今日时间线页
-#### 内容
-- 时间顺序展示今天所有记录
-- 每条记录可见：时间、食物、数量、图片、AI 摘要
-- 顶部展示今日总结卡片
-
----
-
-### 11.3 近 7 天页
-#### 内容
-- 日历式或列表式展示近 7 天
-- 每天一张摘要卡
-- 顶部显示本周关键趋势
+#### Acceptance Criteria
+- The system supports a user-defined daily report time
+- It can automatically generate a summary from the day’s records
+- The summary can be saved and reviewed later
 
 ---
 
-### 11.4 近 30 天页
-#### 内容
-- 食物多样性统计
-- 常见食物 TOP 列表
-- 周报历史
-- 月龄提醒历史
+### 8.5 Module E: Weekly Nutrition Summary
+
+#### Description
+The system automatically aggregates the last 7 days of records each week and provides trend analysis.
+
+#### Output
+- Diet diversity
+- Frequency of iron-rich foods
+- Frequency of vegetable and fruit coverage
+- Completion of milk intake and supplements
+- Key suggestions for the week
+
+#### User Value
+- Lets users see trends, not just a single day
+- Makes it easier to identify persistent weak spots
+
+#### Acceptance Criteria
+- The system can aggregate the most recent 7 days of records
+- It can generate at least one trend-based recommendation
+- The user can review historical weekly reports on a page
 
 ---
 
-### 11.5 宝宝档案页
-#### 内容
-- 基础信息
-- 过敏原
-- 喂养方式
-- 默认补充剂
-- 提醒设置
+### 8.6 Module F: Age-based Growth Reminders
+
+#### Description
+Based on the baby’s birth date, the system proactively pushes reminders according to the current age stage.
+
+#### Content Scope
+- Feeding priorities
+- Developmental milestones
+- Safety precautions
+- Interaction and play suggestions
+- Routine and observation focus areas
+
+#### Trigger Modes
+- Scheduled reminders (for example, every two weeks or every month)
+- User-initiated questions such as:
+  - "What should I pay attention to at this age?"
+
+#### User Value
+- Reduces the time cost of researching parenting information
+- Makes reminders more relevant to the baby’s current stage
+
+#### Acceptance Criteria
+- The system can calculate the relevant stage from the birth date
+- It can generate reminder content on schedule
+- Stage-specific guidance can be requested in chat at any time
 
 ---
 
-## 12. 内容与建议策略
+### 8.7 Module G: Growth Review Pages
 
-### 12.1 建议语气
-- 温和、直接、可执行
-- 使用“可能”“可以考虑”“建议留意”等表达
-- 不使用疾病判断类语句
+#### Description
+Users can review feeding and growth records for the last 1 day, 7 days, and 30 days on dedicated pages.
 
-### 12.2 风险边界
-系统不得：
-- 诊断营养缺乏症
-- 替代医生给治疗方案
-- 在异常情况中给出确定性医学判断
+#### Page Scope
 
-系统应：
-- 在高风险迹象时建议咨询儿科医生
-- 在摄入数据不完整时明确提示“不完全判断”
+##### Today Page
+- What the baby ate today
+- Today’s milk intake
+- Today’s fruit / vegetable / protein coverage
+- Today’s summary
 
----
+##### Last 7 Days Page
+- Daily summaries
+- New food trials
+- Count of iron-rich foods
+- Daily report list
 
-## 13. 数据与智能策略
+##### Last 30 Days Page
+- Common food statistics
+- Food diversity trends
+- Weekly report rollups
+- Age-based reminder timeline
 
-### 13.1 数据来源
-- 用户上传图片
-- 用户聊天文字
-- 用户修正反馈
-- 宝宝档案
-- 规则库 / 月龄知识库
-
-### 13.2 AI 使用原则
-- 图片识别用于降低记录成本，不直接作为最终事实
-- 必要时追问用户确认
-- 营养建议以“规则判断 + LLM 语言生成”为主
-- 月龄提醒应基于审核过的知识模板
+#### Acceptance Criteria
+- The user can view records from the last 7 and 30 days
+- Each day’s record can be opened to view details
+- Aggregated statistics are consistent with the underlying source records
 
 ---
 
-## 14. 非功能需求
+## 9. User Stories
 
-### 14.1 性能
-- 图片上传后 5 秒内给出初步识别反馈
-- 聊天消息响应尽量控制在 3 秒内（不含复杂图像分析）
-- 页面加载最近 7 天记录不超过 2 秒
+### 9.1 Logging
+- As a mother, I want to upload a photo of my baby’s plate and have the system identify the food and log it for me, so I do not need to fill out many fields manually.
+- As a father, I want to send a message saying "For lunch he had half a bowl of noodles and two pieces of beef," and have the system categorize it as a lunch record.
+- As a caregiver, I want the system to ask "How much did the baby eat?" when recognition is uncertain, instead of guessing.
 
-### 14.2 稳定性
-- 用户记录不可丢失
-- 图片上传失败要支持重试
-- 分析失败时也要保留原始记录
+### 9.2 Analysis
+- As a parent, I want to receive a simple summary every evening that tells me roughly how balanced today’s nutrition was.
+- As a parent, I want to see weekly trends instead of relying on my own memory and judgment every day.
 
-### 14.3 安全与隐私
-- 宝宝照片和饮食数据为敏感家庭数据
-- 默认仅家庭账号可见
-- 传输加密、存储加密
-- 明确告知用户 AI 会分析其上传内容
+### 9.3 Reminders
+- As a first-time parent, I want the system to remind me about feeding priorities and safety precautions based on the baby’s age.
+- As a parent, I want reminders that reflect recent feeding records, not generic template advice.
 
-### 14.4 可扩展性
-后续应支持扩展：
-- 多宝宝
-- 睡眠记录
-- 便便记录
-- 身高体重
-- 过敏追踪
-- 家庭成员协作
+### 9.4 Review
+- As a parent, I want to quickly see what my baby ate, what might be lacking, and which new foods were tried over the last 7 days.
+- As a parent, I want to be able to review historical records quickly during future pediatric discussions.
 
 ---
 
-## 15. 成功指标（MVP）
+## 10. Key User Flows
 
-### 15.1 用户活跃
-- 次日留存
-- 7 日留存
-- 周活跃用户数
+### 10.1 First-time Use Flow
+1. The user installs and opens the app
+2. Registers or logs in
+3. Creates a baby profile
+4. Sets a daily summary time
+5. Enters the main chat screen
 
-### 15.2 核心行为
-- 人均每日记录次数
-- 上传图片后成功转记录率
-- 记录后用户修正率
-- 日报查看率
-- 周报查看率
+### 10.2 Daily Logging Flow
+1. The user sends a photo or a short message
+2. The system recognizes the content and generates a draft record
+3. If information is insufficient, the system asks follow-up questions
+4. The user confirms or corrects the record
+5. The record is written into the Today Timeline
 
-### 15.3 产品价值验证
-- 连续使用 3 天以上用户占比
-- 连续使用 7 天以上用户占比
-- 用户主观反馈：是否“更容易知道宝宝吃得怎么样”
+### 10.3 Daily Report Flow
+1. The user’s configured time is reached
+2. The system pulls the day’s records
+3. It runs rule-based analysis
+4. It generates a natural-language summary
+5. It pushes the summary to the user
 
----
-
-## 16. 风险与挑战
-
-### 16.1 图片识别准确率不稳定
-应对：
-- 输出候选结果而不是绝对结论
-- 建立轻量修正交互
-
-### 16.2 用户持续记录意愿不足
-应对：
-- 降低输入成本
-- 保证日报/周报足够有价值
-- 引入小而稳定的正反馈
-
-### 16.3 营养建议可信度问题
-应对：
-- 先做粗颗粒的结构建议
-- 避免过精细、假精确结论
-- 对数据不全时明确提示
-
-### 16.4 医疗合规边界
-应对：
-- 明确免责声明
-- 不做诊断
-- 异常情况建议线下就医
+### 10.4 Weekly Report Flow
+1. A fixed weekly trigger fires
+2. The system aggregates the last 7 days of data
+3. It generates weekly trends and recommendations
+4. It archives and pushes the report
 
 ---
 
-## 17. MVP 验收标准汇总
+## 11. Page Requirements
 
-MVP 上线前至少满足：
-1. 用户可创建宝宝档案
-2. 用户可上传图片并生成喂养记录
-3. 用户可通过聊天记录一餐或一顿奶
-4. 系统支持每日营养总结
-5. 系统支持每周营养总结
-6. 系统支持月龄提醒
-7. 用户可查看近 7 天 / 30 天历史记录
-8. 记录、图片、报告都可持久化保存
-9. 所有建议均明确为辅助建议，不替代医疗意见
+### 11.1 Main Chat Screen
+#### Core Elements
+- Message stream
+- Image upload button
+- Text input field
+- Quick actions
+  - Log breakfast
+  - Log lunch
+  - Log dinner
+  - Log milk intake
+  - View today’s summary
+
+#### Goal
+- Enable more than 80% of high-frequency actions to be completed on this page
 
 ---
 
-## 18. 后续版本方向（非 MVP）
+### 11.2 Today Timeline Page
+#### Content
+- Show all of today’s records in chronological order
+- Each record shows time, food, quantity, image, and AI summary
+- Show today’s summary card at the top
+
+---
+
+### 11.3 Last 7 Days Page
+#### Content
+- Display the most recent 7 days in a calendar or list view
+- Show one summary card per day
+- Display key weekly trends at the top
+
+---
+
+### 11.4 Last 30 Days Page
+#### Content
+- Food diversity statistics
+- Top common foods list
+- Weekly report history
+- Age-based reminder history
+
+---
+
+### 11.5 Baby Profile Page
+#### Content
+- Basic information
+- Allergens
+- Feeding mode
+- Default supplements
+- Reminder settings
+
+---
+
+## 12. Content and Recommendation Strategy
+
+### 12.1 Recommendation Tone
+- Gentle, direct, and actionable
+- Use wording such as "may," "could consider," and "it is worth paying attention to"
+- Avoid disease-diagnosis language
+
+### 12.2 Risk Boundaries
+The system must not:
+- Diagnose nutritional deficiency disorders
+- Replace a doctor by prescribing treatment
+- Make deterministic medical judgments in abnormal situations
+
+The system should:
+- Recommend consulting a pediatrician when high-risk signs appear
+- Clearly state that the judgment is incomplete when intake data is incomplete
+
+---
+
+## 13. Data and Intelligence Strategy
+
+### 13.1 Data Sources
+- User-uploaded images
+- User chat text
+- User corrections and feedback
+- Baby profile
+- Rule base / age-stage knowledge base
+
+### 13.2 Principles for AI Use
+- Image recognition is used to reduce logging effort, not to define final truth
+- Ask users to confirm when needed
+- Nutrition suggestions should primarily rely on rule-based judgment plus LLM wording
+- Age-based reminders should be based on reviewed knowledge templates
+
+---
+
+## 14. Non-functional Requirements
+
+### 14.1 Performance
+- Provide an initial recognition response within 5 seconds after image upload
+- Keep chat response time within 3 seconds when possible, excluding complex image analysis
+- Load the most recent 7 days of records within 2 seconds
+
+### 14.2 Reliability
+- User records must not be lost
+- Image upload failures must support retry
+- Original records must still be preserved when analysis fails
+
+### 14.3 Security and Privacy
+- Baby photos and feeding data are sensitive family data
+- By default, data is visible only to the family account
+- Encrypt both transmission and storage
+- Clearly inform users that AI will analyze uploaded content
+
+### 14.4 Extensibility
+Future versions should support:
+- Multiple babies
+- Sleep records
+- Bowel movement records
+- Height and weight
+- Allergy tracking
+- Family member collaboration
+
+---
+
+## 15. Success Metrics (MVP)
+
+### 15.1 User Activity
+- Day-1 retention
+- Day-7 retention
+- Weekly active users
+
+### 15.2 Core Behaviors
+- Average daily logging frequency per user
+- Conversion rate from uploaded image to successful record
+- User correction rate after record creation
+- Daily report view rate
+- Weekly report view rate
+
+### 15.3 Product Value Validation
+- Share of users who use the product continuously for more than 3 days
+- Share of users who use the product continuously for more than 7 days
+- Subjective user feedback: whether it is "easier to know how well the baby is eating"
+
+---
+
+## 16. Risks and Challenges
+
+### 16.1 Unstable image recognition accuracy
+Response:
+- Output candidate results rather than absolute conclusions
+- Build lightweight correction interactions
+
+### 16.2 Weak user motivation for ongoing logging
+Response:
+- Reduce input cost
+- Ensure daily and weekly reports are genuinely valuable
+- Introduce small but stable positive feedback loops
+
+### 16.3 Trust issues in nutrition recommendations
+Response:
+- Start with coarse-grained structural guidance
+- Avoid overly precise or falsely precise conclusions
+- Clearly warn when data is incomplete
+
+### 16.4 Medical compliance boundaries
+Response:
+- Make disclaimers explicit
+- Do not provide diagnoses
+- Recommend offline medical care in abnormal situations
+
+---
+
+## 17. MVP Acceptance Summary
+
+Before MVP launch, the product must support at minimum:
+1. The user can create a baby profile
+2. The user can upload an image and generate a feeding record
+3. The user can log one meal or one milk feeding through chat
+4. The system supports daily nutrition summaries
+5. The system supports weekly nutrition summaries
+6. The system supports age-based reminders
+7. The user can view the last 7 and 30 days of historical records
+8. Records, images, and reports can all be stored persistently
+9. All suggestions are clearly marked as supportive guidance and do not replace medical advice
+
+---
+
+## 18. Future Versions (Non-MVP)
 
 ### v1.1
-- 语音输入
-- 食物库与常见餐模板
-- 新食材尝试记录
-- 过敏观察提醒
+- Voice input
+- Food library and common meal templates
+- New food trial tracking
+- Allergy observation reminders
 
 ### v1.2
-- 身高体重记录
-- 睡眠/排便记录
-- 家庭多角色协作
-- 导出 PDF 成长报告
+- Height and weight logging
+- Sleep and bowel movement logging
+- Multi-role family collaboration
+- Exportable PDF growth report
 
 ### v2.0
-- 多宝宝支持
-- 个性化喂养计划
-- 儿科/营养师协同接口
-- 更多成长发育跟踪能力
+- Multi-baby support
+- Personalized feeding plans
+- Pediatrician / nutritionist collaboration interface
+- More growth and development tracking capabilities
 
 ---
 
-## 19. 结论
+## 19. Conclusion
 
-这个产品最适合从一个清晰而高频的闭环切入：
-**聊天记录宝宝饮食 → 自动生成分析 → 定期给出提醒 → 长期形成成长档案。**
+This product is best launched through a clear, high-frequency loop:
+**Log baby feeding in chat -> generate analysis automatically -> provide regular reminders -> build a long-term growth record.**
 
-MVP 成功的关键不在于功能多，而在于两点：
-1. 记录是否真的足够轻
-2. 每天/每周反馈是否真的有价值
+MVP success does not depend on having many features. It depends on two things:
+1. Whether logging is genuinely lightweight
+2. Whether daily and weekly feedback is genuinely valuable
 
-只要这两个点成立，这个产品就有机会形成很强的日常使用习惯与长期留存。
+If those two conditions hold, the product has a real chance to build a strong daily usage habit and durable long-term retention.
