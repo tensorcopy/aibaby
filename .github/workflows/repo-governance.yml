@@ -1,0 +1,52 @@
+name: Repo Governance
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  governance:
+    name: governance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate branch naming
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          case "$HEAD_REF" in
+            codex/*|feature/*|fix/*|docs/*|chore/*)
+              echo "Branch name accepted: $HEAD_REF"
+              ;;
+            *)
+              echo "Branch name must start with one of: codex/, feature/, fix/, docs/, chore/"
+              exit 1
+              ;;
+          esac
+
+      - name: Verify governance files exist
+        run: |
+          test -f .github/pull_request_template.md
+          test -f .github/CODEOWNERS
+          test -f CONTRIBUTING.md
+
+      - name: Validate PR description has required sections
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" | grep -qi '^## Summary' || { echo "Missing '## Summary'"; exit 1; }
+          printf '%s' "$PR_BODY" | grep -qi '^## Changes' || { echo "Missing '## Changes'"; exit 1; }
+          printf '%s' "$PR_BODY" | grep -qi '^## Validation' || { echo "Missing '## Validation'"; exit 1; }
+          printf '%s' "$PR_BODY" | grep -qi '^## Risks' || { echo "Missing '## Risks'"; exit 1; }
