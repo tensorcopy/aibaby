@@ -92,10 +92,11 @@ A user submits:
 Pipeline:
 1. upload image if present
 2. submit input payload to backend
-3. create an ingestion event
-4. run the parsing pipeline
-5. create a draft meal record
-6. return either a confirmation response or a follow-up question
+3. create a message and attach uploaded media to that message
+4. create an ingestion event linked to the source message
+5. run the parsing pipeline
+6. create a draft meal record if parsing succeeds, or preserve the raw message for retry if parsing fails
+7. return either a confirmation response or a follow-up question
 
 ## 2. Record confirmation flow
 AI output should be treated as a candidate record when confidence is limited.
@@ -203,6 +204,38 @@ The system should avoid medical diagnosis language.
 - created_at
 - updated_at
 
+## baby_settings
+This table should persist per-baby delivery preferences and scheduling state required by jobs and push notifications.
+- id
+- baby_id
+- daily_summary_enabled
+- daily_summary_time_local
+- weekly_summary_enabled
+- weekly_summary_day_of_week
+- weekly_summary_time_local
+- stage_reminders_enabled
+- push_notifications_enabled
+- created_at
+- updated_at
+
+Suggested constraints:
+- unique on `baby_id`
+
+## notification_devices
+This table should persist per-user device registration for push delivery.
+- id
+- user_id
+- platform
+- expo_push_token
+- app_build
+- last_seen_at
+- notifications_enabled
+- created_at
+- updated_at
+
+Suggested constraints:
+- unique on `expo_push_token`
+
 ## caregivers
 Optional in MVP but useful for future multi-adult support.
 - id
@@ -222,8 +255,23 @@ Optional in MVP but useful for future multi-adult support.
 - conversation_id
 - sender_type
 - text
+- message_type
+- ingestion_status
 - metadata_json
 - created_at
+
+Suggested `message_type` values:
+- user_text
+- user_image
+- user_mixed
+- assistant_followup
+- assistant_summary
+
+Suggested `ingestion_status` values:
+- pending
+- parsed
+- failed
+- ignored
 
 ## meal_records
 - id
@@ -267,12 +315,27 @@ Suggested `status` values:
 ## media_assets
 - id
 - baby_id
+- message_id
 - meal_record_id
 - storage_path
+- storage_bucket
 - mime_type
 - width
 - height
+- upload_status
 - created_at
+
+`meal_record_id` should remain nullable so media can be preserved even when parsing does not produce a record.
+
+Suggested `upload_status` values:
+- uploaded
+- processing
+- failed
+- deleted
+
+Suggested constraints:
+- foreign key to `messages.id`
+- nullable foreign key to `meal_records.id`
 
 ## daily_reports
 - id
@@ -282,7 +345,12 @@ Suggested `status` values:
 - rendered_summary
 - suggestions_text
 - completeness_score
+- notification_status
+- generated_by_job_key
 - created_at
+
+Suggested constraints:
+- unique on `(baby_id, report_date)`
 
 ## weekly_reports
 - id
@@ -291,7 +359,12 @@ Suggested `status` values:
 - structured_summary_json
 - rendered_summary
 - suggestions_text
+- notification_status
+- generated_by_job_key
 - created_at
+
+Suggested constraints:
+- unique on `(baby_id, week_start_date)`
 
 ## age_stage_reminders
 - id
@@ -301,18 +374,34 @@ Suggested `status` values:
 - rendered_text
 - metadata_json
 - status
+- notification_status
+- generated_by_job_key
 - created_at
+
+Suggested constraints:
+- unique on `(baby_id, age_stage_key, scheduled_for)`
 
 ## ingestion_events
 Useful for debugging, retries, and operational visibility.
 - id
 - baby_id
+- source_message_id
 - source_type
+- trigger_type
 - payload_json
 - processing_status
+- idempotency_key
 - error_text
 - created_at
 - updated_at
+
+Suggested `trigger_type` values:
+- user_message
+- retry
+- backfill
+
+Suggested constraints:
+- unique on `idempotency_key`
 
 ---
 
@@ -324,11 +413,14 @@ Useful for debugging, retries, and operational visibility.
 - `PATCH /api/babies/:id`
 - `GET /api/babies/:id/settings`
 - `PATCH /api/babies/:id/settings`
+- `POST /api/notification-devices`
+- `PATCH /api/notification-devices/:id`
 
 ## Chat
 - `POST /api/conversations`
 - `GET /api/conversations/:id/messages`
 - `POST /api/conversations/:id/messages`
+- `POST /api/messages/:id/retry-ingestion`
 
 ## Uploads
 - `POST /api/uploads/presign`
@@ -383,27 +475,31 @@ Default schedule:
 - 7:00 PM in the baby's local timezone, later user-configurable
 
 Steps:
-1. find babies with daily summary enabled
+1. find babies with `baby_settings.daily_summary_enabled = true`
 2. load the day's meals, milk, and supplements
 3. run rules
-4. generate summary text
-5. save report
-6. send notification
+4. compute deterministic idempotency key `{baby_id}:{report_date}:daily`
+5. upsert the report by `(baby_id, report_date)`
+6. send notification only if `notification_status` is still pending
+7. persist final delivery status
 
 ## Weekly summary job
 Steps:
-1. gather the last 7 days of records
-2. compute diversity and frequency metrics
-3. generate weekly summary and recommendations
-4. save report
-5. notify the user
+1. find babies with `baby_settings.weekly_summary_enabled = true`
+2. gather the last 7 days of records
+3. compute diversity and frequency metrics
+4. compute deterministic idempotency key `{baby_id}:{week_start_date}:weekly`
+5. upsert the report by `(baby_id, week_start_date)`
+6. notify the user only once per persisted report
 
 ## Reminder job
 Steps:
-1. compute each baby's current stage
-2. determine whether a reminder is due
-3. generate and save the reminder
-4. notify the user
+1. find babies with `baby_settings.stage_reminders_enabled = true`
+2. compute each baby's current stage
+3. determine whether a reminder is due
+4. compute deterministic idempotency key `{baby_id}:{age_stage_key}:{scheduled_for}:reminder`
+5. upsert the reminder by `(baby_id, age_stage_key, scheduled_for)`
+6. notify the user only if this reminder has not already been delivered
 
 ---
 
@@ -441,6 +537,11 @@ Required safeguards:
 - idempotency for scheduled jobs
 - preserve raw records even if parsing fails
 - explicit fallback prompts when AI confidence is too low
+
+Implementation note:
+- raw user text should persist on `messages`
+- raw images should persist on `media_assets` linked to `message_id`
+- parsing retries should operate from `messages` and `ingestion_events`, not require a pre-existing `meal_record`
 
 ---
 
