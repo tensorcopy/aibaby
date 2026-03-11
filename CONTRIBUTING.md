@@ -6,7 +6,6 @@ All work targeting `main` must go through a pull request.
 
 Use one of these branch prefixes:
 
-- `codex/` for AI-agent or Codex-driven work
 - `feature/` for product work
 - `fix/` for bug fixes
 - `docs/` for documentation-only changes
