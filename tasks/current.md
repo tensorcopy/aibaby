@@ -8,7 +8,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-002 `todo` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
-- AIB-005 `todo` Scaffold the initial project structure
 - AIB-006 `todo` Document local development setup and environment variables
 
 ### Data model
@@ -50,12 +49,12 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
-- AIB-005 `in_progress` Stack direction is accepted; implementation scaffold is still pending
 
 ## Done
 
 - AIB-000 `done` Move product requirements and shared project state into repository-managed files
 - AIB-001 `done` Write and accept the MVP stack baseline in `docs/architecture.md` and `docs/stack-decision.md`
+- AIB-005 `done` Add the initial monorepo-oriented scaffold with workspace placeholders for apps, packages, and shared content
 - AIB-010 `done` Define the baby profile entity in `docs/data-model.md`
 - AIB-011 `done` Define the caregiver / account entity in `docs/data-model.md`
 - AIB-012 `done` Define the feeding record entity in `docs/data-model.md`
@@ -76,5 +75,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Coordination notes
 
 - Foundation choices are now documented well enough to start assigning implementation work
+- The initial repo scaffold exists, but it is intentionally non-runnable until follow-up PRs add actual Expo, Next.js, Prisma, and Supabase setup
 - Next best parallel workstreams: app scaffold, auth wiring, media upload path, and daily-summary rules
 - Keep architecture and task files updated in the same branch as implementation work
