@@ -85,6 +85,7 @@ test("createBabyProfileRouteTextInputChrome gives the birth-date field a constra
       { disabled: false },
     ),
     {
+      inputDisabled: false,
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
@@ -117,6 +118,7 @@ test("createBabyProfileRouteTextInputChrome reuses required-field hints for assi
       { disabled: false },
     ),
     {
+      inputDisabled: false,
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
@@ -136,7 +138,40 @@ test("createBabyProfileRouteTextInputChrome reuses required-field hints for assi
   );
 });
 
-
+test("createBabyProfileRouteTextInputChrome locks the birth-date field behind confirm/cancel while the iOS picker is open", () => {
+  assert.deepEqual(
+    createBabyProfileRouteTextInputChrome(
+      {
+        key: "birthDate",
+        label: "Birth date",
+        value: "2025-10-15",
+        kind: "date",
+      },
+      { disabled: false, hasPendingBirthDateDraft: true },
+    ),
+    {
+      inputDisabled: true,
+      autoCapitalize: "none",
+      autoCorrect: false,
+      keyboardType: "numbers-and-punctuation",
+      maxLength: 10,
+      accessibilityHint:
+        "Birth date picker is open. Confirm or cancel the pending date to keep editing.",
+      supportingText:
+        "Birth date picker is open. Confirm or cancel the pending date to keep editing.",
+      showDatePickerAffordance: true,
+      datePickerLabel: "Editing date",
+      datePickerAccessibilityHint:
+        "Birth date picker is already open. Confirm or cancel the pending date first.",
+      datePickerDisabled: true,
+      showInvalidOutline: false,
+      accessibilityState: {
+        disabled: true,
+        invalid: false,
+      },
+    },
+  );
+});
 
 test("createBabyProfileRouteTextInputChrome disables the picker affordance while saving", () => {
   assert.deepEqual(
@@ -150,6 +185,7 @@ test("createBabyProfileRouteTextInputChrome disables the picker affordance while
       { disabled: true },
     ),
     {
+      inputDisabled: true,
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
@@ -181,6 +217,7 @@ test("createBabyProfileRouteTextInputChrome keeps the timezone field case-stable
       { disabled: true },
     ),
     {
+      inputDisabled: true,
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "default",
@@ -196,8 +233,6 @@ test("createBabyProfileRouteTextInputChrome keeps the timezone field case-stable
   );
 });
 
-
-
 test("createBabyProfileRouteTextInputChrome marks invalid fields for assistive tech", () => {
   assert.deepEqual(
     createBabyProfileRouteTextInputChrome(
@@ -211,6 +246,7 @@ test("createBabyProfileRouteTextInputChrome marks invalid fields for assistive t
       { disabled: false },
     ),
     {
+      inputDisabled: false,
       autoCapitalize: "words",
       autoCorrect: false,
       keyboardType: "default",

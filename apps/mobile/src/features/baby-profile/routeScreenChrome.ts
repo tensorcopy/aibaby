@@ -28,6 +28,7 @@ export type BabyProfileRouteSaveButtonChrome = {
 };
 
 export type BabyProfileRouteTextInputChrome = {
+  inputDisabled: boolean;
   autoCapitalize: "none" | "words";
   autoCorrect: boolean;
   keyboardType: "default" | "numbers-and-punctuation";
@@ -123,27 +124,40 @@ export function createBabyProfileRouteSaveButtonChrome({
 
 export function createBabyProfileRouteTextInputChrome(
   field: BabyProfileRouteField,
-  { disabled }: { disabled: boolean },
+  {
+    disabled,
+    hasPendingBirthDateDraft = false,
+  }: {
+    disabled: boolean;
+    hasPendingBirthDateDraft?: boolean;
+  },
 ): BabyProfileRouteTextInputChrome {
   if (field.kind === "date") {
+    const inputDisabled = disabled || hasPendingBirthDateDraft;
+
     return {
+      inputDisabled,
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
-      accessibilityHint:
-        field.error ?? field.hint ?? "Type YYYY-MM-DD or use the date picker.",
-      supportingText:
-        field.error ?? field.hint ?? "Type YYYY-MM-DD or use the date picker.",
+      accessibilityHint: hasPendingBirthDateDraft
+        ? "Birth date picker is open. Confirm or cancel the pending date to keep editing."
+        : field.error ?? field.hint ?? "Type YYYY-MM-DD or use the date picker.",
+      supportingText: hasPendingBirthDateDraft
+        ? "Birth date picker is open. Confirm or cancel the pending date to keep editing."
+        : field.error ?? field.hint ?? "Type YYYY-MM-DD or use the date picker.",
       showDatePickerAffordance: true,
-      datePickerLabel: "Choose date",
+      datePickerLabel: hasPendingBirthDateDraft ? "Editing date" : "Choose date",
       datePickerAccessibilityHint: disabled
         ? "Birth date picker is unavailable while the profile is saving."
-        : "Opens a date picker for the birth date.",
-      datePickerDisabled: disabled,
+        : hasPendingBirthDateDraft
+          ? "Birth date picker is already open. Confirm or cancel the pending date first."
+          : "Opens a date picker for the birth date.",
+      datePickerDisabled: inputDisabled,
       showInvalidOutline: Boolean(field.error),
       accessibilityState: {
-        disabled,
+        disabled: inputDisabled,
         invalid: Boolean(field.error),
       },
     };
@@ -151,6 +165,7 @@ export function createBabyProfileRouteTextInputChrome(
 
   if (field.key === "timezone") {
     return {
+      inputDisabled: disabled,
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "default",
@@ -166,6 +181,7 @@ export function createBabyProfileRouteTextInputChrome(
   }
 
   return {
+    inputDisabled: disabled,
     autoCapitalize: "words",
     autoCorrect: false,
     keyboardType: "default",

@@ -35,10 +35,12 @@ export function createBabyProfileRouteScreenModel({
   state,
   isSaving,
   isRetryingLoad,
+  hasPendingBirthDateDraft = false,
 }: {
   state: BabyProfileScreenState;
   isSaving: boolean;
   isRetryingLoad: boolean;
+  hasPendingBirthDateDraft?: boolean;
 }): BabyProfileRouteScreenModel {
   if (state.status === "loading") {
     return {
@@ -66,7 +68,8 @@ export function createBabyProfileRouteScreenModel({
     route,
     requestErrorMessage: isSaving ? null : state.requestErrorMessage,
     submitLabel: isSaving ? "Saving…" : route.submitLabel,
-    submitDisabled: isSaving || !canSubmitBabyProfileCreateEditState(state.form),
+    submitDisabled:
+      isSaving || hasPendingBirthDateDraft || !canSubmitBabyProfileCreateEditState(state.form),
     inputsDisabled: isSaving,
     isSaving,
   };
