@@ -4,6 +4,6 @@
   "version": "0.0.0",
   "description": "Next.js app and backend scaffold placeholder for AI Baby",
   "scripts": {
-    "test:baby-profile-api": "node --test src/features/baby-profile/*.test.js"
+    "test:baby-profile-api": "node --experimental-strip-types --test src/features/baby-profile/*.test.js src/features/baby-profile/*.test.ts"
   }
 }
