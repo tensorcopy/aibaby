@@ -91,6 +91,43 @@ test("createBabyProfileRouteModel groups profile fields into ordered route secti
   );
 });
 
+test("createBabyProfileRouteModel surfaces choice-field validation feedback", () => {
+  const state = createBabyProfileScreenState(profile, "explicit");
+  const model = createBabyProfileRouteModel({
+    ...state,
+    form: {
+      ...state.form,
+      errors: {
+        sex: "Sex must be one of the supported options.",
+        feedingStyle: "Feeding style must be one of the supported options.",
+      },
+    },
+  });
+
+  const sexSection = model.sections[1];
+  assert.equal(sexSection?.kind, "choice");
+  if (sexSection?.kind !== "choice") {
+    return;
+  }
+
+  assert.equal(sexSection.field, "sex");
+  assert.equal(sexSection.label, "Sex");
+  assert.equal(sexSection.error, "Sex must be one of the supported options.");
+  assert.equal(
+    sexSection.options.find((option) => option.selected)?.label,
+    "Prefer not to say",
+  );
+
+  const feedingSection = model.sections[2];
+  assert.equal(feedingSection?.kind, "choice");
+  if (feedingSection?.kind !== "choice") {
+    return;
+  }
+
+  assert.equal(feedingSection.field, "feedingStyle");
+  assert.equal(feedingSection.error, "Feeding style must be one of the supported options.");
+});
+
 test("createBabyProfileRouteModel surfaces edit-mode submission feedback", () => {
   const state = createBabyProfileScreenState(profile, "explicit");
   const model = createBabyProfileRouteModel({

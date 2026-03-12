@@ -266,6 +266,7 @@ function renderChoiceSection({
     <ChoiceField
       disabled={disabled}
       label={section.label}
+      error={section.error}
       options={section.options}
       onSelect={(value) => setState((current) => updateReadyStateField(current, section.field, value))}
     />
@@ -309,11 +310,13 @@ function FormTextField({
 function ChoiceField<T extends string>({
   disabled,
   label,
+  error,
   options,
   onSelect,
 }: {
   disabled: boolean;
   label: string;
+  error?: string;
   options: Array<{ value: T; label: string; selected: boolean }>;
   onSelect: (value: T) => void;
 }) {
@@ -339,6 +342,7 @@ function ChoiceField<T extends string>({
           </Pressable>
         ))}
       </View>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 }

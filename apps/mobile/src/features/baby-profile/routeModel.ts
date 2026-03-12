@@ -37,6 +37,7 @@ export type BabyProfileRouteChoiceSection =
       kind: "choice";
       field: "sex";
       label: string;
+      error?: string;
       options: BabyProfileRouteChoiceOption<BabyProfileSex>[];
     }
   | {
@@ -45,6 +46,7 @@ export type BabyProfileRouteChoiceSection =
       kind: "choice";
       field: "feedingStyle";
       label: string;
+      error?: string;
       options: BabyProfileRouteChoiceOption<BabyProfileFeedingStyle>[];
     };
 
@@ -125,6 +127,7 @@ export function createBabyProfileRouteModel(
     kind: "choice",
     field: "sex",
     label: "Sex",
+    error: errors.sex,
     options: BABY_PROFILE_SEX_OPTIONS.map((value) => ({
       value,
       label: SEX_LABELS[value],
@@ -138,6 +141,7 @@ export function createBabyProfileRouteModel(
     kind: "choice",
     field: "feedingStyle",
     label: "Feeding style",
+    error: errors.feedingStyle,
     options: BABY_PROFILE_FEEDING_STYLE_OPTIONS.map((value) => ({
       value,
       label: FEEDING_STYLE_LABELS[value],
