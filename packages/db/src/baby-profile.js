@@ -36,7 +36,18 @@ const babyProfileFields = {
 const createBabyProfileSchema = z
   .object(babyProfileFields)
   .strict()
-  .transform(normalizeProfilePayload);
+  .transform(normalizeCreateProfilePayload);
+
+const createBabyProfileInsertSchema = z
+  .object({
+    ownerUserId: z.string().trim().min(1, 'Owner user id is required'),
+    ...babyProfileFields,
+  })
+  .strict()
+  .transform((payload) => ({
+    ownerUserId: payload.ownerUserId.trim(),
+    ...normalizeCreateProfilePayload(payload),
+  }));
 
 const updateBabyProfileSchema = z
   .object({
@@ -53,9 +64,32 @@ const updateBabyProfileSchema = z
   .refine((payload) => Object.values(payload).some((value) => value !== undefined), {
     message: 'At least one field must be provided',
   })
-  .transform(normalizeProfilePayload);
+  .transform(normalizeUpdateProfilePayload);
 
-function normalizeProfilePayload(payload) {
+const storedBabyProfileSchema = z
+  .object({
+    id: z.string().trim().min(1).optional(),
+    ownerUserId: z.string().trim().min(1),
+    name: babyProfileFields.name,
+    birthDate: birthDateSchema,
+    sex: z.enum(SEX_VALUES).nullable().optional(),
+    feedingStyle: babyProfileFields.feedingStyle,
+    timezone: babyProfileFields.timezone,
+    allergies: stringArrayField,
+    supplements: stringArrayField,
+    primaryCaregiver: z.string().trim().min(1).nullable().optional(),
+    createdAt: z.string().datetime({ offset: true }).optional(),
+    updatedAt: z.string().datetime({ offset: true }).optional(),
+  })
+  .strict()
+  .transform((payload) => ({
+    ...payload,
+    ...normalizeCreateProfilePayload(payload),
+    sex: payload.sex ?? undefined,
+    primaryCaregiver: payload.primaryCaregiver ?? undefined,
+  }));
+
+function normalizeCreateProfilePayload(payload) {
   return {
     ...payload,
     name: payload.name?.trim(),
@@ -66,12 +100,27 @@ function normalizeProfilePayload(payload) {
   };
 }
 
+function normalizeUpdateProfilePayload(payload) {
+  return {
+    ...payload,
+    name: payload.name?.trim(),
+    timezone: payload.timezone?.trim() || DEFAULT_TIMEZONE,
+    primaryCaregiver: payload.primaryCaregiver,
+    allergies: payload.allergies,
+    supplements: payload.supplements,
+  };
+}
+
 function parseCreateBabyProfile(input) {
   return createBabyProfileSchema.parse(input);
 }
 
 function parseUpdateBabyProfile(input) {
   return updateBabyProfileSchema.parse(input);
+}
+
+function parseStoredBabyProfile(input) {
+  return storedBabyProfileSchema.parse(input);
 }
 
 function buildBabyProfileFormDefaults(existingProfile = {}) {
@@ -116,6 +165,78 @@ function getBabyAgeSummary(birthDate, asOf = new Date()) {
   };
 }
 
+function toBabyProfileCreateRow(input) {
+  const parsed = createBabyProfileInsertSchema.parse(input);
+
+  return {
+    owner_user_id: parsed.ownerUserId,
+    name: parsed.name,
+    birth_date: parsed.birthDate,
+    sex: parsed.sex ?? null,
+    feeding_style: parsed.feedingStyle,
+    timezone: parsed.timezone,
+    allergies_json: parsed.allergies,
+    supplements_json: parsed.supplements,
+    primary_caregiver: parsed.primaryCaregiver ?? null,
+  };
+}
+
+function toBabyProfileUpdatePatch(input) {
+  const parsed = parseUpdateBabyProfile(input);
+  const patch = {};
+
+  if (parsed.name !== undefined) patch.name = parsed.name;
+  if (parsed.birthDate !== undefined) patch.birth_date = parsed.birthDate;
+  if (parsed.sex !== undefined) patch.sex = parsed.sex;
+  if (parsed.feedingStyle !== undefined) patch.feeding_style = parsed.feedingStyle;
+  if (parsed.timezone !== undefined) patch.timezone = parsed.timezone;
+  if (parsed.allergies !== undefined) patch.allergies_json = parsed.allergies;
+  if (parsed.supplements !== undefined) patch.supplements_json = parsed.supplements;
+  if (parsed.primaryCaregiver !== undefined) patch.primary_caregiver = parsed.primaryCaregiver;
+
+  return patch;
+}
+
+function toBabyProfileRow(input) {
+  const parsed = parseStoredBabyProfile(input);
+
+  return {
+    id: parsed.id,
+    owner_user_id: parsed.ownerUserId,
+    name: parsed.name,
+    birth_date: parsed.birthDate,
+    sex: parsed.sex ?? null,
+    feeding_style: parsed.feedingStyle,
+    timezone: parsed.timezone,
+    allergies_json: parsed.allergies,
+    supplements_json: parsed.supplements,
+    primary_caregiver: parsed.primaryCaregiver ?? null,
+    created_at: parsed.createdAt,
+    updated_at: parsed.updatedAt,
+  };
+}
+
+function fromBabyProfileRow(row) {
+  if (!row || typeof row !== 'object') {
+    throw new Error('Baby profile row must be an object');
+  }
+
+  return parseStoredBabyProfile({
+    id: row.id,
+    ownerUserId: row.owner_user_id,
+    name: row.name,
+    birthDate: row.birth_date,
+    sex: row.sex ?? undefined,
+    feedingStyle: row.feeding_style,
+    timezone: row.timezone,
+    allergies: row.allergies_json,
+    supplements: row.supplements_json,
+    primaryCaregiver: row.primary_caregiver ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  });
+}
+
 function uniqueSorted(items) {
   return [...new Set(items.map((item) => item.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 }
@@ -130,8 +251,14 @@ module.exports = {
   SEX_VALUES,
   buildBabyProfileFormDefaults,
   createBabyProfileSchema,
+  fromBabyProfileRow,
   getBabyAgeSummary,
   parseCreateBabyProfile,
+  parseStoredBabyProfile,
   parseUpdateBabyProfile,
+  storedBabyProfileSchema,
+  toBabyProfileCreateRow,
+  toBabyProfileRow,
+  toBabyProfileUpdatePatch,
   updateBabyProfileSchema,
 };
