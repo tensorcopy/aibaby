@@ -508,6 +508,9 @@ Steps:
 7. persist final delivery status
 
 ## Weekly summary job
+Contract reference:
+- `docs/weekly-summary-aggregation.md`
+
 Steps:
 1. find babies with `baby_settings.weekly_summary_enabled = true`
 2. gather the last 7 days of records
