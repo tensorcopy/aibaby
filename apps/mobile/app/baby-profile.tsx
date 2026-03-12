@@ -22,13 +22,15 @@ import type {
 } from "@aibaby/ui";
 
 import {
-  createLoadingBabyProfileScreenState,
-  loadBabyProfileScreenState,
-  saveBabyProfileScreenState,
   updateBabyProfileScreenField,
   type BabyProfileScreenReadyState,
   type BabyProfileScreenState,
 } from "../src/features/baby-profile/screenShell.ts";
+import {
+  createBabyProfileRouteScreenLoadState,
+  loadBabyProfileRouteScreenState,
+  saveBabyProfileRouteScreenState,
+} from "../src/features/baby-profile/routeScreenController.ts";
 import { createBabyProfileRouteModel } from "../src/features/baby-profile/routeModel.ts";
 import { createBabyProfileRouteScreenModel } from "../src/features/baby-profile/routeScreenModel.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
@@ -48,7 +50,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     [session.ownerUserId],
   );
   const [state, setState] = useState<BabyProfileScreenState>(() =>
-    createLoadingBabyProfileScreenState(babyId),
+    createBabyProfileRouteScreenLoadState(babyId),
   );
   const [isSaving, setIsSaving] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
@@ -56,15 +58,15 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   useEffect(() => {
     let cancelled = false;
 
-    setState(createLoadingBabyProfileScreenState(babyId));
+    setState(createBabyProfileRouteScreenLoadState(babyId));
 
-    void loadBabyProfileScreenState({ babyId, auth }).then((nextState) => {
+    void loadBabyProfileRouteScreenState({
+      babyId,
+      auth,
+      setCurrentBabyId: session.setCurrentBabyId,
+    }).then((nextState) => {
       if (!cancelled) {
         setState(nextState);
-
-        if (nextState.status === "ready" && nextState.babyId) {
-          session.setCurrentBabyId(nextState.babyId);
-        }
       }
     });
 
@@ -111,12 +113,12 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     setIsSaving(true);
 
     try {
-      const saved = await saveBabyProfileScreenState({ state, auth });
+      const saved = await saveBabyProfileRouteScreenState({
+        state,
+        auth,
+        setCurrentBabyId: session.setCurrentBabyId,
+      });
       setState(saved);
-
-      if (saved.babyId) {
-        session.setCurrentBabyId(saved.babyId);
-      }
     } finally {
       setIsSaving(false);
     }
