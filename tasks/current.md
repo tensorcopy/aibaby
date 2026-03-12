@@ -24,7 +24,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-027 `todo` Build today's timeline page
 
 ### Summaries
-- AIB-030 `todo` Define daily summary rules and output format
+- AIB-030 `in_progress` Define daily summary rules and output format
 - AIB-031 `todo` Build daily summary generation flow
 - AIB-032 `todo` Store and retrieve daily summaries
 - AIB-033 `todo` Define weekly summary aggregation logic
@@ -47,6 +47,8 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-054 `todo` Build first-pass Markdown export flow
 
 ## In Progress
+
+- AIB-030 `in_progress` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 
 ## Done
 
