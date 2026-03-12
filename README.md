@@ -9,6 +9,7 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/stack-decision.md`
 - `docs/auth-decision.md`
 - `docs/media-storage-decision.md`
+- `docs/ai-provider-decision.md`
 - `docs/markdown-export-shape.md`
 - `docs/data-model.md`
 - `docs/local-development.md`

@@ -151,6 +151,13 @@ The AI system should use a hybrid approach:
 - multimodal LLM for image-plus-text parsing
 - LLM for parent-friendly summaries and reminder wording
 
+### Provider boundary
+- OpenAI is the accepted primary provider for MVP
+- provider calls should be centralized in `packages/ai`
+- the backend should depend on typed internal AI functions, not raw SDK calls
+
+See `docs/ai-provider-decision.md` for the detailed provider strategy.
+
 ### Why hybrid instead of pure prompting
 - easier to reason about behavior
 - more reliable output structure
