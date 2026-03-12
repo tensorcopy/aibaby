@@ -1,4 +1,4 @@
-export const BABY_PROFILE_SEX_OPTIONS = ["female", "male", "unspecified"] as const;
+export const BABY_PROFILE_SEX_OPTIONS = ["female", "male", "other", "unknown"] as const;
 export type BabyProfileSex = (typeof BABY_PROFILE_SEX_OPTIONS)[number];
 
 export const BABY_PROFILE_FEEDING_STYLE_OPTIONS = [
@@ -20,16 +20,18 @@ export type BabyProfileFormInput = {
   allergiesText: string;
   supplementsText: string;
   timezone: string;
+  primaryCaregiver: string;
 };
 
 export type BabyProfilePayload = {
   name: string;
   birthDate: string;
-  sex: Exclude<BabyProfileSex, "unspecified"> | null;
+  sex: BabyProfileSex | null;
   feedingStyle: BabyProfileFeedingStyle;
   allergies: string[];
   supplements: string[];
   timezone: string;
+  primaryCaregiver: string | null;
 };
 
 export type BabyProfileFormErrors = Partial<
@@ -44,11 +46,12 @@ export function createBabyProfileFormInput(
   return {
     name: input?.name ?? "",
     birthDate: input?.birthDate ?? "",
-    sex: input?.sex ?? "unspecified",
-    feedingStyle: input?.feedingStyle ?? "mixed",
+    sex: input?.sex ?? "unknown",
+    feedingStyle: input?.feedingStyle ?? "solids_started",
     allergiesText: (input?.allergies ?? []).join(", "),
     supplementsText: (input?.supplements ?? []).join(", "),
     timezone: input?.timezone ?? BABY_PROFILE_DEFAULT_TIMEZONE,
+    primaryCaregiver: input?.primaryCaregiver ?? "",
   };
 }
 
@@ -98,11 +101,12 @@ export function toBabyProfilePayload(
   return {
     name: input.name.trim(),
     birthDate: input.birthDate,
-    sex: input.sex === "unspecified" ? null : input.sex,
+    sex: input.sex === "unknown" ? null : input.sex,
     feedingStyle: input.feedingStyle,
     allergies: splitCommaSeparatedList(input.allergiesText),
     supplements: splitCommaSeparatedList(input.supplementsText),
     timezone: input.timezone.trim(),
+    primaryCaregiver: input.primaryCaregiver.trim() || null,
   };
 }
 
@@ -111,8 +115,7 @@ export function hasBabyProfileFormErrors(errors: BabyProfileFormErrors): boolean
 }
 
 function splitCommaSeparatedList(value: string): string[] {
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  return [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))].sort(
+    (left, right) => left.localeCompare(right),
+  );
 }

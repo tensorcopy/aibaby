@@ -1,0 +1,62 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+
+import {
+  createBabyProfileCreateEditState,
+  selectBabyProfileCreateEditAgeSummary,
+  submitBabyProfileCreateEditState,
+  updateBabyProfileField,
+} from "./createEditFlow.ts";
+
+test("create state starts with the shared baby profile defaults", () => {
+  const state = createBabyProfileCreateEditState("create");
+
+  assert.equal(state.values.sex, "unknown");
+  assert.equal(state.values.feedingStyle, "solids_started");
+  assert.equal(state.values.primaryCaregiver, "");
+});
+
+test("submitBabyProfileCreateEditState returns a payload aligned with the DB contract", () => {
+  let state = createBabyProfileCreateEditState("create");
+  state = updateBabyProfileField(state, "name", "  Yiyi  ");
+  state = updateBabyProfileField(state, "birthDate", "2025-10-15");
+  state = updateBabyProfileField(state, "feedingStyle", "mixed");
+  state = updateBabyProfileField(state, "allergiesText", "egg, dairy, egg");
+  state = updateBabyProfileField(state, "supplementsText", "iron, vitamin D, iron");
+  state = updateBabyProfileField(state, "timezone", " America/Los_Angeles ");
+  state = updateBabyProfileField(state, "primaryCaregiver", "  Zhen ");
+
+  const result = submitBabyProfileCreateEditState(
+    state,
+    new Date("2026-03-12T00:00:00.000Z"),
+  );
+
+  assert.deepEqual(result, {
+    ok: true,
+    payload: {
+      name: "Yiyi",
+      birthDate: "2025-10-15",
+      sex: null,
+      feedingStyle: "mixed",
+      allergies: ["dairy", "egg"],
+      supplements: ["iron", "vitamin D"],
+      timezone: "America/Los_Angeles",
+      primaryCaregiver: "Zhen",
+    },
+  });
+});
+
+test("selectBabyProfileCreateEditAgeSummary derives a display label from the chosen birth date", () => {
+  let state = createBabyProfileCreateEditState("create");
+  state = updateBabyProfileField(state, "birthDate", "2025-10-15");
+
+  assert.deepEqual(
+    selectBabyProfileCreateEditAgeSummary(state, new Date("2026-03-12T04:15:00.000Z")),
+    {
+      days: 148,
+      weeks: 21,
+      months: 4,
+      displayLabel: "4 months",
+    },
+  );
+});

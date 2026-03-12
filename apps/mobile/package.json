@@ -2,5 +2,8 @@
   "name": "@aibaby/mobile",
   "private": true,
   "version": "0.0.0",
-  "description": "Expo / React Native app scaffold placeholder for AI Baby"
+  "description": "Expo / React Native app scaffold placeholder for AI Baby",
+  "scripts": {
+    "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/createEditFlow.test.ts"
+  }
 }
