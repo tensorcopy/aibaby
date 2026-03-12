@@ -39,8 +39,9 @@ This repository is the shared source of truth for product intent, architecture, 
 1. Pull the latest remote changes
 2. Read the required files in order
 3. Confirm the active task in `tasks/current.md`
-4. Do the work on a non-`main` branch
-5. Update task status and relevant context files before finishing
+4. Open a small PR that marks the task as `in_progress`
+5. After that PR is visible, do the implementation work on a separate non-`main` branch and PR
+6. Update task status and relevant context files before finishing
 
 ## When blocked
 
