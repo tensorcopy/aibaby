@@ -133,6 +133,7 @@ test("createBabyProfileRouteScreenModel keeps inline save errors visible while p
   assert.equal(model.route.title, "Baby profile");
   assert.equal(model.requestErrorMessage, "Failed to reach the baby profile API");
   assert.equal(model.submitLabel, "Save profile");
+  assert.equal(model.submitDisabled, true);
   assert.equal(model.inputsDisabled, false);
 });
 
@@ -153,7 +154,50 @@ test("createBabyProfileRouteScreenModel hides stale inline save errors while a r
 
   assert.equal(model.requestErrorMessage, null);
   assert.equal(model.submitLabel, "Saving…");
+  assert.equal(model.submitDisabled, true);
   assert.equal(model.inputsDisabled, true);
+});
+
+test("createBabyProfileRouteScreenModel disables submit when edit mode has no unsaved changes", () => {
+  const model = createBabyProfileRouteScreenModel({
+    state: createBabyProfileScreenState(profile, "explicit"),
+    isSaving: false,
+    isRetryingLoad: false,
+  });
+
+  assert.equal(model.kind, "ready");
+  if (model.kind !== "ready") {
+    return;
+  }
+
+  assert.equal(model.submitLabel, "Save profile");
+  assert.equal(model.submitDisabled, true);
+  assert.equal(model.inputsDisabled, false);
+});
+
+test("createBabyProfileRouteScreenModel keeps submit enabled when edit mode has unsaved changes", () => {
+  const model = createBabyProfileRouteScreenModel({
+    state: {
+      ...createBabyProfileScreenState(profile, "explicit"),
+      form: {
+        ...createBabyProfileScreenState(profile, "explicit").form,
+        values: {
+          ...createBabyProfileScreenState(profile, "explicit").form.values,
+          timezone: "America/New_York",
+        },
+      },
+    },
+    isSaving: false,
+    isRetryingLoad: false,
+  });
+
+  assert.equal(model.kind, "ready");
+  if (model.kind !== "ready") {
+    return;
+  }
+
+  assert.equal(model.submitDisabled, false);
+  assert.equal(model.inputsDisabled, false);
 });
 
 test("createBabyProfileRouteScreenModel swaps the submit label while a retry is in flight", () => {
@@ -169,6 +213,7 @@ test("createBabyProfileRouteScreenModel swaps the submit label while a retry is 
   }
 
   assert.equal(model.submitLabel, "Saving…");
+  assert.equal(model.submitDisabled, true);
   assert.equal(model.inputsDisabled, true);
   assert.equal(model.isSaving, true);
 });

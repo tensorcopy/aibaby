@@ -186,7 +186,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       {(() => {
         const saveButton = createBabyProfileRouteSaveButtonChrome({
           label: screenModel.submitLabel,
-          disabled: screenModel.inputsDisabled,
+          disabled: screenModel.submitDisabled,
           isSaving: screenModel.isSaving,
         });
 

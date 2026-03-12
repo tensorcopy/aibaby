@@ -105,3 +105,15 @@ export function selectBabyProfileCreateEditAgeSummary(
 ): BabyProfileAgeSummary | null {
   return getBabyProfileAgeSummary(state.values.birthDate, now);
 }
+
+export function hasBabyProfileCreateEditUnsavedChanges(
+  state: BabyProfileCreateEditState,
+): boolean {
+  if (state.mode !== "edit") {
+    return true;
+  }
+
+  return hasBabyProfileUpdateChanges(
+    diffBabyProfilePayload(state.initialPayload, toBabyProfilePayload(state.values)),
+  );
+}
