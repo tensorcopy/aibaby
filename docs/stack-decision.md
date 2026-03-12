@@ -6,6 +6,10 @@ Accepted as the working MVP baseline.
 
 This document captures the current stack decision so implementation agents can move without repeatedly re-deciding the same foundation choices.
 
+Related decision docs:
+
+- `docs/auth-decision.md`
+
 ## Decision summary
 
 Use the following stack for the MVP:

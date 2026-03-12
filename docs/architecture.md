@@ -62,6 +62,13 @@ The MVP must support:
 - low operational complexity for MVP
 - strong support for image upload, chat UX, and push notifications
 
+### Auth boundary
+- Supabase Auth is the identity provider for MVP
+- mobile clients authenticate with Supabase and call backend APIs with bearer tokens
+- backend APIs enforce product authorization using ownership and caregiver membership
+
+See `docs/auth-decision.md` for the detailed auth model.
+
 ---
 
 ## High-level system shape
