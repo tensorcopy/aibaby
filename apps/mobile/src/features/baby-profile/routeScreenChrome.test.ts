@@ -90,6 +90,35 @@ test("createBabyProfileRouteTextInputChrome gives the birth-date field a constra
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
       accessibilityHint: undefined,
+      supportingText: undefined,
+      showInvalidOutline: false,
+      accessibilityState: {
+        disabled: false,
+        invalid: false,
+      },
+    },
+  );
+});
+
+test("createBabyProfileRouteTextInputChrome reuses required-field hints for assistive tech before submit", () => {
+  assert.deepEqual(
+    createBabyProfileRouteTextInputChrome(
+      {
+        key: "birthDate",
+        label: "Birth date",
+        value: "",
+        kind: "date",
+        hint: "Required. Use YYYY-MM-DD.",
+      },
+      { disabled: false },
+    ),
+    {
+      autoCapitalize: "none",
+      autoCorrect: false,
+      keyboardType: "numbers-and-punctuation",
+      maxLength: 10,
+      accessibilityHint: "Required. Use YYYY-MM-DD.",
+      supportingText: "Required. Use YYYY-MM-DD.",
       showInvalidOutline: false,
       accessibilityState: {
         disabled: false,
@@ -115,6 +144,7 @@ test("createBabyProfileRouteTextInputChrome keeps the timezone field case-stable
       autoCorrect: false,
       keyboardType: "default",
       accessibilityHint: undefined,
+      supportingText: undefined,
       showInvalidOutline: false,
       accessibilityState: {
         disabled: true,
@@ -143,6 +173,7 @@ test("createBabyProfileRouteTextInputChrome marks invalid fields for assistive t
       autoCorrect: false,
       keyboardType: "default",
       accessibilityHint: "Name is required.",
+      supportingText: "Name is required.",
       showInvalidOutline: true,
       accessibilityState: {
         disabled: false,

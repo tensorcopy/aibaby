@@ -14,6 +14,7 @@ export type BabyProfileRouteField = {
   value: string;
   placeholder?: string;
   error?: string;
+  hint?: string;
   kind: "text" | "date" | "textarea" | "choice";
 };
 
@@ -77,6 +78,12 @@ export function createBabyProfileRouteModel(
       value: values.name,
       placeholder: "Yiyi",
       error: errors.name,
+      hint: getRequiredFieldHint({
+        isEditMode,
+        field: "name",
+        value: values.name,
+        error: errors.name,
+      }),
       kind: "text",
     },
     {
@@ -85,6 +92,12 @@ export function createBabyProfileRouteModel(
       value: values.birthDate,
       placeholder: "YYYY-MM-DD",
       error: errors.birthDate,
+      hint: getRequiredFieldHint({
+        isEditMode,
+        field: "birthDate",
+        value: values.birthDate,
+        error: errors.birthDate,
+      }),
       kind: "date",
     },
     {
@@ -209,4 +222,27 @@ function getSubmissionMessage(
   }
 
   return "No profile changes to save.";
+}
+
+
+function getRequiredFieldHint({
+  isEditMode,
+  field,
+  value,
+  error,
+}: {
+  isEditMode: boolean;
+  field: "name" | "birthDate";
+  value: string;
+  error?: string;
+}): string | undefined {
+  if (error || isEditMode || value.trim().length > 0) {
+    return undefined;
+  }
+
+  if (field === "birthDate") {
+    return "Required. Use YYYY-MM-DD.";
+  }
+
+  return "Required.";
 }

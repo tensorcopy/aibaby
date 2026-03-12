@@ -33,6 +33,7 @@ export type BabyProfileRouteTextInputChrome = {
   keyboardType: "default" | "numbers-and-punctuation";
   maxLength?: number;
   accessibilityHint?: string;
+  supportingText?: string;
   showInvalidOutline: boolean;
   accessibilityState: {
     disabled: boolean;
@@ -126,7 +127,8 @@ export function createBabyProfileRouteTextInputChrome(
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
-      accessibilityHint: field.error,
+      accessibilityHint: field.error ?? field.hint,
+      supportingText: field.error ?? field.hint,
       showInvalidOutline: Boolean(field.error),
       accessibilityState: {
         disabled,
@@ -140,7 +142,8 @@ export function createBabyProfileRouteTextInputChrome(
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "default",
-      accessibilityHint: field.error,
+      accessibilityHint: field.error ?? field.hint,
+      supportingText: field.error ?? field.hint,
       showInvalidOutline: Boolean(field.error),
       accessibilityState: {
         disabled,
@@ -153,7 +156,8 @@ export function createBabyProfileRouteTextInputChrome(
     autoCapitalize: "words",
     autoCorrect: false,
     keyboardType: "default",
-    accessibilityHint: field.error,
+    accessibilityHint: field.error ?? field.hint,
+    supportingText: field.error ?? field.hint,
     showInvalidOutline: Boolean(field.error),
     accessibilityState: {
       disabled,
