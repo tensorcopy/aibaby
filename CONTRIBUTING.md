@@ -32,17 +32,17 @@ If the PR changes project intent, architecture, or task status, update the relev
 - `AGENT_CONTEXT.md`
 - `tasks/current.md`
 
-When an agent picks up a task from `tasks/current.md`, it must first open a small PR that only marks that task as `in_progress` so other agents can see the claim before implementation starts.
+When an agent picks up a task from `tasks/current.md`, it should do the implementation work in a single PR and update that task's status in the same branch.
 
-Do not combine task claim and implementation in the same first PR. After the task-claim PR exists, do the implementation work in a separate follow-up PR.
+Do not open a separate claim PR just to mark a task as `in_progress`.
 
-For task-claim and implementation PRs, include the claimed task ID in the PR title. Example:
+For task-related implementation PRs, include the claimed task ID in the PR title. Example:
 
-- `chore(AIB-031): claim daily summary generation flow`
-- `feat(AIB-031): add daily summary generator`
+- `feature(AIB-031): add daily summary generator`
+
 ## Reviews
 
-`main` requires review before merge. Treat approvals as stale after new commits and re-request review when the change materially changes.
+Use review when it adds value, but do not require a separate claim PR before implementation.
 
 ## Ownership
 
