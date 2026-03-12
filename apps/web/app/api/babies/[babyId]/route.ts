@@ -19,9 +19,10 @@ export async function PATCH(request: Request, context: RouteContext): Promise<Re
   try {
     const body = await request.json();
     const params = await context.params;
-    const { updateBabyProfile } = getBabyProfileRouteDependencies();
+    const { getOwnerUserId, updateBabyProfile } = getBabyProfileRouteDependencies();
 
     const result = await updateBabyProfileAction({
+      ownerUserId: await getOwnerUserId(request),
       babyId: params.babyId,
       body,
       updateBabyProfile,

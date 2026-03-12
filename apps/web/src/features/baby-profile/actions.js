@@ -22,7 +22,7 @@ async function createBabyProfileAction({ ownerUserId, body, insertBabyProfile })
   };
 }
 
-async function updateBabyProfileAction({ babyId, body, updateBabyProfile }) {
+async function updateBabyProfileAction({ ownerUserId, babyId, body, updateBabyProfile }) {
   if (typeof updateBabyProfile !== 'function') {
     throw new Error('updateBabyProfile is required');
   }
@@ -30,6 +30,7 @@ async function updateBabyProfileAction({ babyId, body, updateBabyProfile }) {
   const normalizedBabyId = normalizeBabyId(babyId);
 
   const row = await updateBabyProfile({
+    ownerUserId,
     babyId: normalizedBabyId,
     patch: buildUpdateBabyProfilePatch(body),
   });

@@ -77,6 +77,7 @@ test('updateBabyProfileAction trims the route id and forwards a normalized patch
   const calls = [];
 
   const result = await updateBabyProfileAction({
+    ownerUserId: ' user_123 ',
     babyId: ' baby_123 ',
     body: {
       timezone: ' America/New_York ',
@@ -104,6 +105,7 @@ test('updateBabyProfileAction trims the route id and forwards a normalized patch
 
   assert.deepEqual(calls, [
     {
+      ownerUserId: ' user_123 ',
       babyId: 'baby_123',
       patch: {
         timezone: 'America/New_York',
@@ -134,6 +136,7 @@ test('updateBabyProfileAction trims the route id and forwards a normalized patch
 test('updateBabyProfileAction requires a baby id when wrapping update handlers', async () => {
   await assert.rejects(
     updateBabyProfileAction({
+      ownerUserId: 'user_123',
       babyId: '   ',
       body: {
         timezone: 'America/Los_Angeles',
