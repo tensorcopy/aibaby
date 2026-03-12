@@ -40,7 +40,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-045 `todo` Build reminder history timeline
 
 ### Export and portability
-- AIB-050 `todo` Define export package structure
+- AIB-050 `in_progress` Define export package structure
 - AIB-051 `todo` Define Markdown note format for Obsidian compatibility
 - AIB-052 `todo` Decide media export behavior: local files vs referenced URLs
 - AIB-053 `todo` Define YAML frontmatter fields for exported notes
@@ -48,6 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
+- AIB-050 `in_progress` Define the first-pass export bundle layout so diary notes, media, and metadata ship as one predictable package
 
 ## Done
 
