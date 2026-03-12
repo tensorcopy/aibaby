@@ -3,9 +3,13 @@ import {
   type BabyProfileFormErrors,
   type BabyProfileFormInput,
   type BabyProfileFormMode,
+  type BabyProfilePayload,
+  type BabyProfileUpdatePayload,
   createBabyProfileFormInput,
+  diffBabyProfilePayload,
   getBabyProfileAgeSummary,
   hasBabyProfileFormErrors,
+  hasBabyProfileUpdateChanges,
   toBabyProfilePayload,
   validateBabyProfileFormInput,
 } from "@aibaby/ui";
@@ -13,16 +17,20 @@ import {
 export type BabyProfileCreateEditState = {
   mode: BabyProfileFormMode;
   values: BabyProfileFormInput;
+  initialPayload: BabyProfilePayload;
   errors: BabyProfileFormErrors;
 };
 
 export function createBabyProfileCreateEditState(
   mode: BabyProfileFormMode,
-  initialValues?: Partial<ReturnType<typeof toBabyProfilePayload>>,
+  initialValues?: Partial<BabyProfilePayload>,
 ): BabyProfileCreateEditState {
+  const values = createBabyProfileFormInput(initialValues);
+
   return {
     mode,
-    values: createBabyProfileFormInput(initialValues),
+    values,
+    initialPayload: toBabyProfilePayload(values),
     errors: {},
   };
 }
@@ -50,7 +58,14 @@ export function submitBabyProfileCreateEditState(
   now?: Date,
 ):
   | { ok: false; state: BabyProfileCreateEditState }
-  | { ok: true; payload: ReturnType<typeof toBabyProfilePayload> } {
+  | { ok: true; mode: "create"; payload: BabyProfilePayload }
+  | {
+      ok: true;
+      mode: "edit";
+      payload: BabyProfilePayload;
+      patch: BabyProfileUpdatePayload;
+      hasChanges: boolean;
+    } {
   const errors = validateBabyProfileFormInput(state.values, now);
 
   if (hasBabyProfileFormErrors(errors)) {
@@ -63,9 +78,24 @@ export function submitBabyProfileCreateEditState(
     };
   }
 
+  const payload = toBabyProfilePayload(state.values);
+
+  if (state.mode === "edit") {
+    const patch = diffBabyProfilePayload(state.initialPayload, payload);
+
+    return {
+      ok: true,
+      mode: "edit",
+      payload,
+      patch,
+      hasChanges: hasBabyProfileUpdateChanges(patch),
+    };
+  }
+
   return {
     ok: true,
-    payload: toBabyProfilePayload(state.values),
+    mode: "create",
+    payload,
   };
 }
 

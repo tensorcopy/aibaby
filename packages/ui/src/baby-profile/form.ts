@@ -34,6 +34,8 @@ export type BabyProfilePayload = {
   primaryCaregiver: string | null;
 };
 
+export type BabyProfileUpdatePayload = Partial<BabyProfilePayload>;
+
 export type BabyProfileFormErrors = Partial<
   Record<keyof BabyProfileFormInput, string>
 >;
@@ -110,12 +112,67 @@ export function toBabyProfilePayload(
   };
 }
 
+export function diffBabyProfilePayload(
+  previous: BabyProfilePayload,
+  next: BabyProfilePayload,
+): BabyProfileUpdatePayload {
+  const patch: BabyProfileUpdatePayload = {};
+
+  if (previous.name !== next.name) {
+    patch.name = next.name;
+  }
+
+  if (previous.birthDate !== next.birthDate) {
+    patch.birthDate = next.birthDate;
+  }
+
+  if (previous.sex !== next.sex) {
+    patch.sex = next.sex;
+  }
+
+  if (previous.feedingStyle !== next.feedingStyle) {
+    patch.feedingStyle = next.feedingStyle;
+  }
+
+  if (previous.timezone !== next.timezone) {
+    patch.timezone = next.timezone;
+  }
+
+  if (!stringArraysEqual(previous.allergies, next.allergies)) {
+    patch.allergies = next.allergies;
+  }
+
+  if (!stringArraysEqual(previous.supplements, next.supplements)) {
+    patch.supplements = next.supplements;
+  }
+
+  if (previous.primaryCaregiver !== next.primaryCaregiver) {
+    patch.primaryCaregiver = next.primaryCaregiver;
+  }
+
+  return patch;
+}
+
 export function hasBabyProfileFormErrors(errors: BabyProfileFormErrors): boolean {
   return Object.keys(errors).length > 0;
+}
+
+export function hasBabyProfileUpdateChanges(
+  patch: BabyProfileUpdatePayload,
+): boolean {
+  return Object.keys(patch).length > 0;
 }
 
 function splitCommaSeparatedList(value: string): string[] {
   return [...new Set(value.split(",").map((item) => item.trim()).filter(Boolean))].sort(
     (left, right) => left.localeCompare(right),
   );
+}
+
+function stringArraysEqual(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  return left.every((value, index) => value === right[index]);
 }
