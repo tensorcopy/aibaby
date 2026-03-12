@@ -32,13 +32,20 @@ export type BabyProfileRouteTextInputChrome = {
   autoCorrect: boolean;
   keyboardType: "default" | "numbers-and-punctuation";
   maxLength?: number;
+  accessibilityHint?: string;
+  accessibilityState: {
+    disabled: boolean;
+    invalid: boolean;
+  };
 };
 
 export type BabyProfileRouteChoiceChipChrome = {
   accessibilityRole: "radio";
+  accessibilityHint?: string;
   accessibilityState: {
     disabled: boolean;
     selected: boolean;
+    invalid?: boolean;
   };
 };
 
@@ -109,6 +116,7 @@ export function createBabyProfileRouteSaveButtonChrome({
 
 export function createBabyProfileRouteTextInputChrome(
   field: BabyProfileRouteField,
+  { disabled }: { disabled: boolean },
 ): BabyProfileRouteTextInputChrome {
   if (field.kind === "date") {
     return {
@@ -116,6 +124,11 @@ export function createBabyProfileRouteTextInputChrome(
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
+      accessibilityHint: field.error,
+      accessibilityState: {
+        disabled,
+        invalid: Boolean(field.error),
+      },
     };
   }
 
@@ -124,6 +137,11 @@ export function createBabyProfileRouteTextInputChrome(
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "default",
+      accessibilityHint: field.error,
+      accessibilityState: {
+        disabled,
+        invalid: Boolean(field.error),
+      },
     };
   }
 
@@ -131,21 +149,30 @@ export function createBabyProfileRouteTextInputChrome(
     autoCapitalize: "words",
     autoCorrect: false,
     keyboardType: "default",
+    accessibilityHint: field.error,
+    accessibilityState: {
+      disabled,
+      invalid: Boolean(field.error),
+    },
   };
 }
 
 export function createBabyProfileRouteChoiceChipChrome({
   disabled,
   selected,
+  error,
 }: {
   disabled: boolean;
   selected: boolean;
+  error?: string;
 }): BabyProfileRouteChoiceChipChrome {
   return {
     accessibilityRole: "radio",
+    accessibilityHint: error,
     accessibilityState: {
       disabled,
       selected,
+      invalid: error ? true : undefined,
     },
   };
 }

@@ -286,12 +286,15 @@ function FormTextField({
   field: ReturnType<typeof createBabyProfileRouteModel>["textFields"][number];
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
 }) {
-  const chrome = createBabyProfileRouteTextInputChrome(field);
+  const chrome = createBabyProfileRouteTextInputChrome(field, { disabled });
 
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.fieldLabel}>{field.label}</Text>
       <TextInput
+        accessibilityHint={chrome.accessibilityHint}
+        accessibilityLabel={field.label}
+        accessibilityState={chrome.accessibilityState}
         autoCapitalize={chrome.autoCapitalize}
         autoCorrect={chrome.autoCorrect}
         editable={!disabled}
@@ -330,11 +333,17 @@ function ChoiceField<T extends string>({
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.fieldLabel}>{label}</Text>
-      <View accessibilityRole="radiogroup" style={styles.choiceRow}>
+      <View
+        accessibilityHint={error}
+        accessibilityLabel={label}
+        accessibilityRole="radiogroup"
+        style={styles.choiceRow}
+      >
         {options.map((option) => {
           const chrome = createBabyProfileRouteChoiceChipChrome({
             disabled,
             selected: option.selected,
+            error,
           });
 
           return (
