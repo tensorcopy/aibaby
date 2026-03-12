@@ -308,6 +308,7 @@ function FormTextField({
         style={[
           styles.textInput,
           field.kind === "textarea" ? styles.textarea : null,
+          chrome.showInvalidOutline ? styles.textInputInvalid : null,
           disabled ? styles.fieldDisabled : null,
         ]}
         value={state.form.values[field.key]}
@@ -337,7 +338,7 @@ function ChoiceField<T extends string>({
         accessibilityHint={error}
         accessibilityLabel={label}
         accessibilityRole="radiogroup"
-        style={styles.choiceRow}
+        style={[styles.choiceRow, error ? styles.choiceRowInvalid : null]}
       >
         {options.map((option) => {
           const chrome = createBabyProfileRouteChoiceChipChrome({
@@ -356,6 +357,7 @@ function ChoiceField<T extends string>({
               onPress={() => onSelect(option.value)}
               style={[
                 styles.choiceChip,
+                chrome.showInvalidOutline ? styles.choiceChipInvalid : null,
                 option.selected ? styles.choiceChipSelected : null,
                 disabled ? styles.fieldDisabled : null,
               ]}
@@ -436,6 +438,10 @@ const styles = StyleSheet.create({
     color: "#0f172a",
     backgroundColor: "#ffffff",
   },
+  textInputInvalid: {
+    borderColor: "#dc2626",
+    backgroundColor: "#fef2f2",
+  },
   textarea: {
     minHeight: 92,
     textAlignVertical: "top",
@@ -445,12 +451,23 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 8,
   },
+  choiceRowInvalid: {
+    borderWidth: 1,
+    borderColor: "#fecaca",
+    borderRadius: 12,
+    padding: 8,
+    backgroundColor: "#fef2f2",
+  },
   choiceChip: {
     borderRadius: 999,
     borderWidth: 1,
     borderColor: "#cbd5e1",
     paddingHorizontal: 12,
     paddingVertical: 8,
+    backgroundColor: "#ffffff",
+  },
+  choiceChipInvalid: {
+    borderColor: "#dc2626",
     backgroundColor: "#ffffff",
   },
   choiceChipSelected: {

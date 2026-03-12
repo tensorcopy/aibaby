@@ -90,6 +90,7 @@ test("createBabyProfileRouteTextInputChrome gives the birth-date field a constra
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
       accessibilityHint: undefined,
+      showInvalidOutline: false,
       accessibilityState: {
         disabled: false,
         invalid: false,
@@ -114,6 +115,7 @@ test("createBabyProfileRouteTextInputChrome keeps the timezone field case-stable
       autoCorrect: false,
       keyboardType: "default",
       accessibilityHint: undefined,
+      showInvalidOutline: false,
       accessibilityState: {
         disabled: true,
         invalid: false,
@@ -141,6 +143,7 @@ test("createBabyProfileRouteTextInputChrome marks invalid fields for assistive t
       autoCorrect: false,
       keyboardType: "default",
       accessibilityHint: "Name is required.",
+      showInvalidOutline: true,
       accessibilityState: {
         disabled: false,
         invalid: true,
@@ -159,6 +162,7 @@ test("createBabyProfileRouteChoiceChipChrome exposes radio selection state for g
     {
       accessibilityRole: "radio",
       accessibilityHint: "Choose a supported option.",
+      showInvalidOutline: true,
       accessibilityState: {
         disabled: true,
         selected: true,

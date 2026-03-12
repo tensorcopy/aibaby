@@ -33,6 +33,7 @@ export type BabyProfileRouteTextInputChrome = {
   keyboardType: "default" | "numbers-and-punctuation";
   maxLength?: number;
   accessibilityHint?: string;
+  showInvalidOutline: boolean;
   accessibilityState: {
     disabled: boolean;
     invalid: boolean;
@@ -42,6 +43,7 @@ export type BabyProfileRouteTextInputChrome = {
 export type BabyProfileRouteChoiceChipChrome = {
   accessibilityRole: "radio";
   accessibilityHint?: string;
+  showInvalidOutline: boolean;
   accessibilityState: {
     disabled: boolean;
     selected: boolean;
@@ -125,6 +127,7 @@ export function createBabyProfileRouteTextInputChrome(
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
       accessibilityHint: field.error,
+      showInvalidOutline: Boolean(field.error),
       accessibilityState: {
         disabled,
         invalid: Boolean(field.error),
@@ -138,6 +141,7 @@ export function createBabyProfileRouteTextInputChrome(
       autoCorrect: false,
       keyboardType: "default",
       accessibilityHint: field.error,
+      showInvalidOutline: Boolean(field.error),
       accessibilityState: {
         disabled,
         invalid: Boolean(field.error),
@@ -150,6 +154,7 @@ export function createBabyProfileRouteTextInputChrome(
     autoCorrect: false,
     keyboardType: "default",
     accessibilityHint: field.error,
+    showInvalidOutline: Boolean(field.error),
     accessibilityState: {
       disabled,
       invalid: Boolean(field.error),
@@ -169,6 +174,7 @@ export function createBabyProfileRouteChoiceChipChrome({
   return {
     accessibilityRole: "radio",
     accessibilityHint: error,
+    showInvalidOutline: Boolean(error),
     accessibilityState: {
       disabled,
       selected,
