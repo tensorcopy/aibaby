@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 
 const {
   createBabyProfileAction,
+  getCurrentBabyProfileAction,
   getBabyProfileAction,
   updateBabyProfileAction,
 } = require('./actions');
@@ -70,6 +71,51 @@ test('createBabyProfileAction normalizes input before calling the persistence la
       primaryCaregiver: 'Zhen',
       createdAt: '2026-03-12T06:05:00.000Z',
       updatedAt: '2026-03-12T06:05:00.000Z',
+    },
+  });
+});
+
+test('getCurrentBabyProfileAction loads the owner-scoped current profile', async () => {
+  const calls = [];
+
+  const result = await getCurrentBabyProfileAction({
+    ownerUserId: ' user_123 ',
+    async getCurrentBabyProfileByOwnerUserId(query) {
+      calls.push(query);
+
+      return {
+        id: 'baby_123',
+        owner_user_id: 'user_123',
+        name: 'Yiyi',
+        birth_date: '2025-10-15',
+        sex: null,
+        feeding_style: 'mixed',
+        timezone: 'America/Los_Angeles',
+        allergies_json: ['dairy', 'egg'],
+        supplements_json: ['iron'],
+        primary_caregiver: 'Zhen',
+        created_at: '2026-03-12T06:10:00.000Z',
+        updated_at: '2026-03-12T06:12:00.000Z',
+      };
+    },
+  });
+
+  assert.deepEqual(calls, [{ ownerUserId: ' user_123 ' }]);
+  assert.deepEqual(result, {
+    status: 200,
+    body: {
+      id: 'baby_123',
+      ownerUserId: 'user_123',
+      name: 'Yiyi',
+      birthDate: '2025-10-15',
+      sex: null,
+      feedingStyle: 'mixed',
+      timezone: 'America/Los_Angeles',
+      allergies: ['dairy', 'egg'],
+      supplements: ['iron'],
+      primaryCaregiver: 'Zhen',
+      createdAt: '2026-03-12T06:10:00.000Z',
+      updatedAt: '2026-03-12T06:12:00.000Z',
     },
   });
 });

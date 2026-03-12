@@ -22,6 +22,19 @@ async function createBabyProfileAction({ ownerUserId, body, insertBabyProfile })
   };
 }
 
+async function getCurrentBabyProfileAction({ ownerUserId, getCurrentBabyProfileByOwnerUserId }) {
+  if (typeof getCurrentBabyProfileByOwnerUserId !== 'function') {
+    throw new Error('getCurrentBabyProfileByOwnerUserId is required');
+  }
+
+  const row = await getCurrentBabyProfileByOwnerUserId({ ownerUserId });
+
+  return {
+    status: 200,
+    body: buildBabyProfileResponse(row),
+  };
+}
+
 async function getBabyProfileAction({ ownerUserId, babyId, getBabyProfileById }) {
   if (typeof getBabyProfileById !== 'function') {
     throw new Error('getBabyProfileById is required');
@@ -67,6 +80,7 @@ function normalizeBabyId(babyId) {
 
 module.exports = {
   createBabyProfileAction,
+  getCurrentBabyProfileAction,
   getBabyProfileAction,
   updateBabyProfileAction,
 };

@@ -5,8 +5,10 @@ const {
   parseStoredBabyProfile,
 } = require('../../../../../packages/db/src/baby-profile');
 const {
+  BabyProfileClientError,
   createBabyProfileClient,
   getBabyProfileClient,
+  getCurrentBabyProfileClient,
   updateBabyProfileClient,
 } = require('./client');
 
@@ -25,15 +27,29 @@ async function loadBabyProfileForm({
   babyId,
   auth,
   getBabyProfile = getBabyProfileClient,
+  getCurrentBabyProfile = getCurrentBabyProfileClient,
   ageSummaryFactory = getBabyAgeSummary,
 } = {}) {
-  const profile = normalizeStoredProfile(await getBabyProfile({ babyId, auth }));
+  const loader = babyId
+    ? () => getBabyProfile({ babyId, auth })
+    : () => getCurrentBabyProfile({ auth });
 
-  return buildFormFlowResult({
-    profile,
-    ageSummaryFactory,
-    submission: null,
-  });
+  try {
+    const profile = normalizeStoredProfile(await loader());
+
+    return buildFormFlowResult({
+      profile,
+      ageSummaryFactory,
+      submission: null,
+      mode: 'edit',
+    });
+  } catch (error) {
+    if (!babyId && isNotFoundClientError(error)) {
+      return buildEmptyFormFlowResult();
+    }
+
+    throw error;
+  }
 }
 
 async function saveBabyProfileForm({
@@ -61,6 +77,7 @@ async function saveBabyProfileForm({
         mode: 'create',
         changedFields: EDITABLE_FIELDS,
       },
+      mode: 'edit',
     });
   }
 
@@ -80,6 +97,7 @@ async function saveBabyProfileForm({
           mode: 'noop',
           changedFields: [],
         },
+        mode: 'edit',
       });
     }
 
@@ -98,6 +116,7 @@ async function saveBabyProfileForm({
         mode: 'edit',
         changedFields,
       },
+      mode: 'edit',
     });
   }
 
@@ -118,8 +137,19 @@ function buildChangedBabyProfilePatch({ initialProfile, values }) {
   return patch;
 }
 
-function buildFormFlowResult({ profile, ageSummaryFactory, submission }) {
+function buildEmptyFormFlowResult() {
   return {
+    mode: 'create',
+    profile: null,
+    formDefaults: buildBabyProfileFormDefaults(),
+    ageSummary: null,
+    submission: null,
+  };
+}
+
+function buildFormFlowResult({ profile, ageSummaryFactory, submission, mode }) {
+  return {
+    mode,
     profile,
     formDefaults: buildBabyProfileFormDefaults(profile),
     ageSummary: ageSummaryFactory(profile.birthDate),
@@ -144,6 +174,10 @@ function areFieldValuesEqual(left, right) {
   }
 
   return (left ?? undefined) === (right ?? undefined);
+}
+
+function isNotFoundClientError(error) {
+  return error instanceof BabyProfileClientError && error.status === 404;
 }
 
 module.exports = {

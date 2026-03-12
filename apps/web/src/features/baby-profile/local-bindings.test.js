@@ -8,7 +8,12 @@ const {
   parseBearerOwnerUserId,
   resolveOwnerUserIdFromRequest,
 } = require('./auth');
-const { getBabyProfileById, insertBabyProfile, updateBabyProfile } = require('./local-store');
+const {
+  getBabyProfileById,
+  getCurrentBabyProfileByOwnerUserId,
+  insertBabyProfile,
+  updateBabyProfile,
+} = require('./local-store');
 
 test('resolveOwnerUserIdFromRequest prefers the local dev bearer token', () => {
   const request = new Request('http://localhost/api/babies', {
@@ -44,6 +49,13 @@ test('local store inserts and owner-scopes baby profile updates', async () => {
 
     assert.match(created.id, /^baby_[a-z0-9]{12}$/);
     assert.equal(created.owner_user_id, 'user_123');
+
+    const current = await getCurrentBabyProfileByOwnerUserId({
+      ownerUserId: ' user_123 ',
+    });
+
+    assert.equal(current.id, created.id);
+    assert.equal(current.owner_user_id, 'user_123');
 
     const fetched = await getBabyProfileById({
       ownerUserId: 'user_123',

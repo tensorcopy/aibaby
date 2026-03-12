@@ -6,6 +6,7 @@ const {
   buildOwnerScopedHeaders,
   createBabyProfileClient,
   getBabyProfileClient,
+  getCurrentBabyProfileClient,
   updateBabyProfileClient,
 } = require('./client');
 
@@ -90,6 +91,32 @@ test('createBabyProfileClient POSTs a normalized body to the collection route', 
     ownerUserId: 'user_123',
     name: 'Yiyi',
   });
+});
+
+test('getCurrentBabyProfileClient GETs the owner-scoped collection route', async () => {
+  const calls = [];
+
+  const profile = await getCurrentBabyProfileClient({
+    auth: { ownerUserId: 'user_123' },
+    async fetchImpl(url, options) {
+      calls.push({ url, options });
+      return new Response(JSON.stringify({ id: 'baby_123', ownerUserId: 'user_123' }), { status: 200 });
+    },
+  });
+
+  assert.deepEqual(calls, [
+    {
+      url: '/api/babies',
+      options: {
+        method: 'GET',
+        headers: {
+          'x-aibaby-owner-user-id': 'user_123',
+        },
+        body: undefined,
+      },
+    },
+  ]);
+  assert.deepEqual(profile, { id: 'baby_123', ownerUserId: 'user_123' });
 });
 
 test('getBabyProfileClient GETs the owner-scoped resource route', async () => {

@@ -22,6 +22,20 @@ async function insertBabyProfile(insert) {
   return row;
 }
 
+async function getCurrentBabyProfileByOwnerUserId({ ownerUserId }) {
+  const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
+  const data = await readStore();
+  const profiles = data.babyProfiles
+    .filter((candidate) => candidate.owner_user_id === normalizedOwnerUserId)
+    .sort((left, right) => String(right.updated_at || '').localeCompare(String(left.updated_at || '')));
+
+  if (profiles.length === 0) {
+    throw new NotFoundRouteError('Baby profile not found');
+  }
+
+  return profiles[0];
+}
+
 async function getBabyProfileById({ ownerUserId, babyId }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
   const normalizedBabyId = normalizeRequiredBabyId(babyId);
@@ -125,6 +139,7 @@ function normalizeRequiredOwnerUserId(ownerUserId) {
 
 module.exports = {
   getBabyProfileById,
+  getCurrentBabyProfileByOwnerUserId,
   getDataFilePath,
   insertBabyProfile,
   updateBabyProfile,

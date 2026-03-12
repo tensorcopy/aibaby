@@ -1,7 +1,10 @@
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { createBabyProfileAction } = require('../../../features/baby-profile/actions.js');
+const {
+  createBabyProfileAction,
+  getCurrentBabyProfileAction,
+} = require('../../../features/baby-profile/actions.js');
 const {
   getBabyProfileRouteDependencies,
 } = require('../../../features/baby-profile/route-dependencies.js');
@@ -9,6 +12,21 @@ const {
   buildJsonResponse,
   buildRouteErrorResponse,
 } = require('../../../features/baby-profile/route-response.js');
+
+export async function GET(request: Request): Promise<Response> {
+  try {
+    const dependencies = getBabyProfileRouteDependencies();
+    const ownerUserId = await dependencies.getOwnerUserId(request);
+    const result = await getCurrentBabyProfileAction({
+      ownerUserId,
+      getCurrentBabyProfileByOwnerUserId: dependencies.getCurrentBabyProfileByOwnerUserId,
+    });
+
+    return buildJsonResponse(result.body, { status: result.status });
+  } catch (error) {
+    return buildRouteErrorResponse(error);
+  }
+}
 
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -26,3 +44,4 @@ export async function POST(request: Request): Promise<Response> {
     return buildRouteErrorResponse(error);
   }
 }
+

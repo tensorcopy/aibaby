@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
+const { BabyProfileClientError } = require('./client');
 const {
   buildChangedBabyProfilePatch,
   loadBabyProfileForm,
@@ -26,7 +27,69 @@ function createStoredProfile(overrides = {}) {
   };
 }
 
-test('loadBabyProfileForm returns normalized defaults and an age summary', async () => {
+test('loadBabyProfileForm loads the current owner-scoped profile when no baby id is provided', async () => {
+  const calls = [];
+
+  const result = await loadBabyProfileForm({
+    auth: { ownerUserId: 'user_123' },
+    async getCurrentBabyProfile(input) {
+      calls.push(input);
+      return { body: createStoredProfile() };
+    },
+    async getBabyProfile() {
+      throw new Error('should not run');
+    },
+    ageSummaryFactory(birthDate) {
+      return { birthDate, displayLabel: '4 months' };
+    },
+  });
+
+  assert.deepEqual(calls, [
+    {
+      auth: { ownerUserId: 'user_123' },
+    },
+  ]);
+  assert.equal(result.mode, 'edit');
+  assert.equal(result.profile.id, 'baby_123');
+  assert.equal(result.formDefaults.name, 'Yiyi');
+  assert.deepEqual(result.ageSummary, {
+    birthDate: '2025-10-15',
+    displayLabel: '4 months',
+  });
+  assert.equal(result.submission, null);
+});
+
+test('loadBabyProfileForm falls back to create mode when no current profile exists yet', async () => {
+  const result = await loadBabyProfileForm({
+    auth: { ownerUserId: 'user_123' },
+    async getCurrentBabyProfile() {
+      throw new BabyProfileClientError({
+        message: 'Baby profile not found',
+        status: 404,
+        payload: { error: 'Baby profile not found' },
+      });
+    },
+  });
+
+  assert.deepEqual(result, {
+    mode: 'create',
+    profile: null,
+    formDefaults: {
+      name: '',
+      birthDate: '',
+      sex: 'unknown',
+      feedingStyle: 'solids_started',
+      timezone: 'UTC',
+      allergies: [],
+      supplements: [],
+      primaryCaregiver: '',
+    },
+    ageSummary: null,
+    submission: null,
+  });
+});
+
+test('loadBabyProfileForm uses the explicit baby id loader when one is provided', async () => {
   const calls = [];
 
   const result = await loadBabyProfileForm({
@@ -35,6 +98,9 @@ test('loadBabyProfileForm returns normalized defaults and an age summary', async
     async getBabyProfile(input) {
       calls.push(input);
       return { body: createStoredProfile() };
+    },
+    async getCurrentBabyProfile() {
+      throw new Error('should not run');
     },
     ageSummaryFactory(birthDate) {
       return { birthDate, displayLabel: '4 months' };
@@ -47,15 +113,8 @@ test('loadBabyProfileForm returns normalized defaults and an age summary', async
       auth: { ownerUserId: 'user_123' },
     },
   ]);
-
+  assert.equal(result.mode, 'edit');
   assert.equal(result.profile.id, 'baby_123');
-  assert.equal(result.formDefaults.name, 'Yiyi');
-  assert.equal(result.formDefaults.primaryCaregiver, 'Zhen');
-  assert.deepEqual(result.ageSummary, {
-    birthDate: '2025-10-15',
-    displayLabel: '4 months',
-  });
-  assert.equal(result.submission, null);
 });
 
 test('buildChangedBabyProfilePatch returns only normalized edits', () => {
@@ -120,6 +179,7 @@ test('saveBabyProfileForm create mode delegates to the create client and returns
       },
     },
   ]);
+  assert.equal(result.mode, 'edit');
   assert.equal(result.submission.mode, 'create');
   assert.equal(result.submission.changedFields.length, 8);
   assert.equal(result.formDefaults.name, 'Yiyi');
@@ -151,6 +211,7 @@ test('saveBabyProfileForm edit mode skips PATCH when nothing changed', async () 
   });
 
   assert.equal(called, false);
+  assert.equal(result.mode, 'edit');
   assert.deepEqual(result.submission, {
     mode: 'noop',
     changedFields: [],
@@ -201,6 +262,7 @@ test('saveBabyProfileForm edit mode PATCHes only changed fields', async () => {
       },
     },
   ]);
+  assert.equal(result.mode, 'edit');
   assert.deepEqual(result.submission, {
     mode: 'edit',
     changedFields: ['feedingStyle', 'timezone'],

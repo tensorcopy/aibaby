@@ -31,8 +31,8 @@ This adds:
 The new route files currently depend on injected auth/persistence adapters from `src/features/baby-profile/route-dependencies.js`, which keeps the handlers reviewable until the larger Next.js and database scaffold lands.
 
 The current reusable client/form layer now also includes:
-- `src/features/baby-profile/client.js` for owner-scoped POST/GET/PATCH requests
-- `src/features/baby-profile/form-flow.js` for loading normalized form defaults, deriving the baby age summary, and PATCHing only changed editable fields
+- `src/features/baby-profile/client.js` for owner-scoped collection/item POST/GET/PATCH requests, including a current-profile lookup on `GET /api/babies`
+- `src/features/baby-profile/form-flow.js` for bootstrapping create vs edit mode, loading normalized form defaults, deriving the baby age summary, and PATCHing only changed editable fields
 
 Current local-dev default bindings now:
 - fetch a single owner-scoped baby profile by id for the local App Router read path
