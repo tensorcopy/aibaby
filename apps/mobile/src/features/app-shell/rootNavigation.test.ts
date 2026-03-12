@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   createBabyProfileHref,
+  createMobileHomeHref,
   createMobileRootNavigationModel,
 } from "./rootNavigation.ts";
 
@@ -13,6 +14,7 @@ test("createMobileRootNavigationModel points first-time users to create baby pro
   assert.equal(model.primaryAction.label, "Create baby profile");
   assert.equal(model.primaryAction.href, "/baby-profile");
   assert.match(model.subtitle, /Start with a baby profile/);
+  assert.equal(model.statusBanner, undefined);
 });
 
 test("createMobileRootNavigationModel keeps explicit baby profile navigation stable", () => {
@@ -21,6 +23,29 @@ test("createMobileRootNavigationModel keeps explicit baby profile navigation sta
   assert.equal(model.primaryAction.label, "Open baby profile");
   assert.equal(model.primaryAction.href, "/baby-profile?babyId=baby_123");
   assert.match(model.subtitle, /current baby profile flow/);
+});
+
+test("createMobileRootNavigationModel surfaces a success handoff banner when the baby profile flow returns home", () => {
+  const model = createMobileRootNavigationModel({
+    babyId: "baby_123",
+    handoff: "baby-profile-updated",
+  });
+
+  assert.match(model.subtitle, /Baby profile saved/);
+  assert.deepEqual(model.statusBanner, {
+    title: "Baby profile saved",
+    message: "Your latest baby profile changes are ready for the next mobile steps.",
+  });
+});
+
+test("createMobileHomeHref carries the saved baby id and success handoff back to the app root", () => {
+  assert.equal(
+    createMobileHomeHref({
+      babyId: " baby 123 ",
+      handoff: "baby-profile-created",
+    }),
+    "/?babyId=baby+123&handoff=baby-profile-created",
+  );
 });
 
 test("createBabyProfileHref trims and encodes the baby id query parameter", () => {

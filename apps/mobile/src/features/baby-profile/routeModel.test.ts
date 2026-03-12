@@ -175,3 +175,35 @@ test("createBabyProfileRouteModel surfaces edit-mode submission feedback", () =>
     "Prefer not to say",
   );
 });
+
+
+test("createBabyProfileRouteModel exposes a post-save handoff back to the mobile app flow", () => {
+  const state = createBabyProfileScreenState(profile, "explicit");
+  const model = createBabyProfileRouteModel({
+    ...state,
+    submission: {
+      outcome: "created",
+      changedFields: ["name", "birthDate"],
+      request: {
+        method: "POST",
+        path: "/api/babies",
+        body: {
+          name: "Yiyi",
+          birthDate: "2025-10-15",
+          sex: null,
+          feedingStyle: "mixed",
+          allergies: [],
+          supplements: [],
+          timezone: "America/Los_Angeles",
+          primaryCaregiver: null,
+        },
+      },
+    },
+  });
+
+  assert.deepEqual(model.successHandoff, {
+    label: "Continue to AI Baby",
+    href: "/?babyId=baby_123&handoff=baby-profile-created",
+    message: "Profile created. Head back to the app home to continue the mobile flow.",
+  });
+});

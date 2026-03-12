@@ -15,7 +15,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import DateTimePicker, {
   DateTimePickerAndroid,
   type DateTimePickerEvent,
@@ -213,6 +213,17 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       ))}
 
       {model.statusMessage ? <Text style={styles.status}>{model.statusMessage}</Text> : null}
+
+      {model.successHandoff ? (
+        <View style={styles.successCard}>
+          <Text style={styles.successCardTitle}>{model.successHandoff.message}</Text>
+          <Link asChild href={model.successHandoff.href}>
+            <Pressable accessibilityRole="button" style={styles.successCardButton}>
+              <Text style={styles.successCardButtonText}>{model.successHandoff.label}</Text>
+            </Pressable>
+          </Link>
+        </View>
+      ) : null}
 
       {Platform.OS === "ios" && birthDatePickerDraft ? (
         <View style={styles.datePickerCard}>
