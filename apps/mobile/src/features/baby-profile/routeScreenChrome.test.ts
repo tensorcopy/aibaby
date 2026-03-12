@@ -73,7 +73,7 @@ test("createBabyProfileRouteSaveButtonChrome swaps to the saving label and disab
   );
 });
 
-test("createBabyProfileRouteTextInputChrome gives the birth-date field a constrained keyboard", () => {
+test("createBabyProfileRouteTextInputChrome gives the birth-date field a constrained keyboard and picker affordance", () => {
   assert.deepEqual(
     createBabyProfileRouteTextInputChrome(
       {
@@ -89,8 +89,11 @@ test("createBabyProfileRouteTextInputChrome gives the birth-date field a constra
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
-      accessibilityHint: undefined,
-      supportingText: undefined,
+      accessibilityHint: "Type YYYY-MM-DD or use the date picker.",
+      supportingText: "Type YYYY-MM-DD or use the date picker.",
+      showDatePickerAffordance: true,
+      datePickerLabel: "Choose date",
+      datePickerAccessibilityHint: "Opens a date picker for the birth date.",
       showInvalidOutline: false,
       accessibilityState: {
         disabled: false,
@@ -119,6 +122,9 @@ test("createBabyProfileRouteTextInputChrome reuses required-field hints for assi
       maxLength: 10,
       accessibilityHint: "Required. Use YYYY-MM-DD.",
       supportingText: "Required. Use YYYY-MM-DD.",
+      showDatePickerAffordance: true,
+      datePickerLabel: "Choose date",
+      datePickerAccessibilityHint: "Opens a date picker for the birth date.",
       showInvalidOutline: false,
       accessibilityState: {
         disabled: false,
