@@ -94,6 +94,7 @@ test("createBabyProfileRouteTextInputChrome gives the birth-date field a constra
       showDatePickerAffordance: true,
       datePickerLabel: "Choose date",
       datePickerAccessibilityHint: "Opens a date picker for the birth date.",
+      datePickerDisabled: false,
       showInvalidOutline: false,
       accessibilityState: {
         disabled: false,
@@ -125,9 +126,43 @@ test("createBabyProfileRouteTextInputChrome reuses required-field hints for assi
       showDatePickerAffordance: true,
       datePickerLabel: "Choose date",
       datePickerAccessibilityHint: "Opens a date picker for the birth date.",
+      datePickerDisabled: false,
       showInvalidOutline: false,
       accessibilityState: {
         disabled: false,
+        invalid: false,
+      },
+    },
+  );
+});
+
+
+
+test("createBabyProfileRouteTextInputChrome disables the picker affordance while saving", () => {
+  assert.deepEqual(
+    createBabyProfileRouteTextInputChrome(
+      {
+        key: "birthDate",
+        label: "Birth date",
+        value: "2025-10-15",
+        kind: "date",
+      },
+      { disabled: true },
+    ),
+    {
+      autoCapitalize: "none",
+      autoCorrect: false,
+      keyboardType: "numbers-and-punctuation",
+      maxLength: 10,
+      accessibilityHint: "Type YYYY-MM-DD or use the date picker.",
+      supportingText: "Type YYYY-MM-DD or use the date picker.",
+      showDatePickerAffordance: true,
+      datePickerLabel: "Choose date",
+      datePickerAccessibilityHint: "Birth date picker is unavailable while the profile is saving.",
+      datePickerDisabled: true,
+      showInvalidOutline: false,
+      accessibilityState: {
+        disabled: true,
         invalid: false,
       },
     },
@@ -151,6 +186,7 @@ test("createBabyProfileRouteTextInputChrome keeps the timezone field case-stable
       keyboardType: "default",
       accessibilityHint: undefined,
       supportingText: undefined,
+      datePickerDisabled: false,
       showInvalidOutline: false,
       accessibilityState: {
         disabled: true,
@@ -180,6 +216,7 @@ test("createBabyProfileRouteTextInputChrome marks invalid fields for assistive t
       keyboardType: "default",
       accessibilityHint: "Name is required.",
       supportingText: "Name is required.",
+      datePickerDisabled: false,
       showInvalidOutline: true,
       accessibilityState: {
         disabled: false,
