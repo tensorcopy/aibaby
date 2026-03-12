@@ -56,30 +56,7 @@ This keeps files:
 
 Every exported note should begin with YAML frontmatter.
 
-Recommended fields:
-
-```yaml
----
-title: "Luna Daily Diary - 2026-03-12"
-date: 2026-03-12
-baby_name: "Luna"
-baby_id: "baby_123"
-export_type: "daily_diary"
-timezone: "America/Los_Angeles"
-summary_status: "generated"
-source_app: "AI Baby"
-source_version: "mvp"
-tags:
-  - ai-baby
-  - daily-diary
----
-```
-
-Notes:
-
-- `baby_id` should be stable but opaque
-- do not put private auth identifiers in export frontmatter
-- keep frontmatter easy to parse by non-Obsidian tools
+See `docs/export-frontmatter-fields.md` for the accepted field set.
 
 ## Body structure
 
@@ -165,7 +142,7 @@ Recommended shape:
 - Dinner plate photo: `media/2026-03-12-dinner-01.jpg`
 ```
 
-If the export later supports remote references, keep the label text the same and swap the target.
+The accepted MVP baseline is copied local media. If the export later supports remote references, keep the label text the same and swap the target.
 
 ### Metadata
 
@@ -204,7 +181,7 @@ Example:
 media/2026-03-12-breakfast-01.jpg
 ```
 
-This keeps references stable whether media is copied locally or later remapped by an exporter.
+This keeps references stable for the accepted copied-media baseline and still leaves room for a later reference-based mode.
 
 ## Data mapping guidance
 
@@ -243,4 +220,3 @@ Prefer:
 - AIB-052 decide copied media versus referenced URLs
 - AIB-053 finalize the YAML frontmatter fields
 - AIB-054 build the first-pass export flow
-

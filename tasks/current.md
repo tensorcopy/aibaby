@@ -24,7 +24,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-027 `todo` Build today's timeline page
 
 ### Summaries
-- AIB-030 `todo` Define daily summary rules and output format
+- AIB-030 `in_progress` Define daily summary rules and output format
 - AIB-031 `todo` Build daily summary generation flow
 - AIB-032 `todo` Store and retrieve daily summaries
 - AIB-033 `todo` Define weekly summary aggregation logic
@@ -41,14 +41,14 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ### Export and portability
 - AIB-050 `done` Define export package structure
-- AIB-051 `in_progress` Define Markdown note format for Obsidian compatibility
-- AIB-052 `todo` Decide media export behavior: local files vs referenced URLs
-- AIB-053 `todo` Define YAML frontmatter fields for exported notes
+- AIB-051 `done` Define Markdown note format for Obsidian compatibility
+- AIB-052 `done` Decide media export behavior: local files vs referenced URLs
+- AIB-053 `done` Define YAML frontmatter fields for exported notes
 - AIB-054 `todo` Build first-pass Markdown export flow
 
 ## In Progress
 
-- AIB-051 `in_progress` Define the additive Obsidian-friendly conventions that sit on top of the baseline Markdown diary export shape
+- AIB-030 `in_progress` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 
 ## Done
 
@@ -69,6 +69,9 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
+- AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
+- AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
+- AIB-053 `done` Define the canonical YAML frontmatter field set for exported notes
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
