@@ -5,16 +5,26 @@ import { createMobileRootNavigationModel } from "../src/features/app-shell/rootN
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 
 export default function HomeRoute() {
-  const params = useLocalSearchParams<{ babyId?: string | string[] }>();
+  const params = useLocalSearchParams<{
+    babyId?: string | string[];
+    handoff?: string | string[];
+  }>();
   const session = useMobileSession();
   const routeBabyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
+  const handoff = Array.isArray(params.handoff) ? params.handoff[0] : params.handoff;
   const babyId = routeBabyId ?? session.currentBabyId;
-  const model = createMobileRootNavigationModel({ babyId });
+  const model = createMobileRootNavigationModel({ babyId, handoff });
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
+      {model.statusBanner ? (
+        <View style={styles.statusBanner}>
+          <Text style={styles.statusBannerTitle}>{model.statusBanner.title}</Text>
+          <Text style={styles.statusBannerMessage}>{model.statusBanner.message}</Text>
+        </View>
+      ) : null}
       <Link asChild href={model.primaryAction.href}>
         <Pressable accessibilityRole="button" style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>{model.primaryAction.label}</Text>
@@ -41,6 +51,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: "#475569",
+  },
+  statusBanner: {
+    gap: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#86efac",
+    backgroundColor: "#f0fdf4",
+    padding: 16,
+  },
+  statusBannerTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#166534",
+  },
+  statusBannerMessage: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#166534",
   },
   primaryButton: {
     marginTop: 8,

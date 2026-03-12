@@ -6,6 +6,7 @@ import {
   type BabyProfileSex,
 } from "@aibaby/ui";
 
+import { createMobileHomeHref } from "../app-shell/rootNavigation.ts";
 import type { BabyProfileScreenReadyState } from "./screenShell.ts";
 
 export type BabyProfileRouteField = {
@@ -61,6 +62,11 @@ export type BabyProfileRouteModel = {
   submitLabel: string;
   isEditMode: boolean;
   statusMessage?: string;
+  successHandoff?: {
+    label: string;
+    href: string;
+    message: string;
+  };
   textFields: BabyProfileRouteField[];
   sections: BabyProfileRouteSection[];
 };
@@ -170,6 +176,7 @@ export function createBabyProfileRouteModel(
     submitLabel: isEditMode ? "Save profile" : "Create profile",
     isEditMode,
     statusMessage: getSubmissionMessage(state),
+    successHandoff: getSuccessHandoff(state),
     textFields,
     sections: [
       {
@@ -203,6 +210,39 @@ const FEEDING_STYLE_LABELS: Record<BabyProfileFeedingStyle, string> = {
   mixed: "Mixed",
   solids_started: "Solids started",
 };
+
+
+function getSuccessHandoff(
+  state: BabyProfileScreenReadyState,
+): BabyProfileRouteModel["successHandoff"] {
+  if (!state.submission || !state.babyId) {
+    return undefined;
+  }
+
+  if (state.submission.outcome === "created") {
+    return {
+      label: "Continue to AI Baby",
+      href: createMobileHomeHref({
+        babyId: state.babyId,
+        handoff: "baby-profile-created",
+      }),
+      message: "Profile created. Head back to the app home to continue the mobile flow.",
+    };
+  }
+
+  if (state.submission.outcome === "updated") {
+    return {
+      label: "Back to AI Baby",
+      href: createMobileHomeHref({
+        babyId: state.babyId,
+        handoff: "baby-profile-updated",
+      }),
+      message: "Profile saved. Head back to the app home to continue the mobile flow.",
+    };
+  }
+
+  return undefined;
+}
 
 function getSubmissionMessage(
   state: BabyProfileScreenReadyState,
