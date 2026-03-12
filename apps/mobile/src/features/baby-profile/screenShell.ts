@@ -35,6 +35,16 @@ export type BabyProfileScreenLoadingState = {
   submission: null;
 };
 
+export type BabyProfileScreenErrorState = {
+  status: "error";
+  loadTarget: BabyProfileLoadRequest["target"];
+  babyId?: string;
+  form: null;
+  ageSummary: null;
+  submission: null;
+  message: string;
+};
+
 export type BabyProfileScreenReadyState = {
   status: "ready";
   loadTarget: BabyProfileLoadRequest["target"];
@@ -48,10 +58,12 @@ export type BabyProfileScreenReadyState = {
         request?: BabyProfileSubmitRequest;
         changedFields: string[];
       };
+  requestErrorMessage: string | null;
 };
 
 export type BabyProfileScreenState =
   | BabyProfileScreenLoadingState
+  | BabyProfileScreenErrorState
   | BabyProfileScreenReadyState;
 
 export function createLoadingBabyProfileScreenState(
@@ -66,6 +78,26 @@ export function createLoadingBabyProfileScreenState(
     form: null,
     ageSummary: null,
     submission: null,
+  };
+}
+
+export function createBabyProfileScreenErrorState({
+  babyId,
+  loadTarget,
+  error,
+}: {
+  babyId?: string;
+  loadTarget: BabyProfileLoadRequest["target"];
+  error: unknown;
+}): BabyProfileScreenErrorState {
+  return {
+    status: "error",
+    loadTarget,
+    babyId,
+    form: null,
+    ageSummary: null,
+    submission: null,
+    message: getErrorMessage(error, "Failed to load baby profile."),
   };
 }
 
@@ -84,6 +116,7 @@ export function createBabyProfileScreenState(
     babyId: profile?.id,
     ageSummary: selectBabyProfileCreateEditAgeSummary(form),
     submission: null,
+    requestErrorMessage: null,
   };
 }
 
@@ -99,6 +132,7 @@ export function updateBabyProfileScreenField<K extends keyof BabyProfileFormInpu
     form,
     ageSummary: selectBabyProfileCreateEditAgeSummary(form),
     submission: null,
+    requestErrorMessage: null,
   };
 }
 
@@ -115,7 +149,7 @@ export async function loadBabyProfileScreenState({
     request: BabyProfileLoadRequest;
     auth?: BabyProfileAuth;
   }) => Promise<BabyProfileResponse>;
-} = {}): Promise<BabyProfileScreenReadyState> {
+} = {}): Promise<BabyProfileScreenReadyState | BabyProfileScreenErrorState> {
   const request = toLoadRequest(babyId);
 
   try {
@@ -126,7 +160,11 @@ export async function loadBabyProfileScreenState({
       return createBabyProfileScreenState(undefined, request.target);
     }
 
-    throw error;
+    return createBabyProfileScreenErrorState({
+      babyId: request.target === "explicit" ? request.babyId : undefined,
+      loadTarget: request.target,
+      error,
+    });
   }
 }
 
@@ -150,6 +188,7 @@ export async function saveBabyProfileScreenState({
       form: submission.state,
       ageSummary: selectBabyProfileCreateEditAgeSummary(submission.state),
       submission: null,
+      requestErrorMessage: null,
     };
   }
 
@@ -162,23 +201,32 @@ export async function saveBabyProfileScreenState({
         outcome: "noop",
         changedFields: [],
       },
+      requestErrorMessage: null,
     };
   }
 
-  const profile = await executeSubmitRequest({ request, auth });
-  const nextState = createBabyProfileScreenState(profile, state.loadTarget);
+  try {
+    const profile = await executeSubmitRequest({ request, auth });
+    const nextState = createBabyProfileScreenState(profile, state.loadTarget);
 
-  return {
-    ...nextState,
-    submission: {
-      outcome: submission.mode === "create" ? "created" : "updated",
-      request,
-      changedFields:
-        request.method === "POST"
-          ? [...EDITABLE_FIELD_NAMES]
-          : Object.keys(request.body),
-    },
-  };
+    return {
+      ...nextState,
+      submission: {
+        outcome: submission.mode === "create" ? "created" : "updated",
+        request,
+        changedFields:
+          request.method === "POST"
+            ? [...EDITABLE_FIELD_NAMES]
+            : Object.keys(request.body),
+      },
+    };
+  } catch (error) {
+    return {
+      ...state,
+      submission: null,
+      requestErrorMessage: getErrorMessage(error, "Failed to save baby profile."),
+    };
+  }
 }
 
 const EDITABLE_FIELD_NAMES = [
@@ -196,4 +244,16 @@ function isNotFoundTransportError(
   error: unknown,
 ): error is BabyProfileTransportError {
   return error instanceof BabyProfileTransportError && error.status === 404;
+}
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof BabyProfileTransportError) {
+    return error.message;
+  }
+
+  if (error instanceof Error && error.message.trim().length > 0) {
+    return error.message;
+  }
+
+  return fallback;
 }

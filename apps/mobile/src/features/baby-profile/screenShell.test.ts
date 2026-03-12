@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  createBabyProfileScreenErrorState,
   createBabyProfileScreenState,
   createLoadingBabyProfileScreenState,
   loadBabyProfileScreenState,
@@ -219,4 +220,79 @@ test("saveBabyProfileScreenState PATCHes only changed fields for edit mode", asy
     request: calls[0] && (calls[0] as { request: unknown }).request,
     changedFields: ["timezone"],
   });
+});
+
+
+test("createBabyProfileScreenErrorState captures the failed load message inline", () => {
+  const state = createBabyProfileScreenErrorState({
+    babyId: "baby_123",
+    loadTarget: "explicit",
+    error: new BabyProfileTransportError({
+      message: "Baby profile not found",
+      status: 404,
+      payload: { error: "Baby profile not found" },
+    }),
+  });
+
+  assert.deepEqual(state, {
+    status: "error",
+    loadTarget: "explicit",
+    babyId: "baby_123",
+    form: null,
+    ageSummary: null,
+    submission: null,
+    message: "Baby profile not found",
+  });
+});
+
+test("loadBabyProfileScreenState returns an inline error state when an explicit profile load fails", async () => {
+  const state = await loadBabyProfileScreenState({
+    babyId: "baby_123",
+    async executeLoadRequest() {
+      throw new BabyProfileTransportError({
+        message: "Request timed out",
+        status: 504,
+        payload: { error: "Request timed out" },
+      });
+    },
+  });
+
+  assert.equal(state.status, "error");
+  assert.equal(state.loadTarget, "explicit");
+  assert.equal(state.babyId, "baby_123");
+  assert.equal(state.message, "Request timed out");
+});
+
+test("saveBabyProfileScreenState keeps the form and surfaces inline save errors", async () => {
+  let state = createBabyProfileScreenState(profile, "explicit");
+  state = updateBabyProfileScreenField(state, "timezone", "America/New_York");
+
+  const saved = await saveBabyProfileScreenState({
+    state,
+    async executeSubmitRequest() {
+      throw new BabyProfileTransportError({
+        message: "Failed to reach the baby profile API",
+        status: 503,
+        payload: { error: "Failed to reach the baby profile API" },
+      });
+    },
+  });
+
+  assert.equal(saved.status, "ready");
+  assert.equal(saved.form.values.timezone, "America/New_York");
+  assert.equal(saved.submission, null);
+  assert.equal(saved.requestErrorMessage, "Failed to reach the baby profile API");
+});
+
+test("updateBabyProfileScreenField clears inline save errors after the user edits again", () => {
+  const nextState = updateBabyProfileScreenField(
+    {
+      ...createBabyProfileScreenState(profile, "explicit"),
+      requestErrorMessage: "Failed to save baby profile.",
+    },
+    "timezone",
+    "America/New_York",
+  );
+
+  assert.equal(nextState.requestErrorMessage, null);
 });
