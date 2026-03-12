@@ -12,6 +12,8 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/ai-provider-decision.md`
 - `docs/markdown-export-shape.md`
 - `docs/export-package-structure.md`
+- `docs/export-media-mode-decision.md`
+- `docs/export-frontmatter-fields.md`
 - `docs/obsidian-markdown-compatibility.md`
 - `docs/data-model.md`
 - `docs/local-development.md`

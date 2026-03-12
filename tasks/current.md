@@ -14,7 +14,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-019 `done` Define the Markdown export shape for diary output
 
 ### MVP vertical slice
-- AIB-020 `todo` Build baby profile create/edit flow
+- AIB-020 `in_progress` Build baby profile create/edit flow
 - AIB-021 `todo` Build chat input UI for text and image submission
 - AIB-022 `todo` Build image upload pipeline
 - AIB-023 `todo` Build text-to-record parsing flow
@@ -24,7 +24,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-027 `todo` Build today's timeline page
 
 ### Summaries
-- AIB-030 `todo` Define daily summary rules and output format
+- AIB-030 `in_progress` Define daily summary rules and output format
 - AIB-031 `todo` Build daily summary generation flow
 - AIB-032 `todo` Store and retrieve daily summaries
 - AIB-033 `todo` Define weekly summary aggregation logic
@@ -42,13 +42,13 @@ This file is the lightweight shared backlog for human and agent coordination.
 ### Export and portability
 - AIB-050 `done` Define export package structure
 - AIB-051 `done` Define Markdown note format for Obsidian compatibility
-- AIB-052 `in_progress` Decide media export behavior: local files vs referenced URLs
-- AIB-053 `todo` Define YAML frontmatter fields for exported notes
+- AIB-052 `done` Decide media export behavior: local files vs referenced URLs
+- AIB-053 `done` Define YAML frontmatter fields for exported notes
 - AIB-054 `todo` Build first-pass Markdown export flow
 
 ## In Progress
 
-- AIB-052 `in_progress` Decide whether export bundles default to copied local media, referenced URLs, or a mixed mode
+- AIB-030 `in_progress` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 
 ## Done
 
@@ -70,6 +70,8 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
+- AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
+- AIB-053 `done` Define the canonical YAML frontmatter field set for exported notes
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
