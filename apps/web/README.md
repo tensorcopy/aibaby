@@ -25,5 +25,6 @@ This adds:
 - request-body parsing helpers for `POST /api/babies` and `PATCH /api/babies/:id`
 - adapters from validated API payloads into the shared DB insert/update shapes
 - a response serializer that maps stored baby-profile rows back into API JSON
+- action helpers that wrap normalized create/update payloads around async persistence callbacks
 
 A future PR can wrap these helpers in real App Router handlers once the Next.js app scaffold lands.
