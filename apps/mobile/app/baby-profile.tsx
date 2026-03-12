@@ -139,16 +139,24 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       ) : null}
 
       {model.textFields.slice(0, 2).map((field) => (
-        <FormTextField key={field.key} state={state} field={field} setState={setState} />
+        <FormTextField
+          key={field.key}
+          disabled={screenModel.inputsDisabled}
+          state={state}
+          field={field}
+          setState={setState}
+        />
       ))}
 
       <ChoiceField
+        disabled={screenModel.inputsDisabled}
         label="Sex"
         options={model.sexOptions}
         onSelect={(value) => setState((current) => updateReadyStateField(current, "sex", value))}
       />
 
       <ChoiceField
+        disabled={screenModel.inputsDisabled}
         label="Feeding style"
         options={model.feedingStyleOptions}
         onSelect={(value) =>
@@ -157,19 +165,26 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       />
 
       {model.textFields.slice(2).map((field) => (
-        <FormTextField key={field.key} state={state} field={field} setState={setState} />
+        <FormTextField
+          key={field.key}
+          disabled={screenModel.inputsDisabled}
+          state={state}
+          field={field}
+          setState={setState}
+        />
       ))}
 
       {model.statusMessage ? <Text style={styles.status}>{model.statusMessage}</Text> : null}
 
       <Pressable
         accessibilityRole="button"
-        disabled={isSaving}
+        disabled={screenModel.inputsDisabled}
         onPress={() => {
           void onSavePress();
         }}
-        style={[styles.submitButton, isSaving ? styles.submitButtonDisabled : null]}
+        style={[styles.submitButton, screenModel.inputsDisabled ? styles.submitButtonDisabled : null]}
       >
+        {screenModel.isSaving ? <ActivityIndicator color="#ffffff" size="small" /> : null}
         <Text style={styles.submitButtonText}>{screenModel.submitLabel}</Text>
       </Pressable>
     </ScrollView>
@@ -193,10 +208,12 @@ function assertReadyState(state: BabyProfileScreenState): BabyProfileScreenReady
 }
 
 function FormTextField({
+  disabled,
   state,
   field,
   setState,
 }: {
+  disabled: boolean;
   state: BabyProfileScreenReadyState;
   field: ReturnType<typeof createBabyProfileRouteModel>["textFields"][number];
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
@@ -206,12 +223,17 @@ function FormTextField({
       <Text style={styles.fieldLabel}>{field.label}</Text>
       <TextInput
         autoCapitalize="sentences"
+        editable={!disabled}
         multiline={field.kind === "textarea"}
         onChangeText={(value) => {
           setState((current) => updateReadyStateField(current, field.key, value));
         }}
         placeholder={field.placeholder}
-        style={[styles.textInput, field.kind === "textarea" ? styles.textarea : null]}
+        style={[
+          styles.textInput,
+          field.kind === "textarea" ? styles.textarea : null,
+          disabled ? styles.fieldDisabled : null,
+        ]}
         value={state.form.values[field.key]}
       />
       {field.error ? <Text style={styles.errorText}>{field.error}</Text> : null}
@@ -220,10 +242,12 @@ function FormTextField({
 }
 
 function ChoiceField<T extends string>({
+  disabled,
   label,
   options,
   onSelect,
 }: {
+  disabled: boolean;
   label: string;
   options: Array<{ value: T; label: string; selected: boolean }>;
   onSelect: (value: T) => void;
@@ -236,8 +260,13 @@ function ChoiceField<T extends string>({
           <Pressable
             key={option.value}
             accessibilityRole="button"
+            disabled={disabled}
             onPress={() => onSelect(option.value)}
-            style={[styles.choiceChip, option.selected ? styles.choiceChipSelected : null]}
+            style={[
+              styles.choiceChip,
+              option.selected ? styles.choiceChipSelected : null,
+              disabled ? styles.fieldDisabled : null,
+            ]}
           >
             <Text style={option.selected ? styles.choiceChipSelectedText : styles.choiceChipText}>
               {option.label}

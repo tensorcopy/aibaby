@@ -22,6 +22,7 @@ export type BabyProfileRouteScreenModel =
       route: BabyProfileRouteModel;
       requestErrorMessage: string | null;
       submitLabel: string;
+      inputsDisabled: boolean;
       isSaving: boolean;
     };
 
@@ -57,6 +58,7 @@ export function createBabyProfileRouteScreenModel({
     route,
     requestErrorMessage: isSaving ? null : state.requestErrorMessage,
     submitLabel: isSaving ? "Saving…" : route.submitLabel,
+    inputsDisabled: isSaving,
     isSaving,
   };
 }
