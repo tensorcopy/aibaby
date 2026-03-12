@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   createBabyProfileCreateEditState,
+  hasBabyProfileCreateEditUnsavedChanges,
   selectBabyProfileCreateEditAgeSummary,
   submitBabyProfileCreateEditState,
   updateBabyProfileField,
@@ -98,6 +99,26 @@ test("submitBabyProfileCreateEditState returns an edit patch with only changed f
     },
     hasChanges: true,
   });
+});
+
+test("hasBabyProfileCreateEditUnsavedChanges keeps create mode submittable and edit mode dirty-aware", () => {
+  const createState = createBabyProfileCreateEditState("create");
+  assert.equal(hasBabyProfileCreateEditUnsavedChanges(createState), true);
+
+  const editState = createBabyProfileCreateEditState("edit", {
+    name: "Yiyi",
+    birthDate: "2025-10-15",
+    sex: null,
+    feedingStyle: "mixed",
+    allergies: ["egg"],
+    supplements: ["iron"],
+    timezone: "America/Los_Angeles",
+    primaryCaregiver: "Zhen",
+  });
+  assert.equal(hasBabyProfileCreateEditUnsavedChanges(editState), false);
+
+  const changedState = updateBabyProfileField(editState, "timezone", "America/New_York");
+  assert.equal(hasBabyProfileCreateEditUnsavedChanges(changedState), true);
 });
 
 test("selectBabyProfileCreateEditAgeSummary derives a display label from the chosen birth date", () => {

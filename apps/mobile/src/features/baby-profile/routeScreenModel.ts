@@ -1,5 +1,8 @@
 import type { BabyProfileScreenState } from "./screenShell.ts";
 import {
+  hasBabyProfileCreateEditUnsavedChanges,
+} from "./createEditFlow.ts";
+import {
   createBabyProfileRouteModel,
   type BabyProfileRouteModel,
 } from "./routeModel.ts";
@@ -23,6 +26,7 @@ export type BabyProfileRouteScreenModel =
       route: BabyProfileRouteModel;
       requestErrorMessage: string | null;
       submitLabel: string;
+      submitDisabled: boolean;
       inputsDisabled: boolean;
       isSaving: boolean;
     };
@@ -62,6 +66,9 @@ export function createBabyProfileRouteScreenModel({
     route,
     requestErrorMessage: isSaving ? null : state.requestErrorMessage,
     submitLabel: isSaving ? "Saving…" : route.submitLabel,
+    submitDisabled:
+      isSaving ||
+      (state.form.mode === "edit" && !hasBabyProfileCreateEditUnsavedChanges(state.form)),
     inputsDisabled: isSaving,
     isSaving,
   };
