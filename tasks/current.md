@@ -11,7 +11,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-006 `done` Document local development setup and environment variables
 
 ### Data model
-- AIB-019 `in_progress` Define the Markdown export shape for diary output
+- AIB-019 `done` Define the Markdown export shape for diary output
 
 ### MVP vertical slice
 - AIB-020 `todo` Build baby profile create/edit flow
@@ -49,7 +49,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
-- AIB-019 `in_progress` Define the first-pass Markdown diary export structure so export and Obsidian tasks can build on a stable note shape
 
 ## Done
 
@@ -67,6 +66,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-016 `done` Define the weekly summary entity in `docs/data-model.md`
 - AIB-017 `done` Define the reminder entity in `docs/data-model.md`
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
+- AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
