@@ -10,6 +10,7 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/auth-decision.md`
 - `docs/media-storage-decision.md`
 - `docs/ai-provider-decision.md`
+- `docs/daily-summary-rules.md`
 - `docs/markdown-export-shape.md`
 - `docs/export-package-structure.md`
 - `docs/export-media-mode-decision.md`

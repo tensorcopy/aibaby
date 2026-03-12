@@ -495,6 +495,9 @@ This content can live in versioned JSON or markdown files at MVP stage.
 Default schedule:
 - 7:00 PM in the baby's local timezone, later user-configurable
 
+Contract reference:
+- `docs/daily-summary-rules.md`
+
 Steps:
 1. find babies with `baby_settings.daily_summary_enabled = true`
 2. load the day's meals, milk, and supplements
