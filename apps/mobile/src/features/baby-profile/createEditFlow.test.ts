@@ -150,6 +150,19 @@ test("canSubmitBabyProfileCreateEditState requires a valid form and unsaved chan
   assert.equal(canSubmitBabyProfileCreateEditState(validEditState), true);
 });
 
+test("updateBabyProfileField surfaces inline validation feedback for invalid edits before submit", () => {
+  let state = createBabyProfileCreateEditState("create");
+
+  state = updateBabyProfileField(state, "name", " ");
+  assert.equal(state.errors.name, "Name is required.");
+
+  state = updateBabyProfileField(state, "birthDate", "3026-03-12");
+  assert.equal(state.errors.birthDate, "Birth date cannot be in the future.");
+
+  state = updateBabyProfileField(state, "birthDate", "2025-10-15");
+  assert.equal(state.errors.birthDate, undefined);
+});
+
 test("selectBabyProfileCreateEditAgeSummary derives a display label from the chosen birth date", () => {
   let state = createBabyProfileCreateEditState("create");
   state = updateBabyProfileField(state, "birthDate", "2025-10-15");

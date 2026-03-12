@@ -40,15 +40,18 @@ export function updateBabyProfileField<K extends keyof BabyProfileFormInput>(
   field: K,
   value: BabyProfileFormInput[K],
 ): BabyProfileCreateEditState {
+  const values = {
+    ...state.values,
+    [field]: value,
+  };
+  const nextFieldError = validateBabyProfileFormInput(values)[field];
+
   return {
     ...state,
-    values: {
-      ...state.values,
-      [field]: value,
-    },
+    values,
     errors: {
       ...state.errors,
-      [field]: undefined,
+      [field]: nextFieldError,
     },
   };
 }

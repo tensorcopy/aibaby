@@ -111,6 +111,17 @@ test("updateBabyProfileScreenField keeps the derived age summary in sync", () =>
   assert.equal(nextState.ageSummary?.displayLabel, "1 week");
 });
 
+test("updateBabyProfileScreenField surfaces inline validation feedback before submit", () => {
+  const nextState = updateBabyProfileScreenField(
+    createBabyProfileScreenState(),
+    "birthDate",
+    "3026-03-12",
+  );
+
+  assert.equal(nextState.form.errors.birthDate, "Birth date cannot be in the future.");
+  assert.equal(nextState.requestErrorMessage, null);
+});
+
 test("saveBabyProfileScreenState creates a profile and switches the screen into edit mode", async () => {
   const calls: Array<unknown> = [];
   let state = createBabyProfileScreenState();
