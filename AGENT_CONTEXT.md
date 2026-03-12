@@ -43,6 +43,10 @@ This repository is the shared source of truth for product intent, architecture, 
 5. After that PR is visible, do the implementation work on a separate non-`main` branch and PR
 6. Update task status and relevant context files before finishing
 
+PR title rule:
+- include the task ID in every task-related PR title using the format `type(AIB-123): short description`
+- use the same task ID on both the claim PR and the follow-up implementation PR
+
 ## When blocked
 
 - Record the blocker in `tasks/current.md`
