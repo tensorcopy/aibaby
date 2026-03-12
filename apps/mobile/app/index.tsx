@@ -2,10 +2,13 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { createMobileRootNavigationModel } from "../src/features/app-shell/rootNavigation.ts";
+import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 
 export default function HomeRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
-  const babyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
+  const session = useMobileSession();
+  const routeBabyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
+  const babyId = routeBabyId ?? session.currentBabyId;
   const model = createMobileRootNavigationModel({ babyId });
 
   return (
