@@ -42,12 +42,13 @@ This file is the lightweight shared backlog for human and agent coordination.
 ### Export and portability
 - AIB-050 `done` Define export package structure
 - AIB-051 `done` Define Markdown note format for Obsidian compatibility
-- AIB-052 `todo` Decide media export behavior: local files vs referenced URLs
+- AIB-052 `in_progress` Decide media export behavior: local files vs referenced URLs
 - AIB-053 `todo` Define YAML frontmatter fields for exported notes
 - AIB-054 `todo` Build first-pass Markdown export flow
 
 ## In Progress
 
+- AIB-052 `in_progress` Decide whether export bundles default to copied local media, referenced URLs, or a mixed mode
 
 ## Done
 
