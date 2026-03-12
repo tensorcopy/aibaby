@@ -77,6 +77,9 @@ The repository root `.env.example` should define placeholders for:
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY`
+- `OPENAI_MODEL_PARSING`
+- `OPENAI_MODEL_SUMMARY`
+- `OPENAI_MODEL_REMINDERS`
 - `SENTRY_DSN`
 - `TRIGGER_SECRET_KEY`
 
@@ -108,4 +111,3 @@ Subsequent implementation PRs should:
 - wire Expo and Next.js bootstraps
 - add Prisma and Supabase configuration files
 - update this document with concrete run, lint, test, and migration commands
-
