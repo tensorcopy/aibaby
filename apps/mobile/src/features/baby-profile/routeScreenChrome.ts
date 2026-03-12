@@ -34,6 +34,9 @@ export type BabyProfileRouteTextInputChrome = {
   maxLength?: number;
   accessibilityHint?: string;
   supportingText?: string;
+  showDatePickerAffordance?: boolean;
+  datePickerLabel?: string;
+  datePickerAccessibilityHint?: string;
   showInvalidOutline: boolean;
   accessibilityState: {
     disabled: boolean;
@@ -127,8 +130,13 @@ export function createBabyProfileRouteTextInputChrome(
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
-      accessibilityHint: field.error ?? field.hint,
-      supportingText: field.error ?? field.hint,
+      accessibilityHint:
+        field.error ?? field.hint ?? "Type YYYY-MM-DD or use the date picker.",
+      supportingText:
+        field.error ?? field.hint ?? "Type YYYY-MM-DD or use the date picker.",
+      showDatePickerAffordance: true,
+      datePickerLabel: "Choose date",
+      datePickerAccessibilityHint: "Opens a date picker for the birth date.",
       showInvalidOutline: Boolean(field.error),
       accessibilityState: {
         disabled,
