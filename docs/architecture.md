@@ -47,6 +47,13 @@ The MVP must support:
 - Supabase Auth
 - Supabase Storage
 
+### Media storage boundary
+- caregiver uploads go to private Supabase Storage buckets
+- the database stores metadata and storage paths, not binary media
+- clients read media via signed URLs or backend-mediated access
+
+See `docs/media-storage-decision.md` for the detailed storage model.
+
 ### Notifications and jobs
 - Expo Push Notifications
 - Trigger.dev, Vercel Cron, or Supabase scheduled jobs

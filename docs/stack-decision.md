@@ -9,6 +9,7 @@ This document captures the current stack decision so implementation agents can m
 Related decision docs:
 
 - `docs/auth-decision.md`
+- `docs/media-storage-decision.md`
 
 ## Decision summary
 
