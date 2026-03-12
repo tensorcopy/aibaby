@@ -71,6 +71,24 @@ test("loadBabyProfileScreenState falls back to an empty create flow when the cur
   assert.equal(state.form.mode, "create");
   assert.equal(state.babyId, undefined);
   assert.equal(state.ageSummary, null);
+  assert.equal(state.form.values.timezone, "UTC");
+});
+
+test("loadBabyProfileScreenState seeds the create flow with a detected device timezone when the current profile is missing", async () => {
+  const state = await loadBabyProfileScreenState({
+    defaultTimezone: "America/Los_Angeles",
+    async executeLoadRequest() {
+      throw new BabyProfileTransportError({
+        message: "Baby profile not found",
+        status: 404,
+        payload: { error: "Baby profile not found" },
+      });
+    },
+  });
+
+  assert.equal(state.loadTarget, "current");
+  assert.equal(state.form.mode, "create");
+  assert.equal(state.form.values.timezone, "America/Los_Angeles");
 });
 
 test("loadBabyProfileScreenState loads the explicit baby id through the transport layer", async () => {

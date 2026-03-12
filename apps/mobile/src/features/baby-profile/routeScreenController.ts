@@ -17,15 +17,17 @@ export function createBabyProfileRouteScreenLoadState(
 export async function loadBabyProfileRouteScreenState({
   babyId,
   auth,
+  defaultTimezone,
   setCurrentBabyId,
   loadScreenState = loadBabyProfileScreenState,
 }: {
   babyId?: string;
   auth?: BabyProfileAuth;
+  defaultTimezone?: string;
   setCurrentBabyId?: MobileSessionCurrentBabyIdSetter;
   loadScreenState?: typeof loadBabyProfileScreenState;
 }): Promise<BabyProfileScreenState> {
-  const nextState = await loadScreenState({ babyId, auth });
+  const nextState = await loadScreenState({ babyId, auth, defaultTimezone });
 
   if (nextState.status === "ready" && nextState.babyId) {
     setCurrentBabyId?.(nextState.babyId);

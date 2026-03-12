@@ -84,6 +84,31 @@ test("loadBabyProfileRouteScreenState lets the route retry an inline transport e
   assert.deepEqual(currentBabyIds, ["baby_123"]);
 });
 
+test("loadBabyProfileRouteScreenState forwards the device timezone for create-mode bootstrapping", async () => {
+  const loadCalls: Array<unknown> = [];
+
+  const state = await loadBabyProfileRouteScreenState({
+    defaultTimezone: "America/Los_Angeles",
+    async loadScreenState(args) {
+      loadCalls.push(args);
+      return createBabyProfileScreenState(undefined, "current", {
+        defaultTimezone: args.defaultTimezone,
+      });
+    },
+  });
+
+  assert.equal(state.status, "ready");
+  assert.equal(state.form.mode, "create");
+  assert.equal(state.form.values.timezone, "America/Los_Angeles");
+  assert.deepEqual(loadCalls, [
+    {
+      babyId: undefined,
+      auth: undefined,
+      defaultTimezone: "America/Los_Angeles",
+    },
+  ]);
+});
+
 test("createBabyProfileRouteScreenSavingState clears stale inline save feedback before a retry", () => {
   const saving = createBabyProfileRouteScreenSavingState({
     ...createBabyProfileScreenState(profile, "explicit"),

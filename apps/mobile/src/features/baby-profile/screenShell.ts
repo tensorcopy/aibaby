@@ -104,10 +104,16 @@ export function createBabyProfileScreenErrorState({
 export function createBabyProfileScreenState(
   profile?: BabyProfileResponse,
   loadTarget: BabyProfileLoadRequest["target"] = "current",
+  options?: {
+    defaultTimezone?: string;
+  },
 ): BabyProfileScreenReadyState {
   const form = profile
     ? createBabyProfileCreateEditState("edit", profile)
-    : createBabyProfileCreateEditState("create");
+    : createBabyProfileCreateEditState(
+        "create",
+        options?.defaultTimezone ? { timezone: options.defaultTimezone } : undefined,
+      );
 
   return {
     status: "ready",
@@ -139,11 +145,13 @@ export function updateBabyProfileScreenField<K extends keyof BabyProfileFormInpu
 export async function loadBabyProfileScreenState({
   babyId,
   auth,
+  defaultTimezone,
   toLoadRequest = toBabyProfileLoadRequest,
   executeLoadRequest = executeBabyProfileLoadRequest,
 }: {
   babyId?: string;
   auth?: BabyProfileAuth;
+  defaultTimezone?: string;
   toLoadRequest?: (babyId?: string) => BabyProfileLoadRequest;
   executeLoadRequest?: (args: {
     request: BabyProfileLoadRequest;
@@ -157,7 +165,9 @@ export async function loadBabyProfileScreenState({
     return createBabyProfileScreenState(profile, request.target);
   } catch (error) {
     if (request.target === "current" && isNotFoundTransportError(error)) {
-      return createBabyProfileScreenState(undefined, request.target);
+      return createBabyProfileScreenState(undefined, request.target, {
+        defaultTimezone,
+      });
     }
 
     return createBabyProfileScreenErrorState({

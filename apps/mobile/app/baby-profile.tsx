@@ -28,6 +28,7 @@ import {
   loadBabyProfileRouteScreenState,
   saveBabyProfileRouteScreenState,
 } from "../src/features/baby-profile/routeScreenController.ts";
+import { resolveBabyProfileDeviceTimezone } from "../src/features/baby-profile/deviceTimezone.ts";
 import {
   createBabyProfileRouteModel,
   type BabyProfileRouteChoiceSection,
@@ -64,6 +65,11 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isRetryingLoad, setIsRetryingLoad] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
+  const defaultTimezone = useMemo(
+    () =>
+      resolveBabyProfileDeviceTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone),
+    [],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -73,6 +79,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     void loadBabyProfileRouteScreenState({
       babyId,
       auth,
+      defaultTimezone,
       setCurrentBabyId: session.setCurrentBabyId,
     }).then((nextState) => {
       if (!cancelled) {
@@ -84,7 +91,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     return () => {
       cancelled = true;
     };
-  }, [auth, babyId, loadAttempt, session.setCurrentBabyId]);
+  }, [auth, babyId, defaultTimezone, loadAttempt, session.setCurrentBabyId]);
 
   const screenModel = createBabyProfileRouteScreenModel({ state, isSaving, isRetryingLoad });
 
