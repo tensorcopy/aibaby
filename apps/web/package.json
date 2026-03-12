@@ -2,5 +2,8 @@
   "name": "@aibaby/web",
   "private": true,
   "version": "0.0.0",
-  "description": "Next.js app and backend scaffold placeholder for AI Baby"
+  "description": "Next.js app and backend scaffold placeholder for AI Baby",
+  "scripts": {
+    "test:baby-profile-api": "node --test src/features/baby-profile/*.test.js"
+  }
 }
