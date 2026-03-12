@@ -1,3 +1,8 @@
+import {
+  createMobileHomeQuickActions,
+  type MobileHomeQuickAction,
+} from "./homeQuickActions.ts";
+
 export type MobileRootNavigationHandoff =
   | "baby-profile-created"
   | "baby-profile-updated";
@@ -18,6 +23,7 @@ export type MobileRootNavigationModel = {
     label: string;
     href: string;
   };
+  quickActions: MobileHomeQuickAction[];
 };
 
 export function createMobileRootNavigationModel({
@@ -33,13 +39,14 @@ export function createMobileRootNavigationModel({
     subtitle: normalizedHandoff
       ? "Baby profile saved. Continue from the app home while the rest of the mobile flow keeps filling in."
       : hasBabyId
-        ? "Open the current baby profile flow and keep editing the saved basics."
+        ? "Use the app home as the launch point for logging, timeline review, and summaries."
         : "Start with a baby profile so chat logging, summaries, and reminders use the right age stage.",
     statusBanner: createStatusBanner(normalizedHandoff),
     primaryAction: {
       label: hasBabyId ? "Open baby profile" : "Create baby profile",
       href: createBabyProfileHref(normalizedBabyId),
     },
+    quickActions: createMobileHomeQuickActions(normalizedBabyId),
   };
 }
 
