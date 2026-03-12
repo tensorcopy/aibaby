@@ -89,6 +89,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 - Before starting a task, the agent picking it up must open a small PR that changes the task to `in_progress` in this file so other agents do not start the same work
 - Do not combine the task-claim change and the implementation change in the same first PR; implementation should follow in a separate PR after the claim is visible
+- Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
 - Foundation choices are now documented well enough to start assigning implementation work
 - The initial repo scaffold exists, but it is intentionally non-runnable until follow-up PRs add actual Expo, Next.js, Prisma, and Supabase setup
 - Next best parallel workstreams: app scaffold, auth wiring, media upload path, and daily-summary rules
