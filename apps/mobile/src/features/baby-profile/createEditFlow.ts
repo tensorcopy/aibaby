@@ -117,3 +117,14 @@ export function hasBabyProfileCreateEditUnsavedChanges(
     diffBabyProfilePayload(state.initialPayload, toBabyProfilePayload(state.values)),
   );
 }
+
+export function canSubmitBabyProfileCreateEditState(
+  state: BabyProfileCreateEditState,
+  now?: Date,
+): boolean {
+  if (hasBabyProfileFormErrors(validateBabyProfileFormInput(state.values, now))) {
+    return false;
+  }
+
+  return hasBabyProfileCreateEditUnsavedChanges(state);
+}

@@ -175,14 +175,33 @@ test("createBabyProfileRouteScreenModel disables submit when edit mode has no un
   assert.equal(model.inputsDisabled, false);
 });
 
-test("createBabyProfileRouteScreenModel keeps submit enabled when edit mode has unsaved changes", () => {
+
+test("createBabyProfileRouteScreenModel disables submit when create mode is still invalid", () => {
+  const model = createBabyProfileRouteScreenModel({
+    state: createBabyProfileScreenState(),
+    isSaving: false,
+    isRetryingLoad: false,
+  });
+
+  assert.equal(model.kind, "ready");
+  if (model.kind !== "ready") {
+    return;
+  }
+
+  assert.equal(model.submitLabel, "Create profile");
+  assert.equal(model.submitDisabled, true);
+  assert.equal(model.inputsDisabled, false);
+});
+
+test("createBabyProfileRouteScreenModel keeps submit enabled when edit mode has unsaved valid changes", () => {
+  const baseState = createBabyProfileScreenState(profile, "explicit");
   const model = createBabyProfileRouteScreenModel({
     state: {
-      ...createBabyProfileScreenState(profile, "explicit"),
+      ...baseState,
       form: {
-        ...createBabyProfileScreenState(profile, "explicit").form,
+        ...baseState.form,
         values: {
-          ...createBabyProfileScreenState(profile, "explicit").form.values,
+          ...baseState.form.values,
           timezone: "America/New_York",
         },
       },
@@ -197,6 +216,32 @@ test("createBabyProfileRouteScreenModel keeps submit enabled when edit mode has 
   }
 
   assert.equal(model.submitDisabled, false);
+  assert.equal(model.inputsDisabled, false);
+});
+
+test("createBabyProfileRouteScreenModel disables submit when edit mode changes become invalid", () => {
+  const baseState = createBabyProfileScreenState(profile, "explicit");
+  const model = createBabyProfileRouteScreenModel({
+    state: {
+      ...baseState,
+      form: {
+        ...baseState.form,
+        values: {
+          ...baseState.form.values,
+          birthDate: "3026-03-12",
+        },
+      },
+    },
+    isSaving: false,
+    isRetryingLoad: false,
+  });
+
+  assert.equal(model.kind, "ready");
+  if (model.kind !== "ready") {
+    return;
+  }
+
+  assert.equal(model.submitDisabled, true);
   assert.equal(model.inputsDisabled, false);
 });
 
