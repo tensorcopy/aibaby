@@ -15,3 +15,14 @@ Not included yet:
 - auth wiring
 - upload flows
 - production UI components
+
+## Baby profile flow slice
+
+The first implementation slice for AIB-020 lives in `src/features/baby-profile/createEditFlow.ts`.
+
+This adds:
+- shared create/edit form defaults and validation rules via `@aibaby/ui`
+- mobile form-state helpers for create/edit mode
+- payload normalization for allergies, supplements, and nullable sex
+
+A future PR can wire these helpers into actual Expo screens, persistence, and API calls.
