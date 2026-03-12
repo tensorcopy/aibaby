@@ -109,7 +109,12 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     };
   }, [auth, babyId, defaultTimezone, loadAttempt, session.setCurrentBabyId]);
 
-  const screenModel = createBabyProfileRouteScreenModel({ state, isSaving, isRetryingLoad });
+  const screenModel = createBabyProfileRouteScreenModel({
+    state,
+    isSaving,
+    isRetryingLoad,
+    hasPendingBirthDateDraft: birthDatePickerDraft !== null,
+  });
 
   if (screenModel.kind === "loading") {
     const chrome = createBabyProfileRouteLoadingChrome({
@@ -201,6 +206,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
           disabled={screenModel.inputsDisabled}
           section={section}
           state={state}
+          hasPendingBirthDateDraft={birthDatePickerDraft !== null}
           setState={setState}
           setBirthDatePickerDraft={setBirthDatePickerDraft}
         />
@@ -211,6 +217,9 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       {Platform.OS === "ios" && birthDatePickerDraft ? (
         <View style={styles.datePickerCard}>
           <Text style={styles.datePickerTitle}>Choose birth date</Text>
+          <Text style={styles.datePickerSubtitle}>
+            The form keeps the current birth date until you confirm this picker.
+          </Text>
           <DateTimePicker
             display="spinner"
             maximumDate={new Date()}
@@ -231,6 +240,9 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
             }}
             value={birthDatePickerDraft.value}
           />
+          <Text style={styles.datePickerPreview}>
+            Pending date: {confirmBabyProfileBirthDatePickerDraft({ draft: birthDatePickerDraft })}
+          </Text>
           <View style={styles.datePickerActions}>
             <Pressable
               accessibilityRole="button"
@@ -318,12 +330,14 @@ function RouteSection({
   disabled,
   section,
   state,
+  hasPendingBirthDateDraft,
   setState,
   setBirthDatePickerDraft,
 }: {
   disabled: boolean;
   section: BabyProfileRouteModel["sections"][number];
   state: BabyProfileScreenReadyState;
+  hasPendingBirthDateDraft: boolean;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
   setBirthDatePickerDraft: Dispatch<SetStateAction<BabyProfileBirthDatePickerDraft | null>>;
 }) {
@@ -337,6 +351,7 @@ function RouteSection({
               disabled={disabled}
               state={state}
               field={field}
+              hasPendingBirthDateDraft={hasPendingBirthDateDraft}
               setState={setState}
               setBirthDatePickerDraft={setBirthDatePickerDraft}
             />
@@ -370,16 +385,21 @@ function FormTextField({
   disabled,
   state,
   field,
+  hasPendingBirthDateDraft,
   setState,
   setBirthDatePickerDraft,
 }: {
   disabled: boolean;
   state: BabyProfileScreenReadyState;
   field: ReturnType<typeof createBabyProfileRouteModel>["textFields"][number];
+  hasPendingBirthDateDraft: boolean;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
   setBirthDatePickerDraft: Dispatch<SetStateAction<BabyProfileBirthDatePickerDraft | null>>;
 }) {
-  const chrome = createBabyProfileRouteTextInputChrome(field, { disabled });
+  const chrome = createBabyProfileRouteTextInputChrome(field, {
+    disabled,
+    hasPendingBirthDateDraft: field.key === "birthDate" ? hasPendingBirthDateDraft : false,
+  });
 
   return (
     <View style={styles.fieldGroup}>
@@ -391,11 +411,15 @@ function FormTextField({
           accessibilityState={chrome.accessibilityState}
           autoCapitalize={chrome.autoCapitalize}
           autoCorrect={chrome.autoCorrect}
-          editable={!disabled}
+          editable={!chrome.inputDisabled}
           keyboardType={chrome.keyboardType}
           maxLength={chrome.maxLength}
           multiline={field.kind === "textarea"}
           onChangeText={(value) => {
+            if (field.key === "birthDate") {
+              setBirthDatePickerDraft(null);
+            }
+
             setState((current) => updateReadyStateField(current, field.key, value));
           }}
           placeholder={field.placeholder}
@@ -404,7 +428,7 @@ function FormTextField({
             field.kind === "date" ? styles.dateInput : null,
             field.kind === "textarea" ? styles.textarea : null,
             chrome.showInvalidOutline ? styles.textInputInvalid : null,
-            disabled ? styles.fieldDisabled : null,
+            chrome.inputDisabled ? styles.fieldDisabled : null,
           ]}
           value={state.form.values[field.key]}
         />
@@ -692,6 +716,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#0f172a",
+  },
+  datePickerSubtitle: {
+    color: "#475569",
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  datePickerPreview: {
+    color: "#0f172a",
+    fontSize: 13,
+    fontWeight: "600",
   },
   datePickerActions: {
     flexDirection: "row",
