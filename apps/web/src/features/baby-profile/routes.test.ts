@@ -2,10 +2,14 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import test, { afterEach } from 'node:test';
 
-import { POST } from '../../../app/api/babies/route.ts';
 import { GET, PATCH } from '../../../app/api/babies/[babyId]/route.ts';
 
 const require = createRequire(import.meta.url);
+
+async function importBabiesRoute() {
+  return import(`../../../app/api/babies/route.ts?test=${Date.now()}-${Math.random()}`);
+}
+
 const {
   resetBabyProfileRouteDependencies,
   setBabyProfileRouteDependenciesForTest,
@@ -42,7 +46,7 @@ test('POST /api/babies returns a created profile from the action wrapper', async
     },
   });
 
-  const response = await POST(
+  const response = await (await importBabiesRoute()).POST(
     new Request('http://localhost/api/babies', {
       method: 'POST',
       headers: {
@@ -97,7 +101,7 @@ test('POST /api/babies returns 400 for invalid request payloads', async () => {
     },
   });
 
-  const response = await POST(
+  const response = await (await importBabiesRoute()).POST(
     new Request('http://localhost/api/babies', {
       method: 'POST',
       headers: {

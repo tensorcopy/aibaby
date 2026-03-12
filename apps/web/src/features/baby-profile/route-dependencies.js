@@ -1,5 +1,10 @@
 const { resolveOwnerUserIdFromRequest } = require('./auth');
-const { getBabyProfileById, insertBabyProfile, updateBabyProfile } = require('./local-store');
+const {
+  getBabyProfileById,
+  getCurrentBabyProfileByOwnerUserId,
+  insertBabyProfile,
+  updateBabyProfile,
+} = require('./local-store');
 
 let routeDependencies = createDefaultRouteDependencies();
 
@@ -24,6 +29,7 @@ function createDefaultRouteDependencies() {
       return resolveOwnerUserIdFromRequest(request);
     },
     getBabyProfileById,
+    getCurrentBabyProfileByOwnerUserId,
     insertBabyProfile,
     updateBabyProfile,
   };

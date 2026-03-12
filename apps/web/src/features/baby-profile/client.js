@@ -13,6 +13,15 @@ async function createBabyProfileClient({ body, fetchImpl = fetch, auth } = {}) {
   });
 }
 
+async function getCurrentBabyProfileClient({ fetchImpl = fetch, auth } = {}) {
+  return requestBabyProfileJson({
+    fetchImpl,
+    auth,
+    url: '/api/babies',
+    method: 'GET',
+  });
+}
+
 async function getBabyProfileClient({ babyId, fetchImpl = fetch, auth } = {}) {
   const normalizedBabyId = normalizeBabyId(babyId);
 
@@ -129,5 +138,6 @@ module.exports = {
   buildOwnerScopedHeaders,
   createBabyProfileClient,
   getBabyProfileClient,
+  getCurrentBabyProfileClient,
   updateBabyProfileClient,
 };
