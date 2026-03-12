@@ -24,5 +24,6 @@ This adds:
 - shared create/edit form defaults and validation rules via `@aibaby/ui`
 - mobile form-state helpers for create/edit mode
 - payload normalization for allergies, supplements, and nullable sex
+- derived age-summary helpers so the form can preview the baby's current age while editing
 
 A future PR can wire these helpers into actual Expo screens, persistence, and API calls.

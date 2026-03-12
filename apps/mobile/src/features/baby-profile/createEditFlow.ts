@@ -1,8 +1,10 @@
 import {
+  type BabyProfileAgeSummary,
   type BabyProfileFormErrors,
   type BabyProfileFormInput,
   type BabyProfileFormMode,
   createBabyProfileFormInput,
+  getBabyProfileAgeSummary,
   hasBabyProfileFormErrors,
   toBabyProfilePayload,
   validateBabyProfileFormInput,
@@ -65,4 +67,11 @@ export function submitBabyProfileCreateEditState(
     ok: true,
     payload: toBabyProfilePayload(state.values),
   };
+}
+
+export function selectBabyProfileCreateEditAgeSummary(
+  state: BabyProfileCreateEditState,
+  now?: Date,
+): BabyProfileAgeSummary | null {
+  return getBabyProfileAgeSummary(state.values.birthDate, now);
 }
