@@ -5,7 +5,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Active
 
 ### Foundation
-- AIB-002 `todo` Choose the auth approach
+- AIB-002 `in_progress` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
 - AIB-006 `done` Document local development setup and environment variables
@@ -48,6 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
+- AIB-002 `in_progress` Document the MVP auth decision and define the first-pass auth boundaries for mobile and backend flows
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
 
 ## Done
