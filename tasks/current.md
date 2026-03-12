@@ -48,7 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: claim route-level coverage for inline load/save transport error and retry states)
+- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: claim route-level save in-flight input locking and submit affordances)
 
 ## Done
 
