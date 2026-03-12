@@ -15,11 +15,7 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import type {
-  BabyProfileFeedingStyle,
-  BabyProfileFormInput,
-  BabyProfileSex,
-} from "@aibaby/ui";
+import type { BabyProfileFormInput } from "@aibaby/ui";
 
 import {
   updateBabyProfileScreenField,
@@ -34,6 +30,7 @@ import {
 } from "../src/features/baby-profile/routeScreenController.ts";
 import {
   createBabyProfileRouteModel,
+  type BabyProfileRouteChoiceSection,
   type BabyProfileRouteModel,
 } from "../src/features/baby-profile/routeModel.ts";
 import { createBabyProfileRouteScreenModel } from "../src/features/baby-profile/routeScreenModel.ts";
@@ -176,7 +173,6 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
         <RouteSection
           key={section.key}
           disabled={screenModel.inputsDisabled}
-          model={model}
           section={section}
           state={state}
           setState={setState}
@@ -230,13 +226,11 @@ function assertReadyState(state: BabyProfileScreenState): BabyProfileScreenReady
 
 function RouteSection({
   disabled,
-  model,
   section,
   state,
   setState,
 }: {
   disabled: boolean;
-  model: BabyProfileRouteModel;
   section: BabyProfileRouteModel["sections"][number];
   state: BabyProfileScreenReadyState;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
@@ -254,41 +248,26 @@ function RouteSection({
               setState={setState}
             />
           ))
-        : renderChoiceSection({ disabled, model, section, setState })}
+        : renderChoiceSection({ disabled, section, setState })}
     </View>
   );
 }
 
 function renderChoiceSection({
   disabled,
-  model,
   section,
   setState,
 }: {
   disabled: boolean;
-  model: BabyProfileRouteModel;
-  section: Extract<BabyProfileRouteModel["sections"][number], { kind: "choice" }>;
+  section: BabyProfileRouteChoiceSection;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
 }) {
-  if (section.key === "identity") {
-    return (
-      <ChoiceField
-        disabled={disabled}
-        label={section.label}
-        options={model.sexOptions}
-        onSelect={(value) => setState((current) => updateReadyStateField(current, "sex", value))}
-      />
-    );
-  }
-
   return (
     <ChoiceField
       disabled={disabled}
       label={section.label}
-      options={model.feedingStyleOptions}
-      onSelect={(value) =>
-        setState((current) => updateReadyStateField(current, "feedingStyle", value))
-      }
+      options={section.options}
+      onSelect={(value) => setState((current) => updateReadyStateField(current, section.field, value))}
     />
   );
 }
@@ -494,5 +473,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "700",
+  },
+  fieldDisabled: {
+    opacity: 0.6,
   },
 });

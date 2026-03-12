@@ -33,8 +33,16 @@ test("createBabyProfileRouteModel exposes create-mode fields and labels", () => 
   assert.equal(model.submitLabel, "Create profile");
   assert.equal(model.textFields[0]?.label, "Baby name");
   assert.equal(model.textFields[1]?.placeholder, "YYYY-MM-DD");
+
+  const identitySection = model.sections[1];
+  assert.equal(identitySection?.kind, "choice");
+  if (identitySection?.kind !== "choice") {
+    return;
+  }
+
+  assert.equal(identitySection.field, "sex");
   assert.deepEqual(
-    model.sexOptions.map((option) => option.label),
+    identitySection.options.map((option) => option.label),
     ["Female", "Male", "Other", "Prefer not to say"],
   );
 });
@@ -57,6 +65,18 @@ test("createBabyProfileRouteModel groups profile fields into ordered route secti
   assert.deepEqual(
     basicsSection.fields.map((field) => field.key),
     ["name", "birthDate"],
+  );
+
+  const feedingSection = model.sections[2];
+  assert.equal(feedingSection?.kind, "choice");
+  if (feedingSection?.kind !== "choice") {
+    return;
+  }
+
+  assert.equal(feedingSection.field, "feedingStyle");
+  assert.equal(
+    feedingSection.options.find((option) => option.selected)?.label,
+    "Mixed",
   );
 
   const careSection = model.sections[3];
@@ -92,10 +112,6 @@ test("createBabyProfileRouteModel surfaces edit-mode submission feedback", () =>
   assert.equal(model.title, "Baby profile");
   assert.equal(model.submitLabel, "Save profile");
   assert.equal(model.statusMessage, "Saved 2 profile fields.");
-  assert.equal(
-    model.feedingStyleOptions.find((option) => option.selected)?.label,
-    "Mixed",
-  );
 
   const sexSection = model.sections[1];
   assert.equal(sexSection?.kind, "choice");
@@ -103,6 +119,7 @@ test("createBabyProfileRouteModel surfaces edit-mode submission feedback", () =>
     return;
   }
 
+  assert.equal(sexSection.field, "sex");
   assert.equal(sexSection.label, "Sex");
   assert.equal(
     sexSection.options.find((option) => option.selected)?.label,

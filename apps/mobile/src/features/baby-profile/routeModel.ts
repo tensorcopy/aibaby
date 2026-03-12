@@ -23,22 +23,34 @@ export type BabyProfileRouteChoiceOption<T extends string> = {
   selected: boolean;
 };
 
-export type BabyProfileRouteSection =
+export type BabyProfileRouteTextFieldSection = {
+  key: "basics" | "care";
+  title: string;
+  kind: "text-fields";
+  fields: BabyProfileRouteField[];
+};
+
+export type BabyProfileRouteChoiceSection =
   | {
-      key: "basics" | "care";
-      title: string;
-      kind: "text-fields";
-      fields: BabyProfileRouteField[];
-    }
-  | {
-      key: "identity" | "feeding";
+      key: "identity";
       title: string;
       kind: "choice";
+      field: "sex";
       label: string;
-      options:
-        | BabyProfileRouteChoiceOption<BabyProfileSex>[]
-        | BabyProfileRouteChoiceOption<BabyProfileFeedingStyle>[];
+      options: BabyProfileRouteChoiceOption<BabyProfileSex>[];
+    }
+  | {
+      key: "feeding";
+      title: string;
+      kind: "choice";
+      field: "feedingStyle";
+      label: string;
+      options: BabyProfileRouteChoiceOption<BabyProfileFeedingStyle>[];
     };
+
+export type BabyProfileRouteSection =
+  | BabyProfileRouteTextFieldSection
+  | BabyProfileRouteChoiceSection;
 
 export type BabyProfileRouteModel = {
   title: string;
@@ -47,8 +59,6 @@ export type BabyProfileRouteModel = {
   isEditMode: boolean;
   statusMessage?: string;
   textFields: BabyProfileRouteField[];
-  sexOptions: BabyProfileRouteChoiceOption<BabyProfileSex>[];
-  feedingStyleOptions: BabyProfileRouteChoiceOption<BabyProfileFeedingStyle>[];
   sections: BabyProfileRouteSection[];
 };
 
@@ -109,17 +119,31 @@ export function createBabyProfileRouteModel(
     },
   ];
 
-  const sexOptions = BABY_PROFILE_SEX_OPTIONS.map((value) => ({
-    value,
-    label: SEX_LABELS[value],
-    selected: values.sex === value,
-  }));
+  const identitySection: BabyProfileRouteChoiceSection = {
+    key: "identity",
+    title: "Identity",
+    kind: "choice",
+    field: "sex",
+    label: "Sex",
+    options: BABY_PROFILE_SEX_OPTIONS.map((value) => ({
+      value,
+      label: SEX_LABELS[value],
+      selected: values.sex === value,
+    })),
+  };
 
-  const feedingStyleOptions = BABY_PROFILE_FEEDING_STYLE_OPTIONS.map((value) => ({
-    value,
-    label: FEEDING_STYLE_LABELS[value],
-    selected: values.feedingStyle === value,
-  }));
+  const feedingSection: BabyProfileRouteChoiceSection = {
+    key: "feeding",
+    title: "Feeding",
+    kind: "choice",
+    field: "feedingStyle",
+    label: "Feeding style",
+    options: BABY_PROFILE_FEEDING_STYLE_OPTIONS.map((value) => ({
+      value,
+      label: FEEDING_STYLE_LABELS[value],
+      selected: values.feedingStyle === value,
+    })),
+  };
 
   return {
     title: isEditMode ? "Baby profile" : "Create baby profile",
@@ -130,8 +154,6 @@ export function createBabyProfileRouteModel(
     isEditMode,
     statusMessage: getSubmissionMessage(state),
     textFields,
-    sexOptions,
-    feedingStyleOptions,
     sections: [
       {
         key: "basics",
@@ -139,20 +161,8 @@ export function createBabyProfileRouteModel(
         kind: "text-fields",
         fields: textFields.slice(0, 2),
       },
-      {
-        key: "identity",
-        title: "Identity",
-        kind: "choice",
-        label: "Sex",
-        options: sexOptions,
-      },
-      {
-        key: "feeding",
-        title: "Feeding",
-        kind: "choice",
-        label: "Feeding style",
-        options: feedingStyleOptions,
-      },
+      identitySection,
+      feedingSection,
       {
         key: "care",
         title: "Care details",
