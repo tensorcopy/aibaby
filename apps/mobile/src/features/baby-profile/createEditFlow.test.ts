@@ -14,9 +14,19 @@ test("create state starts with the shared baby profile defaults", () => {
   assert.equal(state.values.sex, "unknown");
   assert.equal(state.values.feedingStyle, "solids_started");
   assert.equal(state.values.primaryCaregiver, "");
+  assert.deepEqual(state.initialPayload, {
+    name: "",
+    birthDate: "",
+    sex: null,
+    feedingStyle: "solids_started",
+    allergies: [],
+    supplements: [],
+    timezone: "UTC",
+    primaryCaregiver: null,
+  });
 });
 
-test("submitBabyProfileCreateEditState returns a payload aligned with the DB contract", () => {
+test("submitBabyProfileCreateEditState returns a create payload aligned with the DB contract", () => {
   let state = createBabyProfileCreateEditState("create");
   state = updateBabyProfileField(state, "name", "  Yiyi  ");
   state = updateBabyProfileField(state, "birthDate", "2025-10-15");
@@ -33,6 +43,7 @@ test("submitBabyProfileCreateEditState returns a payload aligned with the DB con
 
   assert.deepEqual(result, {
     ok: true,
+    mode: "create",
     payload: {
       name: "Yiyi",
       birthDate: "2025-10-15",
@@ -43,6 +54,49 @@ test("submitBabyProfileCreateEditState returns a payload aligned with the DB con
       timezone: "America/Los_Angeles",
       primaryCaregiver: "Zhen",
     },
+  });
+});
+
+test("submitBabyProfileCreateEditState returns an edit patch with only changed fields", () => {
+  let state = createBabyProfileCreateEditState("edit", {
+    name: "Yiyi",
+    birthDate: "2025-10-15",
+    sex: null,
+    feedingStyle: "mixed",
+    allergies: ["dairy", "egg"],
+    supplements: ["iron"],
+    timezone: "America/Los_Angeles",
+    primaryCaregiver: "Zhen",
+  });
+
+  state = updateBabyProfileField(state, "sex", "female");
+  state = updateBabyProfileField(state, "supplementsText", "iron, vitamin D");
+  state = updateBabyProfileField(state, "primaryCaregiver", "");
+
+  const result = submitBabyProfileCreateEditState(
+    state,
+    new Date("2026-03-12T00:00:00.000Z"),
+  );
+
+  assert.deepEqual(result, {
+    ok: true,
+    mode: "edit",
+    payload: {
+      name: "Yiyi",
+      birthDate: "2025-10-15",
+      sex: "female",
+      feedingStyle: "mixed",
+      allergies: ["dairy", "egg"],
+      supplements: ["iron", "vitamin D"],
+      timezone: "America/Los_Angeles",
+      primaryCaregiver: null,
+    },
+    patch: {
+      sex: "female",
+      supplements: ["iron", "vitamin D"],
+      primaryCaregiver: null,
+    },
+    hasChanges: true,
   });
 });
 

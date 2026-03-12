@@ -25,5 +25,6 @@ This adds:
 - mobile form-state helpers for create/edit mode
 - payload normalization for allergies, supplements, and nullable sex
 - derived age-summary helpers so the form can preview the baby's current age while editing
+- edit-mode patch helpers so save actions can submit only changed profile fields
 
 A future PR can wire these helpers into actual Expo screens, persistence, and API calls.

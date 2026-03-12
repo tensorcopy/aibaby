@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import {
   BABY_PROFILE_DEFAULT_TIMEZONE,
   createBabyProfileFormInput,
+  diffBabyProfilePayload,
+  hasBabyProfileUpdateChanges,
   toBabyProfilePayload,
   validateBabyProfileFormInput,
 } from "./form.ts";
@@ -44,6 +46,40 @@ test("toBabyProfilePayload normalizes optional values and deduplicates list text
       primaryCaregiver: "Zhen",
     },
   );
+});
+
+test("diffBabyProfilePayload returns only changed fields for edit submissions", () => {
+  const patch = diffBabyProfilePayload(
+    {
+      name: "Yiyi",
+      birthDate: "2025-10-15",
+      sex: null,
+      feedingStyle: "mixed",
+      allergies: ["dairy", "egg"],
+      supplements: ["iron"],
+      timezone: "America/Los_Angeles",
+      primaryCaregiver: "Zhen",
+    },
+    {
+      name: "Yiyi",
+      birthDate: "2025-10-15",
+      sex: "female",
+      feedingStyle: "mixed",
+      allergies: ["dairy", "egg"],
+      supplements: ["iron", "vitamin D"],
+      timezone: "America/New_York",
+      primaryCaregiver: null,
+    },
+  );
+
+  assert.deepEqual(patch, {
+    sex: "female",
+    supplements: ["iron", "vitamin D"],
+    timezone: "America/New_York",
+    primaryCaregiver: null,
+  });
+  assert.equal(hasBabyProfileUpdateChanges(patch), true);
+  assert.equal(hasBabyProfileUpdateChanges({}), false);
 });
 
 test("validateBabyProfileFormInput accepts the shared unknown sex state", () => {
