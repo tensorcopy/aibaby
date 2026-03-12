@@ -85,6 +85,24 @@ test("createBabyProfileRouteScreenModel keeps inline save errors visible while p
   assert.equal(model.submitLabel, "Save profile");
 });
 
+test("createBabyProfileRouteScreenModel hides stale inline save errors while a retry is in flight", () => {
+  const model = createBabyProfileRouteScreenModel({
+    state: {
+      ...createBabyProfileScreenState(profile, "explicit"),
+      requestErrorMessage: "Failed to reach the baby profile API",
+    },
+    isSaving: true,
+  });
+
+  assert.equal(model.kind, "ready");
+  if (model.kind !== "ready") {
+    return;
+  }
+
+  assert.equal(model.requestErrorMessage, null);
+  assert.equal(model.submitLabel, "Saving…");
+});
+
 test("createBabyProfileRouteScreenModel swaps the submit label while a retry is in flight", () => {
   const model = createBabyProfileRouteScreenModel({
     state: createBabyProfileScreenState(profile, "explicit"),

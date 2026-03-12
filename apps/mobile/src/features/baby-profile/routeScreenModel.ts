@@ -55,7 +55,7 @@ export function createBabyProfileRouteScreenModel({
   return {
     kind: "ready",
     route,
-    requestErrorMessage: state.requestErrorMessage,
+    requestErrorMessage: isSaving ? null : state.requestErrorMessage,
     submitLabel: isSaving ? "Saving…" : route.submitLabel,
     isSaving,
   };

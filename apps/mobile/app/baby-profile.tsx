@@ -28,6 +28,7 @@ import {
 } from "../src/features/baby-profile/screenShell.ts";
 import {
   createBabyProfileRouteScreenLoadState,
+  createBabyProfileRouteScreenSavingState,
   loadBabyProfileRouteScreenState,
   saveBabyProfileRouteScreenState,
 } from "../src/features/baby-profile/routeScreenController.ts";
@@ -110,11 +111,13 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const { route: model } = screenModel;
 
   async function onSavePress() {
+    const savingState = createBabyProfileRouteScreenSavingState(state);
+    setState(savingState);
     setIsSaving(true);
 
     try {
       const saved = await saveBabyProfileRouteScreenState({
-        state,
+        state: savingState,
         auth,
         setCurrentBabyId: session.setCurrentBabyId,
       });

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   createBabyProfileRouteScreenLoadState,
+  createBabyProfileRouteScreenSavingState,
   loadBabyProfileRouteScreenState,
   saveBabyProfileRouteScreenState,
 } from "./routeScreenController.ts";
@@ -81,6 +82,21 @@ test("loadBabyProfileRouteScreenState lets the route retry an inline transport e
   assert.equal(second.status, "ready");
   assert.equal(second.babyId, "baby_123");
   assert.deepEqual(currentBabyIds, ["baby_123"]);
+});
+
+test("createBabyProfileRouteScreenSavingState clears stale inline save feedback before a retry", () => {
+  const saving = createBabyProfileRouteScreenSavingState({
+    ...createBabyProfileScreenState(profile, "explicit"),
+    submission: {
+      outcome: "updated",
+      changedFields: ["timezone"],
+    },
+    requestErrorMessage: "Failed to reach the baby profile API",
+  });
+
+  assert.equal(saving.submission, null);
+  assert.equal(saving.requestErrorMessage, null);
+  assert.equal(saving.form.values.timezone, "America/Los_Angeles");
 });
 
 test("saveBabyProfileRouteScreenState keeps inline save errors on the returned route state", async () => {

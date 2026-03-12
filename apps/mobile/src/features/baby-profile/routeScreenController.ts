@@ -34,6 +34,16 @@ export async function loadBabyProfileRouteScreenState({
   return nextState;
 }
 
+export function createBabyProfileRouteScreenSavingState(
+  state: BabyProfileScreenReadyState,
+): BabyProfileScreenReadyState {
+  return {
+    ...state,
+    submission: null,
+    requestErrorMessage: null,
+  };
+}
+
 export async function saveBabyProfileRouteScreenState({
   state,
   auth,
