@@ -50,34 +50,27 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     createLoadingBabyProfileScreenState(babyId),
   );
   const [isSaving, setIsSaving] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
     setState(createLoadingBabyProfileScreenState(babyId));
-    setLoadError(null);
 
-    void loadBabyProfileScreenState({ babyId, auth })
-      .then((nextState) => {
-        if (!cancelled) {
-          setState(nextState);
+    void loadBabyProfileScreenState({ babyId, auth }).then((nextState) => {
+      if (!cancelled) {
+        setState(nextState);
 
-          if (nextState.babyId) {
-            session.setCurrentBabyId(nextState.babyId);
-          }
+        if (nextState.status === "ready" && nextState.babyId) {
+          session.setCurrentBabyId(nextState.babyId);
         }
-      })
-      .catch((error: unknown) => {
-        if (!cancelled) {
-          setLoadError(error instanceof Error ? error.message : "Failed to load baby profile.");
-        }
-      });
+      }
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [auth, babyId, session.setCurrentBabyId]);
+  }, [auth, babyId, loadAttempt, session.setCurrentBabyId]);
 
   if (state.status === "loading") {
     return (
@@ -85,6 +78,29 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
         <ActivityIndicator />
         <Text style={styles.loadingText}>Loading baby profile…</Text>
       </View>
+    );
+  }
+
+  if (state.status === "error") {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Baby profile</Text>
+        <Text style={styles.subtitle}>
+          We couldn&apos;t load this profile right now. Try again to keep editing.
+        </Text>
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorBannerText}>{state.message}</Text>
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => {
+            setLoadAttempt((current) => current + 1);
+          }}
+          style={styles.retryButton}
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </Pressable>
+      </ScrollView>
     );
   }
 
@@ -108,7 +124,13 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{model.title}</Text>
-      <Text style={styles.subtitle}>{loadError ?? model.subtitle}</Text>
+      <Text style={styles.subtitle}>{model.subtitle}</Text>
+
+      {state.requestErrorMessage ? (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorBannerText}>{state.requestErrorMessage}</Text>
+        </View>
+      ) : null}
 
       {model.textFields.slice(0, 2).map((field) => (
         <FormTextField key={field.key} state={state} field={field} setState={setState} />
@@ -248,6 +270,19 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: "#475569",
   },
+  errorBanner: {
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#fecaca",
+    backgroundColor: "#fef2f2",
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  errorBannerText: {
+    color: "#b91c1c",
+    fontSize: 14,
+    lineHeight: 20,
+  },
   fieldGroup: {
     gap: 8,
   },
@@ -301,6 +336,18 @@ const styles = StyleSheet.create({
   status: {
     color: "#166534",
     fontSize: 14,
+  },
+  retryButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 14,
+    paddingVertical: 14,
+    backgroundColor: "#e2e8f0",
+  },
+  retryButtonText: {
+    color: "#0f172a",
+    fontSize: 16,
+    fontWeight: "700",
   },
   submitButton: {
     alignItems: "center",
