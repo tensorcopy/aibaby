@@ -2,6 +2,10 @@ export type BabyProfileBirthDatePickerSelection = {
   selectedDate: Date;
 };
 
+export type BabyProfileBirthDatePickerDraft = {
+  value: Date;
+};
+
 export function parseBabyProfileBirthDate(value: string): Date | null {
   const trimmed = value.trim();
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmed);
@@ -43,6 +47,47 @@ export function resolveBabyProfileBirthDatePickerValue({
   now?: Date;
 }): Date {
   return parseBabyProfileBirthDate(currentValue) ?? now;
+}
+
+export function createBabyProfileBirthDatePickerDraft({
+  currentValue,
+  now = new Date(),
+}: {
+  currentValue: string;
+  now?: Date;
+}): BabyProfileBirthDatePickerDraft {
+  return {
+    value: resolveBabyProfileBirthDatePickerValue({ currentValue, now }),
+  };
+}
+
+export function updateBabyProfileBirthDatePickerDraft({
+  draft,
+  selectedDate,
+}: {
+  draft: BabyProfileBirthDatePickerDraft;
+  selectedDate?: Date;
+}): BabyProfileBirthDatePickerDraft {
+  if (!selectedDate) {
+    return draft;
+  }
+
+  return {
+    value: selectedDate,
+  };
+}
+
+export function confirmBabyProfileBirthDatePickerDraft({
+  draft,
+  maximumDate = new Date(),
+}: {
+  draft: BabyProfileBirthDatePickerDraft;
+  maximumDate?: Date;
+}): string {
+  return normalizeBabyProfileBirthDateSelection({
+    selectedDate: draft.value,
+    maximumDate,
+  });
 }
 
 export function normalizeBabyProfileBirthDateSelection({

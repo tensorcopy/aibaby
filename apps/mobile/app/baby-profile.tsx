@@ -50,8 +50,12 @@ import {
 } from "../src/features/baby-profile/routeScreenChrome.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 import {
+  confirmBabyProfileBirthDatePickerDraft,
+  createBabyProfileBirthDatePickerDraft,
   normalizeBabyProfileBirthDateSelection,
   resolveBabyProfileBirthDatePickerValue,
+  updateBabyProfileBirthDatePickerDraft,
+  type BabyProfileBirthDatePickerDraft,
 } from "../src/features/baby-profile/birthDatePicker.ts";
 
 export default function BabyProfileRoute() {
@@ -74,7 +78,8 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isRetryingLoad, setIsRetryingLoad] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
-  const [isBirthDatePickerVisible, setIsBirthDatePickerVisible] = useState(false);
+  const [birthDatePickerDraft, setBirthDatePickerDraft] =
+    useState<BabyProfileBirthDatePickerDraft | null>(null);
   const defaultTimezone = useMemo(
     () =>
       resolveBabyProfileDeviceTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone),
@@ -84,6 +89,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   useEffect(() => {
     let cancelled = false;
 
+    setBirthDatePickerDraft(null);
     setState(createBabyProfileRouteScreenLoadState(babyId));
 
     void loadBabyProfileRouteScreenState({
@@ -155,6 +161,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const { route: model } = screenModel;
 
   async function onSavePress() {
+    setBirthDatePickerDraft(null);
     const savingState = createBabyProfileRouteScreenSavingState(state);
     setState(savingState);
     setIsSaving(true);
@@ -195,13 +202,13 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
           section={section}
           state={state}
           setState={setState}
-          setIsBirthDatePickerVisible={setIsBirthDatePickerVisible}
+          setBirthDatePickerDraft={setBirthDatePickerDraft}
         />
       ))}
 
       {model.statusMessage ? <Text style={styles.status}>{model.statusMessage}</Text> : null}
 
-      {Platform.OS === "ios" && isBirthDatePickerVisible ? (
+      {Platform.OS === "ios" && birthDatePickerDraft ? (
         <View style={styles.datePickerCard}>
           <Text style={styles.datePickerTitle}>Choose birth date</Text>
           <DateTimePicker
@@ -209,25 +216,58 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
             maximumDate={new Date()}
             mode="date"
             onChange={(event, selectedDate) => {
-              handleBirthDatePickerChange({
-                event,
-                selectedDate,
-                state,
-                setState,
-                setIsBirthDatePickerVisible,
-              });
+              if (event.type !== "set") {
+                return;
+              }
+
+              setBirthDatePickerDraft((current) =>
+                current
+                  ? updateBabyProfileBirthDatePickerDraft({
+                      draft: current,
+                      selectedDate,
+                    })
+                  : current,
+              );
             }}
-            value={resolveBabyProfileBirthDatePickerValue({
-              currentValue: state.form.values.birthDate,
-            })}
+            value={birthDatePickerDraft.value}
           />
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => setIsBirthDatePickerVisible(false)}
-            style={styles.datePickerDoneButton}
-          >
-            <Text style={styles.datePickerDoneButtonText}>Done</Text>
-          </Pressable>
+          <View style={styles.datePickerActions}>
+            <Pressable
+              accessibilityRole="button"
+              disabled={screenModel.inputsDisabled}
+              onPress={() => setBirthDatePickerDraft(null)}
+              style={[
+                styles.datePickerActionButton,
+                styles.datePickerCancelButton,
+                screenModel.inputsDisabled ? styles.datePickerActionButtonDisabled : null,
+              ]}
+            >
+              <Text style={styles.datePickerCancelButtonText}>Cancel</Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              disabled={screenModel.inputsDisabled}
+              onPress={() => {
+                setState((current) =>
+                  updateReadyStateField(
+                    current,
+                    "birthDate",
+                    confirmBabyProfileBirthDatePickerDraft({
+                      draft: birthDatePickerDraft,
+                    }),
+                  ),
+                );
+                setBirthDatePickerDraft(null);
+              }}
+              style={[
+                styles.datePickerActionButton,
+                styles.datePickerConfirmButton,
+                screenModel.inputsDisabled ? styles.datePickerActionButtonDisabled : null,
+              ]}
+            >
+              <Text style={styles.datePickerConfirmButtonText}>Confirm</Text>
+            </Pressable>
+          </View>
         </View>
       ) : null}
 
@@ -279,13 +319,13 @@ function RouteSection({
   section,
   state,
   setState,
-  setIsBirthDatePickerVisible,
+  setBirthDatePickerDraft,
 }: {
   disabled: boolean;
   section: BabyProfileRouteModel["sections"][number];
   state: BabyProfileScreenReadyState;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
-  setIsBirthDatePickerVisible: Dispatch<SetStateAction<boolean>>;
+  setBirthDatePickerDraft: Dispatch<SetStateAction<BabyProfileBirthDatePickerDraft | null>>;
 }) {
   return (
     <View style={styles.sectionGroup}>
@@ -298,7 +338,7 @@ function RouteSection({
               state={state}
               field={field}
               setState={setState}
-              setIsBirthDatePickerVisible={setIsBirthDatePickerVisible}
+              setBirthDatePickerDraft={setBirthDatePickerDraft}
             />
           ))
         : renderChoiceSection({ disabled, section, setState })}
@@ -331,13 +371,13 @@ function FormTextField({
   state,
   field,
   setState,
-  setIsBirthDatePickerVisible,
+  setBirthDatePickerDraft,
 }: {
   disabled: boolean;
   state: BabyProfileScreenReadyState;
   field: ReturnType<typeof createBabyProfileRouteModel>["textFields"][number];
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
-  setIsBirthDatePickerVisible: Dispatch<SetStateAction<boolean>>;
+  setBirthDatePickerDraft: Dispatch<SetStateAction<BabyProfileBirthDatePickerDraft | null>>;
 }) {
   const chrome = createBabyProfileRouteTextInputChrome(field, { disabled });
 
@@ -388,19 +428,21 @@ function FormTextField({
                     currentValue: state.form.values.birthDate,
                   }),
                   onChange(event, selectedDate) {
-                    handleBirthDatePickerChange({
+                    handleAndroidBirthDatePickerChange({
                       event,
                       selectedDate,
-                      state,
                       setState,
-                      setIsBirthDatePickerVisible,
                     });
                   },
                 });
                 return;
               }
 
-              setIsBirthDatePickerVisible(true);
+              setBirthDatePickerDraft(
+                createBabyProfileBirthDatePickerDraft({
+                  currentValue: state.form.values.birthDate,
+                }),
+              );
             }}
             style={[
               styles.datePickerButton,
@@ -418,23 +460,15 @@ function FormTextField({
   );
 }
 
-function handleBirthDatePickerChange({
+function handleAndroidBirthDatePickerChange({
   event,
   selectedDate,
-  state,
   setState,
-  setIsBirthDatePickerVisible,
 }: {
   event: DateTimePickerEvent;
   selectedDate?: Date;
-  state: BabyProfileScreenReadyState;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
-  setIsBirthDatePickerVisible: Dispatch<SetStateAction<boolean>>;
 }) {
-  if (Platform.OS === "ios") {
-    setIsBirthDatePickerVisible(event.type !== "dismissed");
-  }
-
   if (event.type !== "set" || !selectedDate) {
     return;
   }
@@ -659,15 +693,31 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#0f172a",
   },
-  datePickerDoneButton: {
-    alignSelf: "flex-end",
+  datePickerActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 10,
+  },
+  datePickerActionButton: {
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
+  },
+  datePickerActionButtonDisabled: {
+    opacity: 0.6,
+  },
+  datePickerCancelButton: {
     backgroundColor: "#e2e8f0",
   },
-  datePickerDoneButtonText: {
+  datePickerCancelButtonText: {
     color: "#0f172a",
+    fontWeight: "600",
+  },
+  datePickerConfirmButton: {
+    backgroundColor: "#2563eb",
+  },
+  datePickerConfirmButtonText: {
+    color: "#ffffff",
     fontWeight: "600",
   },
   retryButton: {

@@ -2,10 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  confirmBabyProfileBirthDatePickerDraft,
+  createBabyProfileBirthDatePickerDraft,
   formatBabyProfileBirthDate,
   normalizeBabyProfileBirthDateSelection,
   parseBabyProfileBirthDate,
   resolveBabyProfileBirthDatePickerValue,
+  updateBabyProfileBirthDatePickerDraft,
 } from "./birthDatePicker.ts";
 
 test("parseBabyProfileBirthDate accepts valid stored ISO dates", () => {
@@ -42,6 +45,39 @@ test("resolveBabyProfileBirthDatePickerValue falls back to today for incomplete 
   });
 
   assert.equal(formatBabyProfileBirthDate(resolved), "2026-03-12");
+});
+
+test("createBabyProfileBirthDatePickerDraft reuses the committed birth date when opening the iOS picker", () => {
+  const draft = createBabyProfileBirthDatePickerDraft({
+    currentValue: "2025-10-15",
+    now: new Date(2026, 2, 12),
+  });
+
+  assert.equal(formatBabyProfileBirthDate(draft.value), "2025-10-15");
+});
+
+test("updateBabyProfileBirthDatePickerDraft keeps the committed form value unchanged until confirm", () => {
+  const committedValue = "2025-10-15";
+  const draft = createBabyProfileBirthDatePickerDraft({
+    currentValue: committedValue,
+    now: new Date(2026, 2, 12),
+  });
+  const updatedDraft = updateBabyProfileBirthDatePickerDraft({
+    draft,
+    selectedDate: new Date(2025, 10, 2),
+  });
+
+  assert.equal(committedValue, "2025-10-15");
+  assert.equal(confirmBabyProfileBirthDatePickerDraft({ draft: updatedDraft }), "2025-11-02");
+});
+
+test("confirmBabyProfileBirthDatePickerDraft falls back to the picker default when the field starts incomplete", () => {
+  const draft = createBabyProfileBirthDatePickerDraft({
+    currentValue: "2025-10",
+    now: new Date(2026, 2, 12),
+  });
+
+  assert.equal(confirmBabyProfileBirthDatePickerDraft({ draft }), "2026-03-12");
 });
 
 test("normalizeBabyProfileBirthDateSelection caps future picks at the allowed maximum date", () => {
