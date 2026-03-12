@@ -8,7 +8,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-002 `todo` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
-- AIB-006 `todo` Document local development setup and environment variables
+- AIB-006 `in_progress` Document local development setup and environment variables
 
 ### Data model
 - AIB-019 `todo` Define the Markdown export shape for diary output
@@ -49,6 +49,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
+- AIB-006 `in_progress` Write the first-pass local setup guide and define environment variable conventions for the current scaffold
 
 ## Done
 
