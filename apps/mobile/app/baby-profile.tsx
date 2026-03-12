@@ -8,6 +8,7 @@ import {
 import {
   ActivityIndicator,
   Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +16,10 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+  type DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import type { BabyProfileFormInput } from "@aibaby/ui";
 
 import {
@@ -44,6 +49,10 @@ import {
   createBabyProfileRouteTextInputChrome,
 } from "../src/features/baby-profile/routeScreenChrome.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
+import {
+  normalizeBabyProfileBirthDateSelection,
+  resolveBabyProfileBirthDatePickerValue,
+} from "../src/features/baby-profile/birthDatePicker.ts";
 
 export default function BabyProfileRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
@@ -65,6 +74,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isRetryingLoad, setIsRetryingLoad] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
+  const [isBirthDatePickerVisible, setIsBirthDatePickerVisible] = useState(false);
   const defaultTimezone = useMemo(
     () =>
       resolveBabyProfileDeviceTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone),
@@ -185,10 +195,41 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
           section={section}
           state={state}
           setState={setState}
+          setIsBirthDatePickerVisible={setIsBirthDatePickerVisible}
         />
       ))}
 
       {model.statusMessage ? <Text style={styles.status}>{model.statusMessage}</Text> : null}
+
+      {Platform.OS === "ios" && isBirthDatePickerVisible ? (
+        <View style={styles.datePickerCard}>
+          <Text style={styles.datePickerTitle}>Choose birth date</Text>
+          <DateTimePicker
+            display="spinner"
+            maximumDate={new Date()}
+            mode="date"
+            onChange={(event, selectedDate) => {
+              handleBirthDatePickerChange({
+                event,
+                selectedDate,
+                state,
+                setState,
+                setIsBirthDatePickerVisible,
+              });
+            }}
+            value={resolveBabyProfileBirthDatePickerValue({
+              currentValue: state.form.values.birthDate,
+            })}
+          />
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setIsBirthDatePickerVisible(false)}
+            style={styles.datePickerDoneButton}
+          >
+            <Text style={styles.datePickerDoneButtonText}>Done</Text>
+          </Pressable>
+        </View>
+      ) : null}
 
       {(() => {
         const saveButton = createBabyProfileRouteSaveButtonChrome({
@@ -238,11 +279,13 @@ function RouteSection({
   section,
   state,
   setState,
+  setIsBirthDatePickerVisible,
 }: {
   disabled: boolean;
   section: BabyProfileRouteModel["sections"][number];
   state: BabyProfileScreenReadyState;
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
+  setIsBirthDatePickerVisible: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <View style={styles.sectionGroup}>
@@ -255,6 +298,7 @@ function RouteSection({
               state={state}
               field={field}
               setState={setState}
+              setIsBirthDatePickerVisible={setIsBirthDatePickerVisible}
             />
           ))
         : renderChoiceSection({ disabled, section, setState })}
@@ -287,43 +331,120 @@ function FormTextField({
   state,
   field,
   setState,
+  setIsBirthDatePickerVisible,
 }: {
   disabled: boolean;
   state: BabyProfileScreenReadyState;
   field: ReturnType<typeof createBabyProfileRouteModel>["textFields"][number];
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
+  setIsBirthDatePickerVisible: Dispatch<SetStateAction<boolean>>;
 }) {
   const chrome = createBabyProfileRouteTextInputChrome(field, { disabled });
 
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.fieldLabel}>{field.label}</Text>
-      <TextInput
-        accessibilityHint={chrome.accessibilityHint}
-        accessibilityLabel={field.label}
-        accessibilityState={chrome.accessibilityState}
-        autoCapitalize={chrome.autoCapitalize}
-        autoCorrect={chrome.autoCorrect}
-        editable={!disabled}
-        keyboardType={chrome.keyboardType}
-        maxLength={chrome.maxLength}
-        multiline={field.kind === "textarea"}
-        onChangeText={(value) => {
-          setState((current) => updateReadyStateField(current, field.key, value));
-        }}
-        placeholder={field.placeholder}
-        style={[
-          styles.textInput,
-          field.kind === "textarea" ? styles.textarea : null,
-          chrome.showInvalidOutline ? styles.textInputInvalid : null,
-          disabled ? styles.fieldDisabled : null,
-        ]}
-        value={state.form.values[field.key]}
-      />
+      <View style={field.kind === "date" ? styles.dateInputRow : null}>
+        <TextInput
+          accessibilityHint={chrome.accessibilityHint}
+          accessibilityLabel={field.label}
+          accessibilityState={chrome.accessibilityState}
+          autoCapitalize={chrome.autoCapitalize}
+          autoCorrect={chrome.autoCorrect}
+          editable={!disabled}
+          keyboardType={chrome.keyboardType}
+          maxLength={chrome.maxLength}
+          multiline={field.kind === "textarea"}
+          onChangeText={(value) => {
+            setState((current) => updateReadyStateField(current, field.key, value));
+          }}
+          placeholder={field.placeholder}
+          style={[
+            styles.textInput,
+            field.kind === "date" ? styles.dateInput : null,
+            field.kind === "textarea" ? styles.textarea : null,
+            chrome.showInvalidOutline ? styles.textInputInvalid : null,
+            disabled ? styles.fieldDisabled : null,
+          ]}
+          value={state.form.values[field.key]}
+        />
+        {chrome.showDatePickerAffordance ? (
+          <Pressable
+            accessibilityHint={chrome.datePickerAccessibilityHint}
+            accessibilityLabel={chrome.datePickerLabel}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: chrome.datePickerDisabled }}
+            disabled={chrome.datePickerDisabled}
+            onPress={() => {
+              if (chrome.datePickerDisabled) {
+                return;
+              }
+
+              if (Platform.OS === "android") {
+                DateTimePickerAndroid.open({
+                  maximumDate: new Date(),
+                  mode: "date",
+                  value: resolveBabyProfileBirthDatePickerValue({
+                    currentValue: state.form.values.birthDate,
+                  }),
+                  onChange(event, selectedDate) {
+                    handleBirthDatePickerChange({
+                      event,
+                      selectedDate,
+                      state,
+                      setState,
+                      setIsBirthDatePickerVisible,
+                    });
+                  },
+                });
+                return;
+              }
+
+              setIsBirthDatePickerVisible(true);
+            }}
+            style={[
+              styles.datePickerButton,
+              chrome.datePickerDisabled ? styles.datePickerButtonDisabled : null,
+            ]}
+          >
+            <Text style={styles.datePickerButtonText}>{chrome.datePickerLabel}</Text>
+          </Pressable>
+        ) : null}
+      </View>
       {chrome.supportingText ? (
         <Text style={field.error ? styles.errorText : styles.hintText}>{chrome.supportingText}</Text>
       ) : null}
     </View>
+  );
+}
+
+function handleBirthDatePickerChange({
+  event,
+  selectedDate,
+  state,
+  setState,
+  setIsBirthDatePickerVisible,
+}: {
+  event: DateTimePickerEvent;
+  selectedDate?: Date;
+  state: BabyProfileScreenReadyState;
+  setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
+  setIsBirthDatePickerVisible: Dispatch<SetStateAction<boolean>>;
+}) {
+  if (Platform.OS === "ios") {
+    setIsBirthDatePickerVisible(event.type !== "dismissed");
+  }
+
+  if (event.type !== "set" || !selectedDate) {
+    return;
+  }
+
+  setState((current) =>
+    updateReadyStateField(
+      current,
+      "birthDate",
+      normalizeBabyProfileBirthDateSelection({ selectedDate }),
+    ),
   );
 }
 
@@ -437,6 +558,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#0f172a",
   },
+  dateInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
   textInput: {
     borderWidth: 1,
     borderColor: "#cbd5e1",
@@ -450,6 +576,9 @@ const styles = StyleSheet.create({
   textInputInvalid: {
     borderColor: "#dc2626",
     backgroundColor: "#fef2f2",
+  },
+  dateInput: {
+    flex: 1,
   },
   textarea: {
     minHeight: 92,
@@ -494,6 +623,21 @@ const styles = StyleSheet.create({
     color: "#b91c1c",
     fontSize: 13,
   },
+  datePickerButton: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#93c5fd",
+    backgroundColor: "#eff6ff",
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  datePickerButtonDisabled: {
+    opacity: 0.6,
+  },
+  datePickerButtonText: {
+    color: "#1d4ed8",
+    fontWeight: "600",
+  },
   hintText: {
     color: "#64748b",
     fontSize: 13,
@@ -501,6 +645,30 @@ const styles = StyleSheet.create({
   status: {
     color: "#166534",
     fontSize: 14,
+  },
+  datePickerCard: {
+    gap: 12,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    borderRadius: 16,
+    backgroundColor: "#ffffff",
+    padding: 14,
+  },
+  datePickerTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#0f172a",
+  },
+  datePickerDoneButton: {
+    alignSelf: "flex-end",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: "#e2e8f0",
+  },
+  datePickerDoneButtonText: {
+    color: "#0f172a",
+    fontWeight: "600",
   },
   retryButton: {
     alignItems: "center",

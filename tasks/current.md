@@ -14,7 +14,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-019 `done` Define the Markdown export shape for diary output
 
 ### MVP vertical slice
-- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: wire native birth-date picker interactions)
+- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: polish native birth-date picker UX on mobile)
 - AIB-021 `todo` Build chat input UI for text and image submission
 - AIB-022 `todo` Build image upload pipeline
 - AIB-023 `todo` Build text-to-record parsing flow
@@ -48,7 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: wire native birth-date picker interactions)
+- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: polish native birth-date picker UX on mobile)
 
 ## Done
 
@@ -87,8 +87,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## Coordination notes
 
-- Before starting a task, the agent picking it up must open a small PR that changes the task to `in_progress` in this file so other agents do not start the same work
-- Do not combine the task-claim change and the implementation change in the same first PR; implementation should follow in a separate PR after the claim is visible
 - Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
 - Foundation choices are now documented well enough to start assigning implementation work
 - The initial repo scaffold exists, but it is intentionally non-runnable until follow-up PRs add actual Expo, Next.js, Prisma, and Supabase setup
