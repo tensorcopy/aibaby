@@ -34,6 +34,7 @@ test("createBabyProfileRouteScreenModel exposes the route loading copy", () => {
       submission: null,
     },
     isSaving: false,
+    isRetryingLoad: false,
   });
 
   assert.deepEqual(model, {
@@ -55,6 +56,7 @@ test("createBabyProfileRouteScreenModel exposes inline retry copy for route tran
       }),
     }),
     isSaving: false,
+    isRetryingLoad: false,
   });
 
   assert.deepEqual(model, {
@@ -63,6 +65,53 @@ test("createBabyProfileRouteScreenModel exposes inline retry copy for route tran
     subtitle: "We couldn't load this profile right now. Try again to keep editing.",
     errorMessage: "Request timed out",
     retryLabel: "Retry",
+    retryDisabled: false,
+  });
+});
+
+test("createBabyProfileRouteScreenModel swaps to retry-specific loading copy while a reload is in flight", () => {
+  const model = createBabyProfileRouteScreenModel({
+    state: {
+      status: "loading",
+      loadTarget: "explicit",
+      babyId: "baby_123",
+      form: null,
+      ageSummary: null,
+      submission: null,
+    },
+    isSaving: false,
+    isRetryingLoad: true,
+  });
+
+  assert.deepEqual(model, {
+    kind: "loading",
+    title: "Baby profile",
+    loadingMessage: "Retrying baby profile…",
+  });
+});
+
+test("createBabyProfileRouteScreenModel disables the retry button while a reload is being requested", () => {
+  const model = createBabyProfileRouteScreenModel({
+    state: createBabyProfileScreenErrorState({
+      babyId: "baby_123",
+      loadTarget: "explicit",
+      error: new BabyProfileTransportError({
+        message: "Request timed out",
+        status: 504,
+        payload: { error: "Request timed out" },
+      }),
+    }),
+    isSaving: false,
+    isRetryingLoad: true,
+  });
+
+  assert.deepEqual(model, {
+    kind: "error",
+    title: "Baby profile",
+    subtitle: "We couldn't load this profile right now. Try again to keep editing.",
+    errorMessage: "Request timed out",
+    retryLabel: "Retrying…",
+    retryDisabled: true,
   });
 });
 
@@ -73,6 +122,7 @@ test("createBabyProfileRouteScreenModel keeps inline save errors visible while p
       requestErrorMessage: "Failed to reach the baby profile API",
     },
     isSaving: false,
+    isRetryingLoad: false,
   });
 
   assert.equal(model.kind, "ready");
@@ -93,6 +143,7 @@ test("createBabyProfileRouteScreenModel hides stale inline save errors while a r
       requestErrorMessage: "Failed to reach the baby profile API",
     },
     isSaving: true,
+    isRetryingLoad: false,
   });
 
   assert.equal(model.kind, "ready");
@@ -109,6 +160,7 @@ test("createBabyProfileRouteScreenModel swaps the submit label while a retry is 
   const model = createBabyProfileRouteScreenModel({
     state: createBabyProfileScreenState(profile, "explicit"),
     isSaving: true,
+    isRetryingLoad: false,
   });
 
   assert.equal(model.kind, "ready");

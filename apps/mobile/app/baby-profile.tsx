@@ -54,6 +54,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     createBabyProfileRouteScreenLoadState(babyId),
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isRetryingLoad, setIsRetryingLoad] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     }).then((nextState) => {
       if (!cancelled) {
         setState(nextState);
+        setIsRetryingLoad(false);
       }
     });
 
@@ -76,7 +78,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     };
   }, [auth, babyId, loadAttempt, session.setCurrentBabyId]);
 
-  const screenModel = createBabyProfileRouteScreenModel({ state, isSaving });
+  const screenModel = createBabyProfileRouteScreenModel({ state, isSaving, isRetryingLoad });
 
   if (screenModel.kind === "loading") {
     return (
@@ -97,11 +99,17 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
         </View>
         <Pressable
           accessibilityRole="button"
+          disabled={screenModel.retryDisabled}
           onPress={() => {
+            setIsRetryingLoad(true);
             setLoadAttempt((current) => current + 1);
           }}
-          style={styles.retryButton}
+          style={[
+            styles.retryButton,
+            screenModel.retryDisabled ? styles.retryButtonDisabled : null,
+          ]}
         >
+          {screenModel.retryDisabled ? <ActivityIndicator color="#0f172a" size="small" /> : null}
           <Text style={styles.retryButtonText}>{screenModel.retryLabel}</Text>
         </Pressable>
       </ScrollView>
@@ -376,6 +384,10 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 14,
     backgroundColor: "#e2e8f0",
+    gap: 8,
+  },
+  retryButtonDisabled: {
+    opacity: 0.8,
   },
   retryButtonText: {
     color: "#0f172a",

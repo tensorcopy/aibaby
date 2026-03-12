@@ -8,14 +8,15 @@ export type BabyProfileRouteScreenModel =
   | {
       kind: "loading";
       title: "Baby profile";
-      loadingMessage: "Loading baby profile…";
+      loadingMessage: "Loading baby profile…" | "Retrying baby profile…";
     }
   | {
       kind: "error";
       title: "Baby profile";
       subtitle: "We couldn't load this profile right now. Try again to keep editing.";
       errorMessage: string;
-      retryLabel: "Retry";
+      retryLabel: "Retry" | "Retrying…";
+      retryDisabled: boolean;
     }
   | {
       kind: "ready";
@@ -29,15 +30,17 @@ export type BabyProfileRouteScreenModel =
 export function createBabyProfileRouteScreenModel({
   state,
   isSaving,
+  isRetryingLoad,
 }: {
   state: BabyProfileScreenState;
   isSaving: boolean;
+  isRetryingLoad: boolean;
 }): BabyProfileRouteScreenModel {
   if (state.status === "loading") {
     return {
       kind: "loading",
       title: "Baby profile",
-      loadingMessage: "Loading baby profile…",
+      loadingMessage: isRetryingLoad ? "Retrying baby profile…" : "Loading baby profile…",
     };
   }
 
@@ -47,7 +50,8 @@ export function createBabyProfileRouteScreenModel({
       title: "Baby profile",
       subtitle: "We couldn't load this profile right now. Try again to keep editing.",
       errorMessage: state.message,
-      retryLabel: "Retry",
+      retryLabel: isRetryingLoad ? "Retrying…" : "Retry",
+      retryDisabled: isRetryingLoad,
     };
   }
 
