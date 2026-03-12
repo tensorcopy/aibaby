@@ -33,6 +33,8 @@ For that reason:
 - metadata should not be duplicated into Obsidian-only inline fields
 - frontmatter keys should stay plain and machine-readable
 
+See `docs/export-frontmatter-fields.md` for the canonical field set.
+
 ### 2. Internal note links may be added for future multi-note exports
 
 When exports later include weekly summaries, reminder notes, or milestone notes, Obsidian wikilinks are acceptable as an additive layer.
@@ -159,4 +161,3 @@ This note remains valid Markdown outside Obsidian while still feeling natural in
 - AIB-052 finalize whether media links point to copied local files or referenced URLs
 - AIB-053 finalize the exact YAML frontmatter field set
 - AIB-054 implement the export generator against this compatibility profile
-

@@ -56,30 +56,7 @@ This keeps files:
 
 Every exported note should begin with YAML frontmatter.
 
-Recommended fields:
-
-```yaml
----
-title: "Luna Daily Diary - 2026-03-12"
-date: 2026-03-12
-baby_name: "Luna"
-baby_id: "baby_123"
-export_type: "daily_diary"
-timezone: "America/Los_Angeles"
-summary_status: "generated"
-source_app: "AI Baby"
-source_version: "mvp"
-tags:
-  - ai-baby
-  - daily-diary
----
-```
-
-Notes:
-
-- `baby_id` should be stable but opaque
-- do not put private auth identifiers in export frontmatter
-- keep frontmatter easy to parse by non-Obsidian tools
+See `docs/export-frontmatter-fields.md` for the accepted field set.
 
 ## Body structure
 
