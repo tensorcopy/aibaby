@@ -27,7 +27,9 @@ This adds:
 - derived age-summary helpers so the form can preview the baby's current age while editing
 - edit-mode patch helpers so save actions can submit only changed profile fields
 
-A future PR can wire these helpers into actual Expo screens and transport layers.
+This slice now also includes `app/baby-profile.tsx`, a first-pass Expo route that renders the screen shell with editable fields, choice chips, and save handling.
+
+A future PR can wire this route into the full Expo app bootstrap and real authenticated transport/session context.
 
 This slice also adds `src/features/baby-profile/submitRequest.ts`, which turns validated create/edit submissions into reviewable `POST /api/babies` and `PATCH /api/babies/:id` request descriptors for the eventual mobile data layer.
 
