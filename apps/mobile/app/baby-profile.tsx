@@ -1,4 +1,10 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -36,6 +42,10 @@ export default function BabyProfileRoute() {
 
 export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const session = useMobileSession();
+  const auth = useMemo(
+    () => (session.ownerUserId ? { ownerUserId: session.ownerUserId } : undefined),
+    [session.ownerUserId],
+  );
   const [state, setState] = useState<BabyProfileScreenState>(() =>
     createLoadingBabyProfileScreenState(babyId),
   );
@@ -48,10 +58,14 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     setState(createLoadingBabyProfileScreenState(babyId));
     setLoadError(null);
 
-    void loadBabyProfileScreenState({ babyId, auth: session.auth })
+    void loadBabyProfileScreenState({ babyId, auth })
       .then((nextState) => {
         if (!cancelled) {
           setState(nextState);
+
+          if (nextState.babyId) {
+            session.setCurrentBabyId(nextState.babyId);
+          }
         }
       })
       .catch((error: unknown) => {
@@ -63,7 +77,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     return () => {
       cancelled = true;
     };
-  }, [babyId]);
+  }, [auth, babyId, session.setCurrentBabyId]);
 
   if (state.status === "loading") {
     return (
@@ -80,8 +94,12 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     setIsSaving(true);
 
     try {
-      const saved = await saveBabyProfileScreenState({ state, auth: session.auth });
+      const saved = await saveBabyProfileScreenState({ state, auth });
       setState(saved);
+
+      if (saved.babyId) {
+        session.setCurrentBabyId(saved.babyId);
+      }
     } finally {
       setIsSaving(false);
     }

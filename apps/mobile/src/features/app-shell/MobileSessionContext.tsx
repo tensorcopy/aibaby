@@ -1,7 +1,9 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
+  useState,
   type PropsWithChildren,
 } from "react";
 
@@ -22,9 +24,28 @@ export function MobileSessionProvider({
 }: PropsWithChildren<{
   bootstrap?: MobileSessionBootstrapInput;
 }>) {
-  const value = useMemo(
-    () => createMobileSessionContextValue(bootstrap ?? readMobileSessionBootstrapEnv()),
+  const bootstrapValue = useMemo(
+    () => bootstrap ?? readMobileSessionBootstrapEnv(),
     [bootstrap],
+  );
+  const [currentBabyId, setCurrentBabyId] = useState(bootstrapValue.currentBabyId);
+
+  useEffect(() => {
+    setCurrentBabyId(bootstrapValue.currentBabyId);
+  }, [bootstrapValue.currentBabyId]);
+
+  const value = useMemo(
+    () =>
+      createMobileSessionContextValue(
+        {
+          ...bootstrapValue,
+          currentBabyId,
+        },
+        {
+          setCurrentBabyId,
+        },
+      ),
+    [bootstrapValue, currentBabyId],
   );
 
   return (

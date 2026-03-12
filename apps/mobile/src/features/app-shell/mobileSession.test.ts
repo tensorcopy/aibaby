@@ -7,33 +7,39 @@ import {
 } from "./mobileSession.ts";
 
 test("createMobileSessionContextValue normalizes owner-scoped bootstrap fields", () => {
+  const setCurrentBabyId = () => {};
+
   assert.deepEqual(
-    createMobileSessionContextValue({
-      ownerUserId: " user_123 ",
-      currentBabyId: " baby_123 ",
-    }),
+    createMobileSessionContextValue(
+      {
+        ownerUserId: " user_123 ",
+        currentBabyId: " baby_123 ",
+      },
+      {
+        setCurrentBabyId,
+      },
+    ),
     {
       ownerUserId: "user_123",
       currentBabyId: "baby_123",
       auth: {
         ownerUserId: "user_123",
       },
+      setCurrentBabyId,
     },
   );
 });
 
 test("createMobileSessionContextValue omits auth when no owner user id is bootstrapped", () => {
-  assert.deepEqual(
-    createMobileSessionContextValue({
-      ownerUserId: "   ",
-      currentBabyId: " baby_123 ",
-    }),
-    {
-      ownerUserId: undefined,
-      currentBabyId: "baby_123",
-      auth: undefined,
-    },
-  );
+  const value = createMobileSessionContextValue({
+    ownerUserId: "   ",
+    currentBabyId: " baby_123 ",
+  });
+
+  assert.equal(value.ownerUserId, undefined);
+  assert.equal(value.currentBabyId, "baby_123");
+  assert.equal(value.auth, undefined);
+  assert.equal(typeof value.setCurrentBabyId, "function");
 });
 
 test("readMobileSessionBootstrapEnv pulls the mobile-safe Expo shell bootstrap values", () => {

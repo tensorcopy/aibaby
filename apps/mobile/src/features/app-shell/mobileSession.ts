@@ -5,14 +5,20 @@ export type MobileSessionBootstrapInput = {
   currentBabyId?: string | null;
 };
 
+export type MobileSessionCurrentBabyIdSetter = (babyId?: string) => void;
+
 export type MobileSessionContextValue = {
   ownerUserId?: string;
   currentBabyId?: string;
   auth?: BabyProfileAuth;
+  setCurrentBabyId: MobileSessionCurrentBabyIdSetter;
 };
 
 export function createMobileSessionContextValue(
   input: MobileSessionBootstrapInput = {},
+  options: {
+    setCurrentBabyId?: MobileSessionCurrentBabyIdSetter;
+  } = {},
 ): MobileSessionContextValue {
   const ownerUserId = normalizeOptionalString(input.ownerUserId);
   const currentBabyId = normalizeOptionalString(input.currentBabyId);
@@ -21,6 +27,7 @@ export function createMobileSessionContextValue(
     ownerUserId,
     currentBabyId,
     auth: ownerUserId ? { ownerUserId } : undefined,
+    setCurrentBabyId: options.setCurrentBabyId ?? (() => {}),
   };
 }
 
