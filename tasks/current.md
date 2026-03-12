@@ -8,7 +8,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-002 `todo` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
-- AIB-006 `in_progress` Document local development setup and environment variables
+- AIB-006 `done` Document local development setup and environment variables
 
 ### Data model
 - AIB-019 `todo` Define the Markdown export shape for diary output
@@ -49,7 +49,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
-- AIB-006 `in_progress` Write the first-pass local setup guide and define environment variable conventions for the current scaffold
 
 ## Done
 
@@ -65,6 +64,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-016 `done` Define the weekly summary entity in `docs/data-model.md`
 - AIB-017 `done` Define the reminder entity in `docs/data-model.md`
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
+- AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
 - AIB-102 `done` Split stack and data model decisions into dedicated implementation docs
