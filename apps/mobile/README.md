@@ -32,3 +32,7 @@ A future PR can wire these helpers into actual Expo screens and transport layers
 This slice also adds `src/features/baby-profile/submitRequest.ts`, which turns validated create/edit submissions into reviewable `POST /api/babies` and `PATCH /api/babies/:id` request descriptors for the eventual mobile data layer.
 
 This slice now also includes `src/features/baby-profile/loadRequest.ts`, which builds the owner-scoped `GET /api/babies` and explicit `GET /api/babies/:id` request descriptors needed to bootstrap the create/edit flow over the shared API contract.
+
+It now also includes `src/features/baby-profile/transport.ts`, which executes those load and submit request descriptors over `fetch`, applies the owner-scoped auth headers used by the shared API contract, and normalizes the profile response payload that comes back from the backend.
+
+A future PR can wire these helpers into an actual Expo screen shell and data-loading lifecycle.
