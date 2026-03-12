@@ -39,6 +39,38 @@ test("createBabyProfileRouteModel exposes create-mode fields and labels", () => 
   );
 });
 
+test("createBabyProfileRouteModel groups profile fields into ordered route sections", () => {
+  const state = createBabyProfileScreenState(profile, "explicit");
+  const model = createBabyProfileRouteModel(state);
+
+  assert.deepEqual(
+    model.sections.map((section) => section.key),
+    ["basics", "identity", "feeding", "care"],
+  );
+
+  const basicsSection = model.sections[0];
+  assert.equal(basicsSection?.kind, "text-fields");
+  if (basicsSection?.kind !== "text-fields") {
+    return;
+  }
+
+  assert.deepEqual(
+    basicsSection.fields.map((field) => field.key),
+    ["name", "birthDate"],
+  );
+
+  const careSection = model.sections[3];
+  assert.equal(careSection?.kind, "text-fields");
+  if (careSection?.kind !== "text-fields") {
+    return;
+  }
+
+  assert.deepEqual(
+    careSection.fields.map((field) => field.key),
+    ["allergiesText", "supplementsText", "timezone", "primaryCaregiver"],
+  );
+});
+
 test("createBabyProfileRouteModel surfaces edit-mode submission feedback", () => {
   const state = createBabyProfileScreenState(profile, "explicit");
   const model = createBabyProfileRouteModel({
@@ -63,5 +95,17 @@ test("createBabyProfileRouteModel surfaces edit-mode submission feedback", () =>
   assert.equal(
     model.feedingStyleOptions.find((option) => option.selected)?.label,
     "Mixed",
+  );
+
+  const sexSection = model.sections[1];
+  assert.equal(sexSection?.kind, "choice");
+  if (sexSection?.kind !== "choice") {
+    return;
+  }
+
+  assert.equal(sexSection.label, "Sex");
+  assert.equal(
+    sexSection.options.find((option) => option.selected)?.label,
+    "Prefer not to say",
   );
 });
