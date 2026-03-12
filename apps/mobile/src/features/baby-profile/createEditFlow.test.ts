@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  canSubmitBabyProfileCreateEditState,
   createBabyProfileCreateEditState,
   hasBabyProfileCreateEditUnsavedChanges,
   selectBabyProfileCreateEditAgeSummary,
@@ -119,6 +120,34 @@ test("hasBabyProfileCreateEditUnsavedChanges keeps create mode submittable and e
 
   const changedState = updateBabyProfileField(editState, "timezone", "America/New_York");
   assert.equal(hasBabyProfileCreateEditUnsavedChanges(changedState), true);
+});
+
+test("canSubmitBabyProfileCreateEditState requires a valid form and unsaved changes", () => {
+  let createState = createBabyProfileCreateEditState("create");
+  assert.equal(canSubmitBabyProfileCreateEditState(createState), false);
+
+  createState = updateBabyProfileField(createState, "name", "Yiyi");
+  createState = updateBabyProfileField(createState, "birthDate", "2025-10-15");
+  createState = updateBabyProfileField(createState, "timezone", "America/Los_Angeles");
+  assert.equal(canSubmitBabyProfileCreateEditState(createState), true);
+
+  const editState = createBabyProfileCreateEditState("edit", {
+    name: "Yiyi",
+    birthDate: "2025-10-15",
+    sex: null,
+    feedingStyle: "mixed",
+    allergies: ["egg"],
+    supplements: ["iron"],
+    timezone: "America/Los_Angeles",
+    primaryCaregiver: "Zhen",
+  });
+  assert.equal(canSubmitBabyProfileCreateEditState(editState), false);
+
+  const invalidEditState = updateBabyProfileField(editState, "birthDate", "3026-03-12");
+  assert.equal(canSubmitBabyProfileCreateEditState(invalidEditState), false);
+
+  const validEditState = updateBabyProfileField(editState, "timezone", "America/New_York");
+  assert.equal(canSubmitBabyProfileCreateEditState(validEditState), true);
 });
 
 test("selectBabyProfileCreateEditAgeSummary derives a display label from the chosen birth date", () => {
