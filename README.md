@@ -8,6 +8,7 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/architecture.md`
 - `docs/stack-decision.md`
 - `docs/auth-decision.md`
+- `docs/media-storage-decision.md`
 - `docs/data-model.md`
 - `docs/local-development.md`
 
