@@ -24,7 +24,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-027 `todo` Build today's timeline page
 
 ### Summaries
-- AIB-030 `in_progress` Define daily summary rules and output format
+- AIB-030 `done` Define daily summary rules and output format
 - AIB-031 `todo` Build daily summary generation flow
 - AIB-032 `todo` Store and retrieve daily summaries
 - AIB-033 `todo` Define weekly summary aggregation logic
@@ -48,7 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-030 `in_progress` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
+- No tasks currently in progress
 
 ## Done
 
@@ -68,6 +68,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-017 `done` Define the reminder entity in `docs/data-model.md`
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
+- AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
