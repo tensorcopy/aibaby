@@ -1,3 +1,5 @@
+import type { BabyProfileRouteField } from "./routeModel.ts";
+
 export type BabyProfileRouteLoadingChrome = {
   kind: "loading";
   loadingMessage: string;
@@ -23,6 +25,21 @@ export type BabyProfileRouteSaveButtonChrome = {
   label: string;
   disabled: boolean;
   showSavingSpinner: boolean;
+};
+
+export type BabyProfileRouteTextInputChrome = {
+  autoCapitalize: "none" | "words";
+  autoCorrect: boolean;
+  keyboardType: "default" | "numbers-and-punctuation";
+  maxLength?: number;
+};
+
+export type BabyProfileRouteChoiceChipChrome = {
+  accessibilityRole: "radio";
+  accessibilityState: {
+    disabled: boolean;
+    selected: boolean;
+  };
 };
 
 export function createBabyProfileRouteLoadingChrome({
@@ -87,5 +104,48 @@ export function createBabyProfileRouteSaveButtonChrome({
     label,
     disabled,
     showSavingSpinner: isSaving,
+  };
+}
+
+export function createBabyProfileRouteTextInputChrome(
+  field: BabyProfileRouteField,
+): BabyProfileRouteTextInputChrome {
+  if (field.kind === "date") {
+    return {
+      autoCapitalize: "none",
+      autoCorrect: false,
+      keyboardType: "numbers-and-punctuation",
+      maxLength: 10,
+    };
+  }
+
+  if (field.key === "timezone") {
+    return {
+      autoCapitalize: "none",
+      autoCorrect: false,
+      keyboardType: "default",
+    };
+  }
+
+  return {
+    autoCapitalize: "words",
+    autoCorrect: false,
+    keyboardType: "default",
+  };
+}
+
+export function createBabyProfileRouteChoiceChipChrome({
+  disabled,
+  selected,
+}: {
+  disabled: boolean;
+  selected: boolean;
+}): BabyProfileRouteChoiceChipChrome {
+  return {
+    accessibilityRole: "radio",
+    accessibilityState: {
+      disabled,
+      selected,
+    },
   };
 }

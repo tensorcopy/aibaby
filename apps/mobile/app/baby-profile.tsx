@@ -35,10 +35,12 @@ import {
 } from "../src/features/baby-profile/routeModel.ts";
 import { createBabyProfileRouteScreenModel } from "../src/features/baby-profile/routeScreenModel.ts";
 import {
+  createBabyProfileRouteChoiceChipChrome,
   createBabyProfileRouteErrorChrome,
   createBabyProfileRouteLoadingChrome,
   createBabyProfileRouteRequestErrorBanner,
   createBabyProfileRouteSaveButtonChrome,
+  createBabyProfileRouteTextInputChrome,
 } from "../src/features/baby-profile/routeScreenChrome.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 
@@ -284,12 +286,17 @@ function FormTextField({
   field: ReturnType<typeof createBabyProfileRouteModel>["textFields"][number];
   setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
 }) {
+  const chrome = createBabyProfileRouteTextInputChrome(field);
+
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.fieldLabel}>{field.label}</Text>
       <TextInput
-        autoCapitalize="sentences"
+        autoCapitalize={chrome.autoCapitalize}
+        autoCorrect={chrome.autoCorrect}
         editable={!disabled}
+        keyboardType={chrome.keyboardType}
+        maxLength={chrome.maxLength}
         multiline={field.kind === "textarea"}
         onChangeText={(value) => {
           setState((current) => updateReadyStateField(current, field.key, value));
@@ -323,24 +330,33 @@ function ChoiceField<T extends string>({
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.fieldLabel}>{label}</Text>
-      <View style={styles.choiceRow}>
-        {options.map((option) => (
-          <Pressable
-            key={option.value}
-            accessibilityRole="button"
-            disabled={disabled}
-            onPress={() => onSelect(option.value)}
-            style={[
-              styles.choiceChip,
-              option.selected ? styles.choiceChipSelected : null,
-              disabled ? styles.fieldDisabled : null,
-            ]}
-          >
-            <Text style={option.selected ? styles.choiceChipSelectedText : styles.choiceChipText}>
-              {option.label}
-            </Text>
-          </Pressable>
-        ))}
+      <View accessibilityRole="radiogroup" style={styles.choiceRow}>
+        {options.map((option) => {
+          const chrome = createBabyProfileRouteChoiceChipChrome({
+            disabled,
+            selected: option.selected,
+          });
+
+          return (
+            <Pressable
+              key={option.value}
+              accessibilityLabel={`${label}: ${option.label}`}
+              accessibilityRole={chrome.accessibilityRole}
+              accessibilityState={chrome.accessibilityState}
+              disabled={disabled}
+              onPress={() => onSelect(option.value)}
+              style={[
+                styles.choiceChip,
+                option.selected ? styles.choiceChipSelected : null,
+                disabled ? styles.fieldDisabled : null,
+              ]}
+            >
+              <Text style={option.selected ? styles.choiceChipSelectedText : styles.choiceChipText}>
+                {option.label}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
