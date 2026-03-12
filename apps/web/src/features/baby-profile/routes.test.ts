@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import test, { afterEach } from 'node:test';
 
 import { POST } from '../../../app/api/babies/route.ts';
-import { PATCH } from '../../../app/api/babies/[babyId]/route.ts';
+import { GET, PATCH } from '../../../app/api/babies/[babyId]/route.ts';
 
 const require = createRequire(import.meta.url);
 const {
@@ -119,6 +119,62 @@ test('POST /api/babies returns 400 for invalid request payloads', async () => {
         message: 'Required',
       },
     ],
+  });
+});
+
+test('GET /api/babies/:babyId returns the owner-scoped profile payload', async () => {
+  const calls: Array<unknown> = [];
+
+  setBabyProfileRouteDependenciesForTest({
+    async getOwnerUserId() {
+      return 'user_123';
+    },
+    async getBabyProfileById(query: Record<string, unknown>) {
+      calls.push(query);
+
+      return {
+        id: query.babyId,
+        owner_user_id: query.ownerUserId,
+        name: 'Yiyi',
+        birth_date: '2025-10-15',
+        sex: null,
+        feeding_style: 'mixed',
+        timezone: 'America/Los_Angeles',
+        allergies_json: ['dairy', 'egg'],
+        supplements_json: ['iron'],
+        primary_caregiver: 'Zhen',
+        created_at: '2026-03-12T06:10:00.000Z',
+        updated_at: '2026-03-12T06:12:00.000Z',
+      };
+    },
+  });
+
+  const response = await GET(new Request('http://localhost/api/babies/baby_123'), {
+    params: {
+      babyId: ' baby_123 ',
+    },
+  });
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(calls, [
+    {
+      ownerUserId: 'user_123',
+      babyId: 'baby_123',
+    },
+  ]);
+  assert.deepEqual(await response.json(), {
+    id: 'baby_123',
+    ownerUserId: 'user_123',
+    name: 'Yiyi',
+    birthDate: '2025-10-15',
+    sex: null,
+    feedingStyle: 'mixed',
+    timezone: 'America/Los_Angeles',
+    allergies: ['dairy', 'egg'],
+    supplements: ['iron'],
+    primaryCaregiver: 'Zhen',
+    createdAt: '2026-03-12T06:10:00.000Z',
+    updatedAt: '2026-03-12T06:12:00.000Z',
   });
 });
 

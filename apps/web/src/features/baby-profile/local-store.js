@@ -22,11 +22,27 @@ async function insertBabyProfile(insert) {
   return row;
 }
 
+async function getBabyProfileById({ ownerUserId, babyId }) {
+  const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
+  const normalizedBabyId = normalizeRequiredBabyId(babyId);
+  const data = await readStore();
+  const profile = data.babyProfiles.find(
+    (candidate) => candidate.id === normalizedBabyId && candidate.owner_user_id === normalizedOwnerUserId,
+  );
+
+  if (!profile) {
+    throw new NotFoundRouteError('Baby profile not found');
+  }
+
+  return profile;
+}
+
 async function updateBabyProfile({ ownerUserId, babyId, patch }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
+  const normalizedBabyId = normalizeRequiredBabyId(babyId);
   const data = await readStore();
   const profileIndex = data.babyProfiles.findIndex(
-    (profile) => profile.id === babyId && profile.owner_user_id === normalizedOwnerUserId,
+    (profile) => profile.id === normalizedBabyId && profile.owner_user_id === normalizedOwnerUserId,
   );
 
   if (profileIndex < 0) {
@@ -91,6 +107,14 @@ function buildBabyId() {
   return `baby_${randomUUID().replace(/-/g, '').slice(0, 12)}`;
 }
 
+function normalizeRequiredBabyId(babyId) {
+  if (typeof babyId !== 'string' || babyId.trim().length === 0) {
+    throw new NotFoundRouteError('Baby profile not found');
+  }
+
+  return babyId.trim();
+}
+
 function normalizeRequiredOwnerUserId(ownerUserId) {
   if (typeof ownerUserId !== 'string' || ownerUserId.trim().length === 0) {
     throw new UnauthorizedRouteError('An authenticated owner user id is required');
@@ -100,6 +124,7 @@ function normalizeRequiredOwnerUserId(ownerUserId) {
 }
 
 module.exports = {
+  getBabyProfileById,
   getDataFilePath,
   insertBabyProfile,
   updateBabyProfile,
