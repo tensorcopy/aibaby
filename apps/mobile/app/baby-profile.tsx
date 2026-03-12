@@ -34,6 +34,12 @@ import {
 } from "../src/features/baby-profile/routeScreenController.ts";
 import { createBabyProfileRouteModel } from "../src/features/baby-profile/routeModel.ts";
 import { createBabyProfileRouteScreenModel } from "../src/features/baby-profile/routeScreenModel.ts";
+import {
+  createBabyProfileRouteErrorChrome,
+  createBabyProfileRouteLoadingChrome,
+  createBabyProfileRouteRequestErrorBanner,
+  createBabyProfileRouteSaveButtonChrome,
+} from "../src/features/baby-profile/routeScreenChrome.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 
 export default function BabyProfileRoute() {
@@ -81,36 +87,47 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const screenModel = createBabyProfileRouteScreenModel({ state, isSaving, isRetryingLoad });
 
   if (screenModel.kind === "loading") {
+    const chrome = createBabyProfileRouteLoadingChrome({
+      loadingMessage: screenModel.loadingMessage,
+    });
+
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
-        <Text style={styles.loadingText}>{screenModel.loadingMessage}</Text>
+        <Text style={styles.loadingText}>{chrome.loadingMessage}</Text>
       </View>
     );
   }
 
   if (screenModel.kind === "error") {
+    const chrome = createBabyProfileRouteErrorChrome({
+      title: screenModel.title,
+      subtitle: screenModel.subtitle,
+      errorMessage: screenModel.errorMessage,
+      retryLabel: screenModel.retryLabel,
+      retryDisabled: screenModel.retryDisabled,
+    });
+
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>{screenModel.title}</Text>
-        <Text style={styles.subtitle}>{screenModel.subtitle}</Text>
+        <Text style={styles.title}>{chrome.title}</Text>
+        <Text style={styles.subtitle}>{chrome.subtitle}</Text>
         <View style={styles.errorBanner}>
-          <Text style={styles.errorBannerText}>{screenModel.errorMessage}</Text>
+          <Text style={styles.errorBannerText}>{chrome.errorMessage}</Text>
         </View>
         <Pressable
           accessibilityRole="button"
-          disabled={screenModel.retryDisabled}
+          disabled={chrome.retryDisabled}
           onPress={() => {
             setIsRetryingLoad(true);
             setLoadAttempt((current) => current + 1);
           }}
-          style={[
-            styles.retryButton,
-            screenModel.retryDisabled ? styles.retryButtonDisabled : null,
-          ]}
+          style={[styles.retryButton, chrome.retryDisabled ? styles.retryButtonDisabled : null]}
         >
-          {screenModel.retryDisabled ? <ActivityIndicator color="#0f172a" size="small" /> : null}
-          <Text style={styles.retryButtonText}>{screenModel.retryLabel}</Text>
+          {chrome.showRetrySpinner ? (
+            <ActivityIndicator color="#0f172a" size="small" />
+          ) : null}
+          <Text style={styles.retryButtonText}>{chrome.retryLabel}</Text>
         </Pressable>
       </ScrollView>
     );
@@ -140,11 +157,17 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
 
-      {screenModel.requestErrorMessage ? (
-        <View style={styles.errorBanner}>
-          <Text style={styles.errorBannerText}>{screenModel.requestErrorMessage}</Text>
-        </View>
-      ) : null}
+      {(() => {
+        const requestErrorBanner = createBabyProfileRouteRequestErrorBanner(
+          screenModel.requestErrorMessage,
+        );
+
+        return requestErrorBanner ? (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorBannerText}>{requestErrorBanner.message}</Text>
+          </View>
+        ) : null;
+      })()}
 
       {model.textFields.slice(0, 2).map((field) => (
         <FormTextField
@@ -184,17 +207,29 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
 
       {model.statusMessage ? <Text style={styles.status}>{model.statusMessage}</Text> : null}
 
-      <Pressable
-        accessibilityRole="button"
-        disabled={screenModel.inputsDisabled}
-        onPress={() => {
-          void onSavePress();
-        }}
-        style={[styles.submitButton, screenModel.inputsDisabled ? styles.submitButtonDisabled : null]}
-      >
-        {screenModel.isSaving ? <ActivityIndicator color="#ffffff" size="small" /> : null}
-        <Text style={styles.submitButtonText}>{screenModel.submitLabel}</Text>
-      </Pressable>
+      {(() => {
+        const saveButton = createBabyProfileRouteSaveButtonChrome({
+          label: screenModel.submitLabel,
+          disabled: screenModel.inputsDisabled,
+          isSaving: screenModel.isSaving,
+        });
+
+        return (
+          <Pressable
+            accessibilityRole="button"
+            disabled={saveButton.disabled}
+            onPress={() => {
+              void onSavePress();
+            }}
+            style={[styles.submitButton, saveButton.disabled ? styles.submitButtonDisabled : null]}
+          >
+            {saveButton.showSavingSpinner ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : null}
+            <Text style={styles.submitButtonText}>{saveButton.label}</Text>
+          </Pressable>
+        );
+      })()}
     </ScrollView>
   );
 }
