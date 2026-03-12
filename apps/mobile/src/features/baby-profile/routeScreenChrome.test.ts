@@ -75,33 +75,76 @@ test("createBabyProfileRouteSaveButtonChrome swaps to the saving label and disab
 
 test("createBabyProfileRouteTextInputChrome gives the birth-date field a constrained keyboard", () => {
   assert.deepEqual(
-    createBabyProfileRouteTextInputChrome({
-      key: "birthDate",
-      label: "Birth date",
-      value: "2025-10-15",
-      kind: "date",
-    }),
+    createBabyProfileRouteTextInputChrome(
+      {
+        key: "birthDate",
+        label: "Birth date",
+        value: "2025-10-15",
+        kind: "date",
+      },
+      { disabled: false },
+    ),
     {
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "numbers-and-punctuation",
       maxLength: 10,
+      accessibilityHint: undefined,
+      accessibilityState: {
+        disabled: false,
+        invalid: false,
+      },
     },
   );
 });
 
 test("createBabyProfileRouteTextInputChrome keeps the timezone field case-stable", () => {
   assert.deepEqual(
-    createBabyProfileRouteTextInputChrome({
-      key: "timezone",
-      label: "Timezone",
-      value: "America/Los_Angeles",
-      kind: "text",
-    }),
+    createBabyProfileRouteTextInputChrome(
+      {
+        key: "timezone",
+        label: "Timezone",
+        value: "America/Los_Angeles",
+        kind: "text",
+      },
+      { disabled: true },
+    ),
     {
       autoCapitalize: "none",
       autoCorrect: false,
       keyboardType: "default",
+      accessibilityHint: undefined,
+      accessibilityState: {
+        disabled: true,
+        invalid: false,
+      },
+    },
+  );
+});
+
+
+
+test("createBabyProfileRouteTextInputChrome marks invalid fields for assistive tech", () => {
+  assert.deepEqual(
+    createBabyProfileRouteTextInputChrome(
+      {
+        key: "name",
+        label: "Baby name",
+        value: "",
+        kind: "text",
+        error: "Name is required.",
+      },
+      { disabled: false },
+    ),
+    {
+      autoCapitalize: "words",
+      autoCorrect: false,
+      keyboardType: "default",
+      accessibilityHint: "Name is required.",
+      accessibilityState: {
+        disabled: false,
+        invalid: true,
+      },
     },
   );
 });
@@ -111,12 +154,15 @@ test("createBabyProfileRouteChoiceChipChrome exposes radio selection state for g
     createBabyProfileRouteChoiceChipChrome({
       disabled: true,
       selected: true,
+      error: "Choose a supported option.",
     }),
     {
       accessibilityRole: "radio",
+      accessibilityHint: "Choose a supported option.",
       accessibilityState: {
         disabled: true,
         selected: true,
+        invalid: true,
       },
     },
   );
