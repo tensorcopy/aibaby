@@ -83,6 +83,7 @@ test("createBabyProfileRouteScreenModel keeps inline save errors visible while p
   assert.equal(model.route.title, "Baby profile");
   assert.equal(model.requestErrorMessage, "Failed to reach the baby profile API");
   assert.equal(model.submitLabel, "Save profile");
+  assert.equal(model.inputsDisabled, false);
 });
 
 test("createBabyProfileRouteScreenModel hides stale inline save errors while a retry is in flight", () => {
@@ -101,6 +102,7 @@ test("createBabyProfileRouteScreenModel hides stale inline save errors while a r
 
   assert.equal(model.requestErrorMessage, null);
   assert.equal(model.submitLabel, "Saving…");
+  assert.equal(model.inputsDisabled, true);
 });
 
 test("createBabyProfileRouteScreenModel swaps the submit label while a retry is in flight", () => {
@@ -115,5 +117,6 @@ test("createBabyProfileRouteScreenModel swaps the submit label while a retry is 
   }
 
   assert.equal(model.submitLabel, "Saving…");
+  assert.equal(model.inputsDisabled, true);
   assert.equal(model.isSaving, true);
 });
