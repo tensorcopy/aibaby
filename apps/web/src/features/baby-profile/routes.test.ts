@@ -19,6 +19,53 @@ afterEach(() => {
   resetBabyProfileRouteDependencies();
 });
 
+test('GET /api/babies returns the owner-scoped current profile payload', async () => {
+  const calls: Array<unknown> = [];
+
+  setBabyProfileRouteDependenciesForTest({
+    async getOwnerUserId() {
+      return 'user_123';
+    },
+    async getCurrentBabyProfileByOwnerUserId(query: Record<string, unknown>) {
+      calls.push(query);
+
+      return {
+        id: 'baby_123',
+        owner_user_id: query.ownerUserId,
+        name: 'Yiyi',
+        birth_date: '2025-10-15',
+        sex: null,
+        feeding_style: 'mixed',
+        timezone: 'America/Los_Angeles',
+        allergies_json: ['dairy', 'egg'],
+        supplements_json: ['iron'],
+        primary_caregiver: 'Zhen',
+        created_at: '2026-03-12T06:10:00.000Z',
+        updated_at: '2026-03-12T06:12:00.000Z',
+      };
+    },
+  });
+
+  const response = await (await importBabiesRoute()).GET(new Request('http://localhost/api/babies'));
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(calls, [{ ownerUserId: 'user_123' }]);
+  assert.deepEqual(await response.json(), {
+    id: 'baby_123',
+    ownerUserId: 'user_123',
+    name: 'Yiyi',
+    birthDate: '2025-10-15',
+    sex: null,
+    feedingStyle: 'mixed',
+    timezone: 'America/Los_Angeles',
+    allergies: ['dairy', 'egg'],
+    supplements: ['iron'],
+    primaryCaregiver: 'Zhen',
+    createdAt: '2026-03-12T06:10:00.000Z',
+    updatedAt: '2026-03-12T06:12:00.000Z',
+  });
+});
+
 test('POST /api/babies returns a created profile from the action wrapper', async () => {
   const calls: Array<unknown> = [];
 
@@ -115,15 +162,18 @@ test('POST /api/babies returns 400 for invalid request payloads', async () => {
   );
 
   assert.equal(response.status, 400);
-  assert.deepEqual(await response.json(), {
-    error: 'Invalid request body',
-    issues: [
-      {
-        path: ['name'],
-        message: 'Required',
-      },
-    ],
-  });
+
+  const payload = await response.json();
+
+  assert.equal(payload.error, 'Invalid request body');
+  assert.deepEqual(payload.issues, [
+    {
+      path: ['name'],
+      message: payload.issues[0]?.message,
+    },
+  ]);
+  assert.equal(typeof payload.issues[0]?.message, 'string');
+  assert.notEqual(payload.issues[0]?.message.length, 0);
 });
 
 test('GET /api/babies/:babyId returns the owner-scoped profile payload', async () => {

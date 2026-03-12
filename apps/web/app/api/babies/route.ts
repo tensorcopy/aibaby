@@ -1,9 +1,24 @@
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { createBabyProfileAction } = require('../../../src/features/baby-profile/actions.js');
+const { createBabyProfileAction, getCurrentBabyProfileAction } = require('../../../src/features/baby-profile/actions.js');
 const { getBabyProfileRouteDependencies } = require('../../../src/features/baby-profile/route-dependencies.js');
 const { buildJsonResponse, buildRouteErrorResponse } = require('../../../src/features/baby-profile/route-response.js');
+
+export async function GET(request: Request): Promise<Response> {
+  try {
+    const { getOwnerUserId, getCurrentBabyProfileByOwnerUserId } = getBabyProfileRouteDependencies();
+
+    const result = await getCurrentBabyProfileAction({
+      ownerUserId: await getOwnerUserId(request),
+      getCurrentBabyProfileByOwnerUserId,
+    });
+
+    return buildJsonResponse(result.body, { status: result.status });
+  } catch (error) {
+    return buildRouteErrorResponse(error);
+  }
+}
 
 export async function POST(request: Request): Promise<Response> {
   try {
