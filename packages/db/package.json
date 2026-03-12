@@ -2,5 +2,11 @@
   "name": "@aibaby/db",
   "private": true,
   "version": "0.0.0",
-  "description": "Database package scaffold placeholder for AI Baby"
+  "description": "Database and shared persistence layer for AI Baby",
+  "dependencies": {
+    "zod": "^3.24.2"
+  },
+  "scripts": {
+    "test:baby-profile": "node --test src/baby-profile.test.js"
+  }
 }
