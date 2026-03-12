@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { updateBabyProfileAction } = require('../../../../src/features/baby-profile/actions.js');
+const { getBabyProfileAction, updateBabyProfileAction } = require('../../../../src/features/baby-profile/actions.js');
 const { getBabyProfileRouteDependencies } = require('../../../../src/features/baby-profile/route-dependencies.js');
 const { buildJsonResponse, buildRouteErrorResponse } = require('../../../../src/features/baby-profile/route-response.js');
 
@@ -15,15 +15,32 @@ type RouteContext = {
       };
 };
 
+export async function GET(request: Request, context: RouteContext): Promise<Response> {
+  try {
+    const babyId = await resolveBabyId(context);
+    const { getOwnerUserId, getBabyProfileById } = getBabyProfileRouteDependencies();
+
+    const result = await getBabyProfileAction({
+      ownerUserId: await getOwnerUserId(request),
+      babyId,
+      getBabyProfileById,
+    });
+
+    return buildJsonResponse(result.body, { status: result.status });
+  } catch (error) {
+    return buildRouteErrorResponse(error);
+  }
+}
+
 export async function PATCH(request: Request, context: RouteContext): Promise<Response> {
   try {
     const body = await request.json();
-    const params = await context.params;
+    const babyId = await resolveBabyId(context);
     const { getOwnerUserId, updateBabyProfile } = getBabyProfileRouteDependencies();
 
     const result = await updateBabyProfileAction({
       ownerUserId: await getOwnerUserId(request),
-      babyId: params.babyId,
+      babyId,
       body,
       updateBabyProfile,
     });
@@ -32,4 +49,9 @@ export async function PATCH(request: Request, context: RouteContext): Promise<Re
   } catch (error) {
     return buildRouteErrorResponse(error);
   }
+}
+
+async function resolveBabyId(context: RouteContext): Promise<string> {
+  const params = await context.params;
+  return params.babyId;
 }
