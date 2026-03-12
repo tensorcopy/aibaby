@@ -8,6 +8,7 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/architecture.md`
 - `docs/stack-decision.md`
 - `docs/data-model.md`
+- `docs/local-development.md`
 
 ## Repository layout
 
@@ -21,3 +22,9 @@ This repository follows the accepted stack and boundaries documented in:
 ## Status
 
 This is scaffold-only. No application runtime, database schema, or AI pipeline has been implemented yet.
+
+## Local setup
+
+- install dependencies with `npm install`
+- follow `docs/local-development.md` for setup expectations and env-file conventions
+- copy `.env.example` to `.env.local` when a task introduces real local credentials
