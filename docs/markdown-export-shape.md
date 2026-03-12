@@ -165,7 +165,7 @@ Recommended shape:
 - Dinner plate photo: `media/2026-03-12-dinner-01.jpg`
 ```
 
-If the export later supports remote references, keep the label text the same and swap the target.
+The accepted MVP baseline is copied local media. If the export later supports remote references, keep the label text the same and swap the target.
 
 ### Metadata
 
@@ -204,7 +204,7 @@ Example:
 media/2026-03-12-breakfast-01.jpg
 ```
 
-This keeps references stable whether media is copied locally or later remapped by an exporter.
+This keeps references stable for the accepted copied-media baseline and still leaves room for a later reference-based mode.
 
 ## Data mapping guidance
 
@@ -243,4 +243,3 @@ Prefer:
 - AIB-052 decide copied media versus referenced URLs
 - AIB-053 finalize the YAML frontmatter fields
 - AIB-054 build the first-pass export flow
-

@@ -42,13 +42,11 @@ This file is the lightweight shared backlog for human and agent coordination.
 ### Export and portability
 - AIB-050 `done` Define export package structure
 - AIB-051 `done` Define Markdown note format for Obsidian compatibility
-- AIB-052 `in_progress` Decide media export behavior: local files vs referenced URLs
+- AIB-052 `done` Decide media export behavior: local files vs referenced URLs
 - AIB-053 `todo` Define YAML frontmatter fields for exported notes
 - AIB-054 `todo` Build first-pass Markdown export flow
 
 ## In Progress
-
-- AIB-052 `in_progress` Decide whether export bundles default to copied local media, referenced URLs, or a mixed mode
 
 ## Done
 
@@ -70,6 +68,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
+- AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones

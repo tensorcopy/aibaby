@@ -164,12 +164,12 @@ Allowed planned values:
 - `referenced`
 - `mixed`
 
-For MVP planning, the package structure should assume it can support either:
+Accepted MVP baseline:
 
-- copied local media in `media/`
-- or empty `media/` plus external references recorded in notes and metadata
+- default to `copied` local media in `media/`
+- keep the structure flexible enough to support `referenced` or `mixed` modes later
 
-This avoids redesigning the bundle when AIB-052 is finalized.
+See `docs/export-media-mode-decision.md` for the default-mode decision.
 
 ## Example bundle
 
@@ -219,4 +219,3 @@ ai-baby-export-luna-2026-03-12T04-10-00Z/
 - AIB-052 finalize copied versus referenced media behavior
 - AIB-053 finalize the exact YAML frontmatter fields
 - AIB-054 implement bundle generation and archive download
-
