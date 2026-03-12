@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocalSearchParams } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { createMobileHomeProfileSummary } from "../src/features/app-shell/homeProfileSummary.ts";
 import { createMobileRootNavigationModel } from "../src/features/app-shell/rootNavigation.ts";
@@ -93,7 +93,7 @@ export default function HomeRoute() {
   );
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
       {model.statusBanner ? (
@@ -135,7 +135,42 @@ export default function HomeRoute() {
           <Text style={styles.primaryButtonText}>{model.primaryAction.label}</Text>
         </Pressable>
       </Link>
-    </View>
+
+      <View style={styles.quickActionsSection}>
+        <Text style={styles.quickActionsTitle}>Continue with the mobile flow</Text>
+        <Text style={styles.quickActionsSubtitle}>
+          Keep the next MVP screens one tap away from the active baby profile.
+        </Text>
+        <View style={styles.quickActionsList}>
+          {model.quickActions.map((action) => {
+            const card = (
+              <View
+                style={[
+                  styles.quickActionCard,
+                  action.href ? styles.quickActionCardEnabled : styles.quickActionCardDisabled,
+                ]}
+              >
+                <Text style={styles.quickActionLabel}>{action.label}</Text>
+                <Text style={styles.quickActionDescription}>{action.description}</Text>
+                <Text style={styles.quickActionMeta}>
+                  {action.href ? "Open screen" : action.disabledReason}
+                </Text>
+              </View>
+            );
+
+            if (!action.href) {
+              return <View key={action.key}>{card}</View>;
+            }
+
+            return (
+              <Link key={action.key} asChild href={action.href}>
+                <Pressable accessibilityRole="button">{card}</Pressable>
+              </Link>
+            );
+          })}
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -149,8 +184,7 @@ function getHomeProfileErrorMessage(error: unknown): string {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
+    flexGrow: 1,
     padding: 24,
     gap: 16,
     backgroundColor: "#f8fafc",
@@ -264,5 +298,52 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "700",
+  },
+  quickActionsSection: {
+    gap: 8,
+    marginTop: 8,
+  },
+  quickActionsTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#0f172a",
+  },
+  quickActionsSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#475569",
+  },
+  quickActionsList: {
+    gap: 12,
+    marginTop: 4,
+  },
+  quickActionCard: {
+    gap: 8,
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 16,
+  },
+  quickActionCardEnabled: {
+    borderColor: "#cbd5f5",
+    backgroundColor: "#ffffff",
+  },
+  quickActionCardDisabled: {
+    borderColor: "#e2e8f0",
+    backgroundColor: "#f8fafc",
+  },
+  quickActionLabel: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#0f172a",
+  },
+  quickActionDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#334155",
+  },
+  quickActionMeta: {
+    fontSize: 13,
+    lineHeight: 18,
+    color: "#475569",
   },
 });

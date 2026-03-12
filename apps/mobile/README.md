@@ -41,6 +41,8 @@ This slice now also adds a minimal Expo Router bootstrap with `app/_layout.tsx` 
 
 The home route now also reloads the active baby profile and surfaces a compact summary card with age, feeding style, and saved caregiver/allergy/supplement basics before the user re-enters the edit flow.
 
+It now also exposes stable home quick actions for meal logging, today's timeline, and summary history, with baby-scoped route handoff so the next mobile slices can land on predictable destinations.
+
 This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can bootstrap an owner-scoped current profile and keep the baby profile route pointed at the same session context.
 
 A future PR can replace this bootstrap with real Supabase session plumbing and richer navigation once auth and additional screens land.

@@ -14,7 +14,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-019 `done` Define the Markdown export shape for diary output
 
 ### MVP vertical slice
-- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: add mobile home quick actions beyond the baby-profile handoff)
 - AIB-021 `todo` Build chat input UI for text and image submission
 - AIB-022 `todo` Build image upload pipeline
 - AIB-023 `todo` Build text-to-record parsing flow
@@ -48,7 +47,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: add mobile home quick actions beyond the baby-profile handoff)
+- No current in-progress tasks
 
 ## Done
 
@@ -68,6 +67,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-017 `done` Define the reminder entity in `docs/data-model.md`
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
+- AIB-020 `done` Build the first-pass mobile baby profile create/edit flow, including home handoff and quick actions
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
 - AIB-032 `done` Build the first-pass daily summary storage and retrieval contract in `packages/db`

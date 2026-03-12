@@ -8,17 +8,17 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <MobileSessionProvider>
         <Stack
-        screenOptions={{
-          headerShadowVisible: false,
-          headerTitleStyle: {
-            color: "#0f172a",
-            fontWeight: "600",
-          },
-          contentStyle: {
-            backgroundColor: "#f8fafc",
-          },
-        }}
-      >
+          screenOptions={{
+            headerShadowVisible: false,
+            headerTitleStyle: {
+              color: "#0f172a",
+              fontWeight: "600",
+            },
+            contentStyle: {
+              backgroundColor: "#f8fafc",
+            },
+          }}
+        >
         <Stack.Screen
           name="index"
           options={{
@@ -29,6 +29,24 @@ export default function RootLayout() {
           name="baby-profile"
           options={{
             title: "Baby profile",
+          }}
+        />
+        <Stack.Screen
+          name="log-meal"
+          options={{
+            title: "Log a meal",
+          }}
+        />
+        <Stack.Screen
+          name="today"
+          options={{
+            title: "Today's timeline",
+          }}
+        />
+        <Stack.Screen
+          name="summaries"
+          options={{
+            title: "Summary history",
           }}
         />
         </Stack>
