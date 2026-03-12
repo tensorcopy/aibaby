@@ -6,7 +6,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ### Foundation
 - AIB-002 `done` Choose the auth approach
-- AIB-003 `todo` Choose the media storage approach for photos and videos
+- AIB-003 `in_progress` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
 - AIB-006 `done` Document local development setup and environment variables
 
@@ -48,6 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
+- AIB-003 `in_progress` Document the MVP media storage decision and define the storage boundary for uploaded photos and future videos
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
 
 ## Done
