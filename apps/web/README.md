@@ -16,3 +16,14 @@ Not included yet:
 - route handlers
 - auth integration
 - deployment configuration
+
+## Baby profile scaffolding slice
+
+The first AIB-020 backend slice lives in `src/features/baby-profile/api-contract.js`.
+
+This adds:
+- request-body parsing helpers for `POST /api/babies` and `PATCH /api/babies/:id`
+- adapters from validated API payloads into the shared DB insert/update shapes
+- a response serializer that maps stored baby-profile rows back into API JSON
+
+A future PR can wrap these helpers in real App Router handlers once the Next.js app scaffold lands.
