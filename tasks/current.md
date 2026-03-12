@@ -24,10 +24,10 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-027 `todo` Build today's timeline page
 
 ### Summaries
-- AIB-030 `in_progress` Define daily summary rules and output format
-- AIB-031 `todo` Build daily summary generation flow
-- AIB-032 `todo` Store and retrieve daily summaries
-- AIB-033 `todo` Define weekly summary aggregation logic
+- AIB-030 `done` Define daily summary rules and output format
+- AIB-031 `done` Build daily summary generation flow
+- AIB-032 `done` Store and retrieve daily summaries
+- AIB-033 `done` Define weekly summary aggregation logic
 - AIB-034 `todo` Build weekly summary generation flow
 - AIB-035 `todo` Build summary history view
 
@@ -48,7 +48,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-030 `in_progress` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
+- AIB-020 `in_progress` Build baby profile create/edit flow
 
 ## Done
 
@@ -68,6 +68,10 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-017 `done` Define the reminder entity in `docs/data-model.md`
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
+- AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
+- AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
+- AIB-032 `done` Build the first-pass daily summary storage and retrieval contract in `packages/db`
+- AIB-033 `done` Define the first-pass weekly summary aggregation rules and output shape
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
