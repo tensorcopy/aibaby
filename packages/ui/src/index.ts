@@ -1,2 +1,2 @@
-export * from "./baby-profile/form";
-export * from "./baby-profile/age-summary";
+export * from "./baby-profile/form.ts";
+export * from "./baby-profile/age-summary.ts";
