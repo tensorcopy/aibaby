@@ -30,6 +30,7 @@ import {
   type BabyProfileScreenState,
 } from "../src/features/baby-profile/screenShell.ts";
 import { createBabyProfileRouteModel } from "../src/features/baby-profile/routeModel.ts";
+import { createBabyProfileRouteScreenModel } from "../src/features/baby-profile/routeScreenModel.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 
 export default function BabyProfileRoute() {
@@ -72,24 +73,24 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     };
   }, [auth, babyId, loadAttempt, session.setCurrentBabyId]);
 
-  if (state.status === "loading") {
+  const screenModel = createBabyProfileRouteScreenModel({ state, isSaving });
+
+  if (screenModel.kind === "loading") {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
-        <Text style={styles.loadingText}>Loading baby profile…</Text>
+        <Text style={styles.loadingText}>{screenModel.loadingMessage}</Text>
       </View>
     );
   }
 
-  if (state.status === "error") {
+  if (screenModel.kind === "error") {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Baby profile</Text>
-        <Text style={styles.subtitle}>
-          We couldn&apos;t load this profile right now. Try again to keep editing.
-        </Text>
+        <Text style={styles.title}>{screenModel.title}</Text>
+        <Text style={styles.subtitle}>{screenModel.subtitle}</Text>
         <View style={styles.errorBanner}>
-          <Text style={styles.errorBannerText}>{state.message}</Text>
+          <Text style={styles.errorBannerText}>{screenModel.errorMessage}</Text>
         </View>
         <Pressable
           accessibilityRole="button"
@@ -98,13 +99,13 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
           }}
           style={styles.retryButton}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{screenModel.retryLabel}</Text>
         </Pressable>
       </ScrollView>
     );
   }
 
-  const model = createBabyProfileRouteModel(state);
+  const { route: model } = screenModel;
 
   async function onSavePress() {
     setIsSaving(true);
@@ -126,9 +127,9 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
 
-      {state.requestErrorMessage ? (
+      {screenModel.requestErrorMessage ? (
         <View style={styles.errorBanner}>
-          <Text style={styles.errorBannerText}>{state.requestErrorMessage}</Text>
+          <Text style={styles.errorBannerText}>{screenModel.requestErrorMessage}</Text>
         </View>
       ) : null}
 
@@ -164,9 +165,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
         }}
         style={[styles.submitButton, isSaving ? styles.submitButtonDisabled : null]}
       >
-        <Text style={styles.submitButtonText}>
-          {isSaving ? "Saving…" : model.submitLabel}
-        </Text>
+        <Text style={styles.submitButtonText}>{screenModel.submitLabel}</Text>
       </Pressable>
     </ScrollView>
   );

@@ -14,7 +14,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-019 `done` Define the Markdown export shape for diary output
 
 ### MVP vertical slice
-- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: claim + implement route-level coverage for inline transport error and retry states)
+- AIB-020 `in_progress` Build baby profile create/edit flow (current slice: add component-render coverage around the tested route screen states)
 - AIB-021 `todo` Build chat input UI for text and image submission
 - AIB-022 `todo` Build image upload pipeline
 - AIB-023 `todo` Build text-to-record parsing flow
