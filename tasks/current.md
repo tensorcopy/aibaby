@@ -5,7 +5,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Active
 
 ### Foundation
-- AIB-002 `in_progress` Choose the auth approach
+- AIB-002 `done` Choose the auth approach
 - AIB-003 `todo` Choose the media storage approach for photos and videos
 - AIB-004 `todo` Choose the AI provider abstraction strategy
 - AIB-006 `done` Document local development setup and environment variables
@@ -48,13 +48,13 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-002 `in_progress` Document the MVP auth decision and define the first-pass auth boundaries for mobile and backend flows
 - AIB-004 `in_progress` Architecture recommends a hybrid AI pipeline; provider-specific production choice is still open
 
 ## Done
 
 - AIB-000 `done` Move product requirements and shared project state into repository-managed files
 - AIB-001 `done` Write and accept the MVP stack baseline in `docs/architecture.md` and `docs/stack-decision.md`
+- AIB-002 `done` Accept Supabase Auth with email OTP / magic link as the MVP auth baseline and define the auth boundaries
 - AIB-005 `done` Add the initial monorepo-oriented scaffold with workspace placeholders for apps, packages, and shared content
 - AIB-010 `done` Define the baby profile entity in `docs/data-model.md`
 - AIB-011 `done` Define the caregiver / account entity in `docs/data-model.md`
