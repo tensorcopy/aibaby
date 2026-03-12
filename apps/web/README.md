@@ -29,3 +29,7 @@ This adds:
 - App Router `POST /api/babies` and `PATCH /api/babies/:babyId` handlers that reuse the shared action layer
 
 The new route files currently depend on injected auth/persistence adapters from `src/features/baby-profile/route-dependencies.js`, which keeps the handlers reviewable until the larger Next.js and database scaffold lands.
+
+Current local-dev default bindings now:
+- resolve owner scope from `Authorization: Bearer dev-user:<userId>` or `x-aibaby-owner-user-id`
+- persist baby profiles in `apps/web/.data/baby-profiles.json` (override with `AIBABY_DEV_DATA_FILE`)

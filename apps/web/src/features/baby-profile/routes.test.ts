@@ -126,6 +126,9 @@ test('PATCH /api/babies/:babyId returns the updated profile payload', async () =
   const calls: Array<unknown> = [];
 
   setBabyProfileRouteDependenciesForTest({
+    async getOwnerUserId() {
+      return 'user_123';
+    },
     async updateBabyProfile(update: Record<string, unknown>) {
       calls.push(update);
 
@@ -167,6 +170,7 @@ test('PATCH /api/babies/:babyId returns the updated profile payload', async () =
   assert.equal(response.status, 200);
   assert.deepEqual(calls, [
     {
+      ownerUserId: 'user_123',
       babyId: 'baby_123',
       patch: {
         timezone: 'America/New_York',

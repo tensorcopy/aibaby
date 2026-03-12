@@ -33,6 +33,15 @@ function buildRouteErrorResponse(error) {
     );
   }
 
+  if (typeof error?.status === 'number') {
+    return buildJsonResponse(
+      {
+        error: error.message || 'Request failed',
+      },
+      { status: error.status },
+    );
+  }
+
   return buildJsonResponse(
     {
       error: error instanceof Error ? error.message : 'Internal server error',
