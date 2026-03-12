@@ -25,7 +25,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ### Summaries
 - AIB-030 `done` Define daily summary rules and output format
-- AIB-031 `in_progress` Build daily summary generation flow
+- AIB-031 `done` Build daily summary generation flow
 - AIB-032 `todo` Store and retrieve daily summaries
 - AIB-033 `todo` Define weekly summary aggregation logic
 - AIB-034 `todo` Build weekly summary generation flow
@@ -49,7 +49,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-020 `in_progress` Build baby profile create/edit flow
-- AIB-031 `in_progress` Build daily summary generation flow
 
 ## Done
 
@@ -70,6 +69,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-018 `done` Define the age-stage / milestone entity in `docs/data-model.md`
 - AIB-019 `done` Define the first-pass Markdown diary export structure for later export and Obsidian work
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
+- AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
