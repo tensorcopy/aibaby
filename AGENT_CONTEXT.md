@@ -23,7 +23,7 @@ This repository is the shared source of truth for product intent, architecture, 
 ## Current project status
 
 - Product requirements are captured in `docs/prd.md`
-- Repository governance is enabled: `main` is protected and merges go through PRs
+- Work should still go through branches and PRs, but there is no separate governance workflow or claim-PR requirement
 - Shared task tracking lives in `tasks/current.md`
 - Architecture is not finalized and is tracked in `docs/architecture.md`
 - A minimal monorepo scaffold now exists for `apps/mobile`, `apps/web`, `packages/db`, `packages/ai`, `packages/ui`, and `content/age-stages`
@@ -39,13 +39,11 @@ This repository is the shared source of truth for product intent, architecture, 
 1. Pull the latest remote changes
 2. Read the required files in order
 3. Confirm the active task in `tasks/current.md`
-4. Open a small PR that marks the task as `in_progress`
-5. After that PR is visible, do the implementation work on a separate non-`main` branch and PR
-6. Update task status and relevant context files before finishing
+4. Do the implementation work on a non-`main` branch
+5. Update task status and relevant context files in that same branch before finishing
 
 PR title rule:
 - include the task ID in every task-related PR title using the format `type(AIB-123): short description`
-- use the same task ID on both the claim PR and the follow-up implementation PR
 
 ## When blocked
 
