@@ -24,15 +24,18 @@ import {
   type BabyProfileScreenState,
 } from "../src/features/baby-profile/screenShell.ts";
 import { createBabyProfileRouteModel } from "../src/features/baby-profile/routeModel.ts";
+import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 
 export default function BabyProfileRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
-  const babyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
+  const session = useMobileSession();
+  const routeBabyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
 
-  return <BabyProfileRouteScreen babyId={babyId} />;
+  return <BabyProfileRouteScreen babyId={routeBabyId ?? session.currentBabyId} />;
 }
 
 export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
+  const session = useMobileSession();
   const [state, setState] = useState<BabyProfileScreenState>(() =>
     createLoadingBabyProfileScreenState(babyId),
   );
@@ -45,7 +48,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     setState(createLoadingBabyProfileScreenState(babyId));
     setLoadError(null);
 
-    void loadBabyProfileScreenState({ babyId })
+    void loadBabyProfileScreenState({ babyId, auth: session.auth })
       .then((nextState) => {
         if (!cancelled) {
           setState(nextState);
@@ -77,7 +80,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     setIsSaving(true);
 
     try {
-      const saved = await saveBabyProfileScreenState({ state });
+      const saved = await saveBabyProfileScreenState({ state, auth: session.auth });
       setState(saved);
     } finally {
       setIsSaving(false);

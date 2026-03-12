@@ -1,10 +1,13 @@
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { MobileSessionProvider } from "../src/features/app-shell/MobileSessionContext.tsx";
+
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <Stack
+      <MobileSessionProvider>
+        <Stack
         screenOptions={{
           headerShadowVisible: false,
           headerTitleStyle: {
@@ -28,7 +31,8 @@ export default function RootLayout() {
             title: "Baby profile",
           }}
         />
-      </Stack>
+        </Stack>
+      </MobileSessionProvider>
     </SafeAreaProvider>
   );
 }

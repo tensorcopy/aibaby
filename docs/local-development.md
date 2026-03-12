@@ -75,6 +75,8 @@ The repository root `.env.example` should define placeholders for:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_AIBABY_OWNER_USER_ID`
+- `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL_PARSING`
@@ -102,6 +104,8 @@ For now, local work is primarily:
 4. validate changes with the commands that exist for the touched workspace
 
 Because the app runtimes are not bootstrapped yet, there is no single `npm run dev` entry point today.
+
+For the current Expo shell slice, you can optionally set `EXPO_PUBLIC_AIBABY_OWNER_USER_ID` and `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID` in `.env.local` to bootstrap owner-scoped current-profile loading without hard-coding route params.
 
 ## Follow-up work expected after this doc
 
