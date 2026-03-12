@@ -47,6 +47,18 @@ test("createBabyProfileRouteModel exposes create-mode fields and labels", () => 
   );
 });
 
+test("createBabyProfileRouteModel shows required-field hints before first submit in create mode", () => {
+  const model = createBabyProfileRouteModel(createBabyProfileScreenState());
+
+  assert.equal(model.textFields[0]?.key, "name");
+  assert.equal(model.textFields[0]?.hint, "Required.");
+  assert.equal(model.textFields[0]?.error, undefined);
+
+  assert.equal(model.textFields[1]?.key, "birthDate");
+  assert.equal(model.textFields[1]?.hint, "Required. Use YYYY-MM-DD.");
+  assert.equal(model.textFields[1]?.error, undefined);
+});
+
 test("createBabyProfileRouteModel groups profile fields into ordered route sections", () => {
   const state = createBabyProfileScreenState(profile, "explicit");
   const model = createBabyProfileRouteModel(state);

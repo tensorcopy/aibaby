@@ -313,7 +313,9 @@ function FormTextField({
         ]}
         value={state.form.values[field.key]}
       />
-      {field.error ? <Text style={styles.errorText}>{field.error}</Text> : null}
+      {chrome.supportingText ? (
+        <Text style={field.error ? styles.errorText : styles.hintText}>{chrome.supportingText}</Text>
+      ) : null}
     </View>
   );
 }
@@ -483,6 +485,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#b91c1c",
+    fontSize: 13,
+  },
+  hintText: {
+    color: "#64748b",
     fontSize: 13,
   },
   status: {
