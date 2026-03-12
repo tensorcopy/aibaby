@@ -32,7 +32,10 @@ import {
   loadBabyProfileRouteScreenState,
   saveBabyProfileRouteScreenState,
 } from "../src/features/baby-profile/routeScreenController.ts";
-import { createBabyProfileRouteModel } from "../src/features/baby-profile/routeModel.ts";
+import {
+  createBabyProfileRouteModel,
+  type BabyProfileRouteModel,
+} from "../src/features/baby-profile/routeModel.ts";
 import { createBabyProfileRouteScreenModel } from "../src/features/baby-profile/routeScreenModel.ts";
 import {
   createBabyProfileRouteErrorChrome,
@@ -169,38 +172,13 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
         ) : null;
       })()}
 
-      {model.textFields.slice(0, 2).map((field) => (
-        <FormTextField
-          key={field.key}
+      {model.sections.map((section) => (
+        <RouteSection
+          key={section.key}
           disabled={screenModel.inputsDisabled}
+          model={model}
+          section={section}
           state={state}
-          field={field}
-          setState={setState}
-        />
-      ))}
-
-      <ChoiceField
-        disabled={screenModel.inputsDisabled}
-        label="Sex"
-        options={model.sexOptions}
-        onSelect={(value) => setState((current) => updateReadyStateField(current, "sex", value))}
-      />
-
-      <ChoiceField
-        disabled={screenModel.inputsDisabled}
-        label="Feeding style"
-        options={model.feedingStyleOptions}
-        onSelect={(value) =>
-          setState((current) => updateReadyStateField(current, "feedingStyle", value))
-        }
-      />
-
-      {model.textFields.slice(2).map((field) => (
-        <FormTextField
-          key={field.key}
-          disabled={screenModel.inputsDisabled}
-          state={state}
-          field={field}
           setState={setState}
         />
       ))}
@@ -248,6 +226,71 @@ function assertReadyState(state: BabyProfileScreenState): BabyProfileScreenReady
   }
 
   return state;
+}
+
+function RouteSection({
+  disabled,
+  model,
+  section,
+  state,
+  setState,
+}: {
+  disabled: boolean;
+  model: BabyProfileRouteModel;
+  section: BabyProfileRouteModel["sections"][number];
+  state: BabyProfileScreenReadyState;
+  setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
+}) {
+  return (
+    <View style={styles.sectionGroup}>
+      <Text style={styles.sectionTitle}>{section.title}</Text>
+      {section.kind === "text-fields"
+        ? section.fields.map((field) => (
+            <FormTextField
+              key={field.key}
+              disabled={disabled}
+              state={state}
+              field={field}
+              setState={setState}
+            />
+          ))
+        : renderChoiceSection({ disabled, model, section, setState })}
+    </View>
+  );
+}
+
+function renderChoiceSection({
+  disabled,
+  model,
+  section,
+  setState,
+}: {
+  disabled: boolean;
+  model: BabyProfileRouteModel;
+  section: Extract<BabyProfileRouteModel["sections"][number], { kind: "choice" }>;
+  setState: Dispatch<SetStateAction<BabyProfileScreenState>>;
+}) {
+  if (section.key === "identity") {
+    return (
+      <ChoiceField
+        disabled={disabled}
+        label={section.label}
+        options={model.sexOptions}
+        onSelect={(value) => setState((current) => updateReadyStateField(current, "sex", value))}
+      />
+    );
+  }
+
+  return (
+    <ChoiceField
+      disabled={disabled}
+      label={section.label}
+      options={model.feedingStyleOptions}
+      onSelect={(value) =>
+        setState((current) => updateReadyStateField(current, "feedingStyle", value))
+      }
+    />
+  );
 }
 
 function FormTextField({
@@ -358,6 +401,14 @@ const styles = StyleSheet.create({
     color: "#b91c1c",
     fontSize: 14,
     lineHeight: 20,
+  },
+  sectionGroup: {
+    gap: 12,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#0f172a",
   },
   fieldGroup: {
     gap: 8,

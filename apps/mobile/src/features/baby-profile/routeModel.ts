@@ -23,6 +23,23 @@ export type BabyProfileRouteChoiceOption<T extends string> = {
   selected: boolean;
 };
 
+export type BabyProfileRouteSection =
+  | {
+      key: "basics" | "care";
+      title: string;
+      kind: "text-fields";
+      fields: BabyProfileRouteField[];
+    }
+  | {
+      key: "identity" | "feeding";
+      title: string;
+      kind: "choice";
+      label: string;
+      options:
+        | BabyProfileRouteChoiceOption<BabyProfileSex>[]
+        | BabyProfileRouteChoiceOption<BabyProfileFeedingStyle>[];
+    };
+
 export type BabyProfileRouteModel = {
   title: string;
   subtitle: string;
@@ -32,6 +49,7 @@ export type BabyProfileRouteModel = {
   textFields: BabyProfileRouteField[];
   sexOptions: BabyProfileRouteChoiceOption<BabyProfileSex>[];
   feedingStyleOptions: BabyProfileRouteChoiceOption<BabyProfileFeedingStyle>[];
+  sections: BabyProfileRouteSection[];
 };
 
 export function createBabyProfileRouteModel(
@@ -39,6 +57,69 @@ export function createBabyProfileRouteModel(
 ): BabyProfileRouteModel {
   const { values, errors, mode } = state.form;
   const isEditMode = mode === "edit";
+
+  const textFields: BabyProfileRouteField[] = [
+    {
+      key: "name",
+      label: "Baby name",
+      value: values.name,
+      placeholder: "Yiyi",
+      error: errors.name,
+      kind: "text",
+    },
+    {
+      key: "birthDate",
+      label: "Birth date",
+      value: values.birthDate,
+      placeholder: "YYYY-MM-DD",
+      error: errors.birthDate,
+      kind: "date",
+    },
+    {
+      key: "allergiesText",
+      label: "Allergies",
+      value: values.allergiesText,
+      placeholder: "Egg, dairy",
+      error: errors.allergiesText,
+      kind: "textarea",
+    },
+    {
+      key: "supplementsText",
+      label: "Supplements",
+      value: values.supplementsText,
+      placeholder: "Iron, vitamin D",
+      error: errors.supplementsText,
+      kind: "textarea",
+    },
+    {
+      key: "timezone",
+      label: "Timezone",
+      value: values.timezone,
+      placeholder: "America/Los_Angeles",
+      error: errors.timezone,
+      kind: "text",
+    },
+    {
+      key: "primaryCaregiver",
+      label: "Primary caregiver",
+      value: values.primaryCaregiver,
+      placeholder: "Zhen",
+      error: errors.primaryCaregiver,
+      kind: "text",
+    },
+  ];
+
+  const sexOptions = BABY_PROFILE_SEX_OPTIONS.map((value) => ({
+    value,
+    label: SEX_LABELS[value],
+    selected: values.sex === value,
+  }));
+
+  const feedingStyleOptions = BABY_PROFILE_FEEDING_STYLE_OPTIONS.map((value) => ({
+    value,
+    label: FEEDING_STYLE_LABELS[value],
+    selected: values.feedingStyle === value,
+  }));
 
   return {
     title: isEditMode ? "Baby profile" : "Create baby profile",
@@ -48,66 +129,37 @@ export function createBabyProfileRouteModel(
     submitLabel: isEditMode ? "Save profile" : "Create profile",
     isEditMode,
     statusMessage: getSubmissionMessage(state),
-    textFields: [
+    textFields,
+    sexOptions,
+    feedingStyleOptions,
+    sections: [
       {
-        key: "name",
-        label: "Baby name",
-        value: values.name,
-        placeholder: "Yiyi",
-        error: errors.name,
-        kind: "text",
+        key: "basics",
+        title: "Basics",
+        kind: "text-fields",
+        fields: textFields.slice(0, 2),
       },
       {
-        key: "birthDate",
-        label: "Birth date",
-        value: values.birthDate,
-        placeholder: "YYYY-MM-DD",
-        error: errors.birthDate,
-        kind: "date",
+        key: "identity",
+        title: "Identity",
+        kind: "choice",
+        label: "Sex",
+        options: sexOptions,
       },
       {
-        key: "allergiesText",
-        label: "Allergies",
-        value: values.allergiesText,
-        placeholder: "Egg, dairy",
-        error: errors.allergiesText,
-        kind: "textarea",
+        key: "feeding",
+        title: "Feeding",
+        kind: "choice",
+        label: "Feeding style",
+        options: feedingStyleOptions,
       },
       {
-        key: "supplementsText",
-        label: "Supplements",
-        value: values.supplementsText,
-        placeholder: "Iron, vitamin D",
-        error: errors.supplementsText,
-        kind: "textarea",
-      },
-      {
-        key: "timezone",
-        label: "Timezone",
-        value: values.timezone,
-        placeholder: "America/Los_Angeles",
-        error: errors.timezone,
-        kind: "text",
-      },
-      {
-        key: "primaryCaregiver",
-        label: "Primary caregiver",
-        value: values.primaryCaregiver,
-        placeholder: "Zhen",
-        error: errors.primaryCaregiver,
-        kind: "text",
+        key: "care",
+        title: "Care details",
+        kind: "text-fields",
+        fields: textFields.slice(2),
       },
     ],
-    sexOptions: BABY_PROFILE_SEX_OPTIONS.map((value) => ({
-      value,
-      label: SEX_LABELS[value],
-      selected: values.sex === value,
-    })),
-    feedingStyleOptions: BABY_PROFILE_FEEDING_STYLE_OPTIONS.map((value) => ({
-      value,
-      label: FEEDING_STYLE_LABELS[value],
-      selected: values.feedingStyle === value,
-    })),
   };
 }
 
