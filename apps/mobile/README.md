@@ -37,6 +37,8 @@ This slice now also includes `src/features/baby-profile/loadRequest.ts`, which b
 
 It now also includes `src/features/baby-profile/transport.ts`, which executes those load and submit request descriptors over `fetch`, applies the owner-scoped auth headers used by the shared API contract, and normalizes the profile response payload that comes back from the backend.
 
-A future PR can wire these helpers into an actual Expo screen shell and data-loading lifecycle.
+This slice now also adds a minimal Expo Router bootstrap with `app/_layout.tsx` and `app/index.tsx`, so the mobile app has a root stack and a home entry point that links into the baby profile route.
+
+A future PR can wire this bootstrap into authenticated session context and richer navigation once auth and additional screens land.
 
 This slice now also includes `src/features/baby-profile/screenShell.ts`, which composes the create/edit form state, load requests, and submit transport into a reviewable mobile screen-state lifecycle with loading, empty-create, and save-result handling.

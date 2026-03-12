@@ -3,10 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "description": "Expo / React Native app scaffold placeholder for AI Baby",
+  "main": "expo-router/entry",
   "scripts": {
+    "start": "expo start",
+    "test:app-shell": "node --experimental-strip-types --test src/features/app-shell/*.test.ts",
     "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts"
   },
   "dependencies": {
-    "@aibaby/ui": "0.0.0"
+    "@aibaby/ui": "0.0.0",
+    "expo": "^54.0.0",
+    "expo-router": "^6.0.0",
+    "react": "^19.1.0",
+    "react-native": "^0.81.0",
+    "react-native-safe-area-context": "^5.6.0"
   }
 }
