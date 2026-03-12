@@ -26,7 +26,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - Repository governance is enabled: `main` is protected and merges go through PRs
 - Shared task tracking lives in `tasks/current.md`
 - Architecture is not finalized and is tracked in `docs/architecture.md`
-- No application scaffold has been created yet
+- A minimal monorepo scaffold now exists for `apps/mobile`, `apps/web`, `packages/db`, `packages/ai`, `packages/ui`, and `content/age-stages`
 
 ## Coordination model
 

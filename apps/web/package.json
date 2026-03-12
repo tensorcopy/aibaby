@@ -1,0 +1,6 @@
+{
+  "name": "@aibaby/web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Next.js app and backend scaffold placeholder for AI Baby"
+}
