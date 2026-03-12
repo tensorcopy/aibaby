@@ -11,6 +11,7 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/media-storage-decision.md`
 - `docs/ai-provider-decision.md`
 - `docs/markdown-export-shape.md`
+- `docs/export-package-structure.md`
 - `docs/data-model.md`
 - `docs/local-development.md`
 
