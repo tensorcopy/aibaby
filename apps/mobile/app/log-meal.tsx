@@ -24,13 +24,26 @@ import {
   type MealComposerAttachment,
   type MealComposerSubmission,
 } from "../src/features/chat-input/composer.ts";
-import { executeMealUploadFlow } from "../src/features/chat-input/upload.ts";
+import {
+  addMealRecordConfirmationItem,
+  createMealRecordConfirmationDraft,
+  executeMealDraftGenerationFlow,
+  executeMealRecordConfirmationFlow,
+  removeMealRecordConfirmationItem,
+  updateMealRecordConfirmationDraft,
+  type ConfirmableMealRecord,
+  type MealRecordConfirmationDraft,
+} from "../src/features/chat-input/draft-confirmation.ts";
 import { executeTextMealParseFlow } from "../src/features/chat-input/text-submit.ts";
+import { executeMealUploadFlow } from "../src/features/chat-input/upload.ts";
 
 type MealThreadEntry = MealComposerSubmission & {
   deliveryStatus: "local" | "uploading" | "uploaded" | "error";
   detailText: string;
   remoteMessageId?: string;
+  mealRecord?: ConfirmableMealRecord;
+  confirmationDraft?: MealRecordConfirmationDraft;
+  confirmationState?: "idle" | "editing" | "saving" | "confirmed";
 };
 
 export default function LogMealRoute() {
@@ -142,6 +155,12 @@ export default function LogMealRoute() {
           auth: session.auth,
           apiBaseUrl: session.apiBaseUrl,
         });
+        const generated = await executeMealDraftGenerationFlow({
+          babyId,
+          sourceMessageId: parsed.messageId,
+          auth: session.auth,
+          apiBaseUrl: session.apiBaseUrl,
+        });
 
         setThread((currentThread) =>
           currentThread.map((entry) =>
@@ -150,9 +169,12 @@ export default function LogMealRoute() {
                   ...entry,
                   deliveryStatus: "uploaded",
                   remoteMessageId: parsed.messageId,
-                  detailText: parsed.parsedCandidate.followUpQuestion
-                    ? `${parsed.parsedCandidate.summary} Follow-up: ${parsed.parsedCandidate.followUpQuestion}`
-                    : parsed.parsedCandidate.summary,
+                  mealRecord: generated.mealRecord,
+                  confirmationDraft: createMealRecordConfirmationDraft(generated.mealRecord),
+                  confirmationState: "idle",
+                  detailText: generated.mealRecord.followUpQuestion
+                    ? `${generated.mealRecord.aiSummary} Follow-up: ${generated.mealRecord.followUpQuestion}`
+                    : generated.mealRecord.aiSummary,
                 }
               : entry,
           ),
@@ -178,6 +200,70 @@ export default function LogMealRoute() {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleConfirm(entryId: string) {
+    if (!babyId) {
+      return;
+    }
+
+    const entry = thread.find((candidate) => candidate.id === entryId);
+    if (!entry?.mealRecord || !entry.confirmationDraft) {
+      return;
+    }
+
+    setAttachmentError(null);
+    setThread((currentThread) =>
+      currentThread.map((candidate) =>
+        candidate.id === entryId
+          ? {
+              ...candidate,
+              confirmationState: "saving",
+            }
+          : candidate,
+      ),
+    );
+
+    try {
+      const confirmed = await executeMealRecordConfirmationFlow({
+        babyId,
+        mealRecordId: entry.mealRecord.id,
+        draft: entry.confirmationDraft,
+        auth: session.auth,
+        apiBaseUrl: session.apiBaseUrl,
+      });
+
+      setThread((currentThread) =>
+        currentThread.map((candidate) =>
+          candidate.id === entryId
+            ? {
+                ...candidate,
+                mealRecord: confirmed.mealRecord,
+                confirmationDraft: createMealRecordConfirmationDraft(confirmed.mealRecord),
+                confirmationState: "confirmed",
+                detailText: confirmed.mealRecord.aiSummary,
+              }
+            : candidate,
+        ),
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message.trim().length > 0
+          ? error.message
+          : "We couldn't confirm the meal record right now.";
+      setAttachmentError(message);
+      setThread((currentThread) =>
+        currentThread.map((candidate) =>
+          candidate.id === entryId
+            ? {
+                ...candidate,
+                confirmationState: "editing",
+                detailText: message,
+              }
+            : candidate,
+        ),
+      );
     }
   }
 
@@ -319,6 +405,240 @@ export default function LogMealRoute() {
                     ))}
                   </ScrollView>
                 ) : null}
+
+                {submission.mealRecord ? (
+                  <View style={styles.confirmationCard}>
+                    <View style={styles.confirmationHeader}>
+                      <Text style={styles.confirmationTitle}>AI meal draft</Text>
+                      <Text style={styles.confirmationStatus}>{submission.mealRecord.status}</Text>
+                    </View>
+
+                    {submission.confirmationState === "editing" || submission.confirmationState === "saving" ? (
+                      <>
+                        <View style={styles.quickActionRow}>
+                          {mealComposerQuickActions.map((action) => {
+                            const isSelected = submission.confirmationDraft?.mealType === action.key;
+                            return (
+                              <Pressable
+                                key={`${submission.id}:${action.key}`}
+                                accessibilityRole="button"
+                                disabled={submission.confirmationState === "saving"}
+                                onPress={() =>
+                                  setThread((currentThread) =>
+                                    currentThread.map((entry) =>
+                                      entry.id === submission.id && entry.confirmationDraft
+                                        ? {
+                                            ...entry,
+                                            confirmationDraft: updateMealRecordConfirmationDraft(
+                                              entry.confirmationDraft,
+                                              { mealType: action.key },
+                                            ),
+                                          }
+                                        : entry,
+                                    ),
+                                  )
+                                }
+                                style={[
+                                  styles.quickActionChip,
+                                  isSelected ? styles.quickActionChipSelected : null,
+                                ]}
+                              >
+                                <Text
+                                  style={[
+                                    styles.quickActionChipText,
+                                    isSelected ? styles.quickActionChipTextSelected : null,
+                                  ]}
+                                >
+                                  {action.label}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+
+                        {submission.confirmationDraft?.items.map((item, index) => (
+                          <View key={item.id} style={styles.editItemCard}>
+                            <Text style={styles.editItemLabel}>Item {index + 1}</Text>
+                            <TextInput
+                              placeholder="Food name"
+                              placeholderTextColor="#94a3b8"
+                              style={styles.editInput}
+                              value={item.foodName}
+                              onChangeText={(value) =>
+                                setThread((currentThread) =>
+                                  currentThread.map((entry) =>
+                                    entry.id === submission.id && entry.confirmationDraft
+                                      ? {
+                                          ...entry,
+                                          confirmationDraft: updateMealRecordConfirmationDraft(
+                                            entry.confirmationDraft,
+                                            {
+                                              itemId: item.id,
+                                              field: "foodName",
+                                              value,
+                                            },
+                                          ),
+                                        }
+                                      : entry,
+                                  ),
+                                )
+                              }
+                            />
+                            <TextInput
+                              placeholder="Amount"
+                              placeholderTextColor="#94a3b8"
+                              style={styles.editInput}
+                              value={item.amountText}
+                              onChangeText={(value) =>
+                                setThread((currentThread) =>
+                                  currentThread.map((entry) =>
+                                    entry.id === submission.id && entry.confirmationDraft
+                                      ? {
+                                          ...entry,
+                                          confirmationDraft: updateMealRecordConfirmationDraft(
+                                            entry.confirmationDraft,
+                                            {
+                                              itemId: item.id,
+                                              field: "amountText",
+                                              value,
+                                            },
+                                          ),
+                                        }
+                                      : entry,
+                                  ),
+                                )
+                              }
+                            />
+                            <Pressable
+                              accessibilityRole="button"
+                              onPress={() =>
+                                setThread((currentThread) =>
+                                  currentThread.map((entry) =>
+                                    entry.id === submission.id && entry.confirmationDraft
+                                      ? {
+                                          ...entry,
+                                          confirmationDraft: removeMealRecordConfirmationItem(
+                                            entry.confirmationDraft,
+                                            item.id,
+                                          ),
+                                        }
+                                      : entry,
+                                  ),
+                                )
+                              }
+                              style={styles.inlineSecondaryButton}
+                            >
+                              <Text style={styles.inlineSecondaryButtonText}>Remove item</Text>
+                            </Pressable>
+                          </View>
+                        ))}
+
+                        <View style={styles.inlineActionRow}>
+                          <Pressable
+                            accessibilityRole="button"
+                            onPress={() =>
+                              setThread((currentThread) =>
+                                currentThread.map((entry) =>
+                                  entry.id === submission.id && entry.confirmationDraft
+                                    ? {
+                                        ...entry,
+                                        confirmationDraft: addMealRecordConfirmationItem(
+                                          entry.confirmationDraft,
+                                        ),
+                                      }
+                                    : entry,
+                                ),
+                              )
+                            }
+                            style={styles.inlineSecondaryButton}
+                          >
+                            <Text style={styles.inlineSecondaryButtonText}>Add item</Text>
+                          </Pressable>
+                          <Pressable
+                            accessibilityRole="button"
+                            onPress={() =>
+                              setThread((currentThread) =>
+                                currentThread.map((entry) =>
+                                  entry.id === submission.id && entry.mealRecord
+                                    ? {
+                                        ...entry,
+                                        confirmationDraft: createMealRecordConfirmationDraft(
+                                          entry.mealRecord,
+                                        ),
+                                        confirmationState: "idle",
+                                        detailText: entry.mealRecord.aiSummary,
+                                      }
+                                    : entry,
+                                ),
+                              )
+                            }
+                            style={styles.inlineSecondaryButton}
+                          >
+                            <Text style={styles.inlineSecondaryButtonText}>Cancel</Text>
+                          </Pressable>
+                          <Pressable
+                            accessibilityRole="button"
+                            disabled={submission.confirmationState === "saving"}
+                            onPress={() => {
+                              void handleConfirm(submission.id);
+                            }}
+                            style={styles.inlinePrimaryButton}
+                          >
+                            <Text style={styles.inlinePrimaryButtonText}>
+                              {submission.confirmationState === "saving"
+                                ? "Saving…"
+                                : "Save changes"}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      </>
+                    ) : (
+                      <>
+                        <Text style={styles.confirmationMealType}>
+                          Meal type: {submission.mealRecord.mealType}
+                        </Text>
+                        <View style={styles.confirmationItemList}>
+                          {submission.mealRecord.items.map((item) => (
+                            <Text key={item.id} style={styles.confirmationItemText}>
+                              • {item.foodName}
+                              {item.amountText ? ` — ${item.amountText}` : ""}
+                            </Text>
+                          ))}
+                        </View>
+                        <View style={styles.inlineActionRow}>
+                          <Pressable
+                            accessibilityRole="button"
+                            onPress={() => {
+                              void handleConfirm(submission.id);
+                            }}
+                            style={styles.inlinePrimaryButton}
+                          >
+                            <Text style={styles.inlinePrimaryButtonText}>Confirm draft</Text>
+                          </Pressable>
+                          <Pressable
+                            accessibilityRole="button"
+                            onPress={() =>
+                              setThread((currentThread) =>
+                                currentThread.map((entry) =>
+                                  entry.id === submission.id
+                                    ? {
+                                        ...entry,
+                                        confirmationState: "editing",
+                                      }
+                                    : entry,
+                                ),
+                              )
+                            }
+                            style={styles.inlineSecondaryButton}
+                          >
+                            <Text style={styles.inlineSecondaryButtonText}>Edit draft</Text>
+                          </Pressable>
+                        </View>
+                      </>
+                    )}
+                  </View>
+                ) : null}
+
                 <Text
                   style={[
                     styles.threadFootnote,
@@ -580,6 +900,91 @@ const styles = StyleSheet.create({
     height: 96,
     borderRadius: 14,
     backgroundColor: "#bfdbfe",
+  },
+  confirmationCard: {
+    gap: 10,
+    borderRadius: 16,
+    backgroundColor: "#ffffff",
+    padding: 14,
+  },
+  confirmationHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  confirmationTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#0f172a",
+  },
+  confirmationStatus: {
+    fontSize: 12,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    color: "#2563eb",
+  },
+  confirmationMealType: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#334155",
+  },
+  confirmationItemList: {
+    gap: 4,
+  },
+  confirmationItemText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#334155",
+  },
+  editItemCard: {
+    gap: 8,
+    borderRadius: 14,
+    backgroundColor: "#f8fafc",
+    padding: 12,
+  },
+  editItemLabel: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#334155",
+  },
+  editInput: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: "#0f172a",
+    backgroundColor: "#ffffff",
+  },
+  inlineActionRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  inlinePrimaryButton: {
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: "#2563eb",
+  },
+  inlinePrimaryButtonText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#ffffff",
+  },
+  inlineSecondaryButton: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: "#ffffff",
+  },
+  inlineSecondaryButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#334155",
   },
   threadFootnote: {
     fontSize: 13,
