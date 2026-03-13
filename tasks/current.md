@@ -15,7 +15,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ### MVP vertical slice
 - AIB-021 `done` Build chat input UI for text and image submission
-- AIB-022 `todo` Build image upload pipeline
+- AIB-022 `in_progress` Build image upload pipeline
 - AIB-023 `todo` Build text-to-record parsing flow
 - AIB-024 `todo` Build draft feeding record generation
 - AIB-025 `todo` Build confirmation / correction flow for AI-generated records
@@ -47,7 +47,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-022 `in_progress` Build image upload pipeline — backend upload negotiation and completion endpoints are in place; next step is wiring mobile transport and direct storage handoff
 
 ## Done
 
