@@ -24,6 +24,13 @@ import {
   type MealComposerAttachment,
   type MealComposerSubmission,
 } from "../src/features/chat-input/composer.ts";
+import { executeMealUploadFlow } from "../src/features/chat-input/upload.ts";
+
+type MealThreadEntry = MealComposerSubmission & {
+  deliveryStatus: "local" | "uploading" | "uploaded" | "error";
+  detailText: string;
+  remoteMessageId?: string;
+};
 
 export default function LogMealRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
@@ -32,9 +39,10 @@ export default function LogMealRoute() {
   const babyId = routeBabyId ?? session.currentBabyId;
 
   const [draft, setDraft] = useState(createMealComposerDraft);
-  const [thread, setThread] = useState<MealComposerSubmission[]>([]);
+  const [thread, setThread] = useState<MealThreadEntry[]>([]);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [isPickingImages, setIsPickingImages] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const model = useMemo(
     () =>
@@ -81,14 +89,71 @@ export default function LogMealRoute() {
     }
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const result = submitMealComposerDraft({
       draft,
     });
 
-    setThread((currentThread) => [result.submission, ...currentThread]);
+    const hasAttachments = result.submission.attachments.length > 0;
+    const threadEntry: MealThreadEntry = {
+      ...result.submission,
+      deliveryStatus: hasAttachments ? "uploading" : "local",
+      detailText: hasAttachments
+        ? "Uploading photos to the negotiated storage target…"
+        : "Text-only draft is still local until the parsing submission API lands.",
+    };
+
+    setThread((currentThread) => [threadEntry, ...currentThread]);
     setDraft(result.nextDraft);
     setAttachmentError(null);
+
+    if (!hasAttachments || !babyId) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const uploaded = await executeMealUploadFlow({
+        babyId,
+        submission: result.submission,
+        auth: session.auth,
+        apiBaseUrl: session.apiBaseUrl,
+      });
+
+      setThread((currentThread) =>
+        currentThread.map((entry) =>
+          entry.id === result.submission.id
+            ? {
+                ...entry,
+                deliveryStatus: "uploaded",
+                remoteMessageId: uploaded.messageId,
+                detailText: `Uploaded ${uploaded.uploadedAssets.length} photo${uploaded.uploadedAssets.length === 1 ? "" : "s"} to ${uploaded.messageId}. Image parsing can build on this server-side message next.`,
+              }
+            : entry,
+        ),
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message.trim().length > 0
+          ? error.message
+          : "We couldn't finish the upload handoff right now.";
+
+      setAttachmentError(message);
+      setThread((currentThread) =>
+        currentThread.map((entry) =>
+          entry.id === result.submission.id
+            ? {
+                ...entry,
+                deliveryStatus: "error",
+                detailText: message,
+              }
+            : entry,
+        ),
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const homeHref = babyId ? `/?babyId=${encodeURIComponent(babyId)}` : "/";
@@ -181,11 +246,18 @@ export default function LogMealRoute() {
 
           <Pressable
             accessibilityRole="button"
-            disabled={model.submitDisabled}
-            onPress={handleSubmit}
-            style={[styles.primaryButton, model.submitDisabled ? styles.buttonDisabled : null]}
+            disabled={model.submitDisabled || isSubmitting}
+            onPress={() => {
+              void handleSubmit();
+            }}
+            style={[
+              styles.primaryButton,
+              model.submitDisabled || isSubmitting ? styles.buttonDisabled : null,
+            ]}
           >
-            <Text style={styles.primaryButtonText}>{model.submitLabel}</Text>
+            <Text style={styles.primaryButtonText}>
+              {isSubmitting ? "Uploading…" : model.submitLabel}
+            </Text>
           </Pressable>
         </View>
 
@@ -193,7 +265,7 @@ export default function LogMealRoute() {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Local draft thread</Text>
+        <Text style={styles.cardTitle}>Meal draft thread</Text>
         <Text style={styles.cardSubtitle}>{model.emptyStateMessage}</Text>
 
         {thread.length === 0 ? (
@@ -222,8 +294,13 @@ export default function LogMealRoute() {
                     ))}
                   </ScrollView>
                 ) : null}
-                <Text style={styles.threadFootnote}>
-                  Submission captured locally for the next upload and parsing slices.
+                <Text
+                  style={[
+                    styles.threadFootnote,
+                    submission.deliveryStatus === "error" ? styles.threadFootnoteError : null,
+                  ]}
+                >
+                  {submission.detailText}
                 </Text>
               </View>
             ))}
@@ -250,9 +327,25 @@ function toMealComposerAttachment(
     id: asset.assetId ?? `${asset.uri}:${index}`,
     uri: asset.uri,
     fileName,
+    mimeType: asset.mimeType ?? inferAttachmentMimeType(fileName),
+    byteSize: asset.fileSize,
     width: asset.width,
     height: asset.height,
   };
+}
+
+function inferAttachmentMimeType(fileName: string): string {
+  const normalized = fileName.toLowerCase();
+
+  if (normalized.endsWith(".png")) {
+    return "image/png";
+  }
+
+  if (normalized.endsWith(".webp")) {
+    return "image/webp";
+  }
+
+  return "image/jpeg";
 }
 
 const styles = StyleSheet.create({
@@ -467,6 +560,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     color: "#475569",
+  },
+  threadFootnoteError: {
+    color: "#b91c1c",
   },
   homeButton: {
     marginTop: 8,

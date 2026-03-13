@@ -9,6 +9,8 @@ export type MealComposerAttachment = {
   id: string;
   uri: string;
   fileName?: string;
+  mimeType?: string;
+  byteSize?: number;
   width?: number;
   height?: number;
 };

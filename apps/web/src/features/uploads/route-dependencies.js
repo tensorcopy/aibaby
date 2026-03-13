@@ -1,5 +1,5 @@
 const { resolveOwnerUserIdFromRequest } = require('../baby-profile/auth');
-const { completeUploadNegotiation, createUploadNegotiation } = require('./local-store');
+const { completeUploadNegotiation, createUploadNegotiation, storeDevUploadAsset } = require('./local-store');
 
 let routeDependencies = createDefaultRouteDependencies();
 
@@ -25,6 +25,7 @@ function createDefaultRouteDependencies() {
     },
     createUploadNegotiation,
     completeUploadNegotiation,
+    storeDevUploadAsset,
   };
 }
 
