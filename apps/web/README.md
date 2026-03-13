@@ -42,3 +42,7 @@ Current local-dev default bindings now:
 The current upload slice now also includes:
 - `POST /api/uploads/presign` and `POST /api/uploads/complete` for backend-controlled upload negotiation and completion
 - `PUT /api/uploads/dev/:messageId/:assetId` as a local-development stand-in for direct object-storage handoff, persisting negotiated payloads under `apps/web/.data/upload-blobs/`
+
+The current text parsing slice now also includes:
+- `POST /api/messages/text-parse` for text-only meal-note parsing into a candidate structured record preview
+- local-dev persistence for raw text messages plus ingestion events in `apps/web/.data/text-meal-submissions.json` (override with `AIBABY_TEXT_PARSE_DEV_DATA_FILE`)

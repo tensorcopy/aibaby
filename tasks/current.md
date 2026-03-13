@@ -16,7 +16,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ### MVP vertical slice
 - AIB-021 `done` Build chat input UI for text and image submission
 - AIB-022 `done` Build image upload pipeline
-- AIB-023 `todo` Build text-to-record parsing flow
+- AIB-023 `done` Build text-to-record parsing flow
 - AIB-024 `todo` Build draft feeding record generation
 - AIB-025 `todo` Build confirmation / correction flow for AI-generated records
 - AIB-026 `todo` Persist original input plus structured output
@@ -70,6 +70,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-020 `done` Build the first-pass mobile baby profile create/edit flow, including home handoff and quick actions
 - AIB-021 `done` Build the first-pass mobile chat input UI for text and image meal draft submission
 - AIB-022 `done` Build the image upload negotiation, direct-storage handoff, and mobile upload completion flow
+- AIB-023 `done` Build the first-pass text-only parsing flow that classifies meal type and food items and returns a candidate record preview
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
 - AIB-032 `done` Build the first-pass daily summary storage and retrieval contract in `packages/db`
