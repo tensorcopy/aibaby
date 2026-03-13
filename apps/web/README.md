@@ -46,3 +46,7 @@ The current upload slice now also includes:
 The current text parsing slice now also includes:
 - `POST /api/messages/text-parse` for text-only meal-note parsing into a candidate structured record preview
 - local-dev persistence for raw text messages plus ingestion events in `apps/web/.data/text-meal-submissions.json` (override with `AIBABY_TEXT_PARSE_DEV_DATA_FILE`)
+
+The current draft record slice now also includes:
+- `POST /api/meal-records/drafts` for materializing a persisted draft meal record from a previously parsed text message
+- local-dev persistence for draft meal records, meal items, and generation events in `apps/web/.data/meal-drafts.json` (override with `AIBABY_MEAL_DRAFT_DEV_DATA_FILE`)

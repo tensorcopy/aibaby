@@ -62,6 +62,47 @@ async function parseTextMealSubmission({ ownerUserId, babyId, text, quickAction,
   };
 }
 
+async function getParsedTextMealSubmission({ ownerUserId, babyId, messageId }) {
+  const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
+  const normalizedBabyId = normalizeRequiredBabyId(babyId);
+  const normalizedMessageId = normalizeRequiredMessageId(messageId);
+  const data = await readStore();
+
+  const message = data.messages.find(
+    (candidate) =>
+      candidate.id === normalizedMessageId &&
+      candidate.owner_user_id === normalizedOwnerUserId &&
+      candidate.baby_id === normalizedBabyId,
+  );
+
+  if (!message) {
+    throw new NotFoundRouteError('Parsed source message not found');
+  }
+
+  const ingestionEvent = [...data.ingestionEvents]
+    .reverse()
+    .find(
+      (candidate) =>
+        candidate.source_message_id === normalizedMessageId &&
+        candidate.owner_user_id === normalizedOwnerUserId &&
+        candidate.baby_id === normalizedBabyId &&
+        candidate.payload_json?.kind === 'text_parse' &&
+        candidate.processing_status === 'parsed',
+    );
+
+  const parsedCandidate = ingestionEvent?.payload_json?.parsedCandidate;
+
+  if (!ingestionEvent || !parsedCandidate) {
+    throw new NotFoundRouteError('Parsed meal candidate not found for source message');
+  }
+
+  return {
+    message,
+    ingestionEvent,
+    parsedCandidate,
+  };
+}
+
 async function readStore() {
   const dataFilePath = getDataFilePath();
 
@@ -137,7 +178,16 @@ function normalizeRequiredText(text) {
   return text.trim();
 }
 
+function normalizeRequiredMessageId(messageId) {
+  if (typeof messageId !== 'string' || messageId.trim().length === 0) {
+    throw new NotFoundRouteError('Parsed source message not found');
+  }
+
+  return messageId.trim();
+}
+
 module.exports = {
   getDataFilePath,
+  getParsedTextMealSubmission,
   parseTextMealSubmission,
 };
