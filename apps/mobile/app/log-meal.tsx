@@ -1,12 +1,12 @@
 import { useLocalSearchParams } from "expo-router";
 
-import { FeaturePlaceholderRoute } from "../src/features/app-shell/FeaturePlaceholderRoute.tsx";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
+import { MealLogRoute } from "../src/features/meal-log/MealLogRoute.tsx";
 
-export default function LogMealRoute() {
+export default function LogMealScreen() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
   const session = useMobileSession();
   const routeBabyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
 
-  return <FeaturePlaceholderRoute babyId={routeBabyId ?? session.currentBabyId} feature="log-meal" />;
+  return <MealLogRoute babyId={routeBabyId ?? session.currentBabyId} session={session} />;
 }
