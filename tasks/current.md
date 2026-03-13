@@ -17,7 +17,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-021 `done` Build chat input UI for text and image submission
 - AIB-022 `done` Build image upload pipeline
 - AIB-023 `done` Build text-to-record parsing flow
-- AIB-024 `todo` Build draft feeding record generation
+- AIB-024 `done` Build draft feeding record generation
 - AIB-025 `todo` Build confirmation / correction flow for AI-generated records
 - AIB-026 `todo` Persist original input plus structured output
 - AIB-027 `todo` Build today's timeline page
@@ -71,6 +71,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-021 `done` Build the first-pass mobile chat input UI for text and image meal draft submission
 - AIB-022 `done` Build the image upload negotiation, direct-storage handoff, and mobile upload completion flow
 - AIB-023 `done` Build the first-pass text-only parsing flow that classifies meal type and food items and returns a candidate record preview
+- AIB-024 `done` Build the first-pass draft feeding record generation flow from parsed text submissions and persist draft meal records plus meal items
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
 - AIB-032 `done` Build the first-pass daily summary storage and retrieval contract in `packages/db`

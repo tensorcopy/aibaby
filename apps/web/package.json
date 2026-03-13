@@ -6,6 +6,7 @@
   "scripts": {
     "test:baby-profile-api": "node --experimental-strip-types --test src/features/baby-profile/*.test.js src/features/baby-profile/*.test.ts",
     "test:uploads-api": "node --experimental-strip-types --test src/features/uploads/*.test.ts",
-    "test:text-meal-api": "node --experimental-strip-types --test src/features/text-meal/*.test.ts"
+    "test:text-meal-api": "node --experimental-strip-types --test src/features/text-meal/*.test.ts",
+    "test:meal-drafts-api": "node --experimental-strip-types --test src/features/meal-drafts/*.test.js src/features/meal-drafts/*.test.ts"
   }
 }
