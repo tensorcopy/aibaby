@@ -11,9 +11,7 @@ Planned responsibilities:
 
 Not included yet:
 
-- Expo app bootstrap
 - auth wiring
-- upload flows
 - production UI components
 
 ## Baby profile flow slice
@@ -48,3 +46,11 @@ This slice now also wires the Expo shell through a lightweight `MobileSessionPro
 A future PR can replace this bootstrap with real Supabase session plumbing and richer navigation once auth and additional screens land.
 
 This slice now also includes `src/features/baby-profile/screenShell.ts`, which composes the create/edit form state, load requests, and submit transport into a reviewable mobile screen-state lifecycle with loading, empty-create, and save-result handling.
+
+## Image upload handoff slice
+
+AIB-022 now also adds the first reviewable mobile-to-storage upload handoff:
+
+- `src/features/chat-input/upload.ts` negotiates upload targets with `POST /api/uploads/presign`, streams each selected image to the returned `PUT` target, and finalizes the handoff with `POST /api/uploads/complete`
+- `app/log-meal.tsx` now upgrades photo submissions from local-only placeholders into real upload attempts and surfaces per-submission upload status in the draft thread
+- `MobileSessionProvider` now accepts `EXPO_PUBLIC_AIBABY_API_BASE_URL`, so Expo can target a separately running local backend during development

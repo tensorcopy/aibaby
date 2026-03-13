@@ -38,3 +38,7 @@ Current local-dev default bindings now:
 - fetch a single owner-scoped baby profile by id for the local App Router read path
 - resolve owner scope from `Authorization: Bearer dev-user:<userId>` or `x-aibaby-owner-user-id`
 - persist baby profiles in `apps/web/.data/baby-profiles.json` (override with `AIBABY_DEV_DATA_FILE`)
+
+The current upload slice now also includes:
+- `POST /api/uploads/presign` and `POST /api/uploads/complete` for backend-controlled upload negotiation and completion
+- `PUT /api/uploads/dev/:messageId/:assetId` as a local-development stand-in for direct object-storage handoff, persisting negotiated payloads under `apps/web/.data/upload-blobs/`

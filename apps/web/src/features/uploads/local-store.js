@@ -6,6 +6,7 @@ const { ConflictRouteError } = require('./errors');
 const { NotFoundRouteError, UnauthorizedRouteError } = require('../baby-profile/errors');
 
 const defaultDataFilePath = path.resolve(__dirname, '../../../.data/uploads.json');
+const defaultUploadBlobRootPath = path.resolve(__dirname, '../../../.data/upload-blobs');
 
 async function createUploadNegotiation({ ownerUserId, babyId, files }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
@@ -133,6 +134,41 @@ async function completeUploadNegotiation({ ownerUserId, babyId, messageId, asset
   };
 }
 
+async function storeDevUploadAsset({ messageId, assetId, body, contentType }) {
+  const normalizedMessageId = normalizeRequiredMessageId(messageId);
+  const normalizedAssetId = normalizeRequiredAssetId(assetId, 'Upload asset not found');
+  const data = await readStore();
+
+  const asset = data.mediaAssets.find(
+    (candidate) =>
+      candidate.id === normalizedAssetId && candidate.message_id === normalizedMessageId,
+  );
+
+  if (!asset) {
+    throw new NotFoundRouteError('Upload asset not found');
+  }
+
+  if (asset.upload_status !== 'processing' && asset.upload_status !== 'uploaded') {
+    throw new ConflictRouteError('Upload asset is not ready to receive file data');
+  }
+
+  if (typeof contentType === 'string' && contentType.trim().length > 0 && contentType.trim() !== asset.mime_type) {
+    throw new ConflictRouteError('Upload content type does not match the negotiated asset type');
+  }
+
+  const targetPath = path.resolve(getUploadBlobRootPath(), asset.storage_path);
+  await fs.mkdir(path.dirname(targetPath), { recursive: true });
+  await fs.writeFile(targetPath, body);
+
+  asset.updated_at = new Date().toISOString();
+  await writeStore(data);
+
+  return {
+    asset,
+    storedAtPath: targetPath,
+  };
+}
+
 async function readStore() {
   const dataFilePath = getDataFilePath();
 
@@ -156,6 +192,10 @@ async function writeStore(store) {
 
 function getDataFilePath() {
   return process.env.AIBABY_UPLOAD_DEV_DATA_FILE || defaultDataFilePath;
+}
+
+function getUploadBlobRootPath() {
+  return process.env.AIBABY_UPLOAD_BLOB_ROOT || defaultUploadBlobRootPath;
 }
 
 function normalizeStore(store) {
@@ -231,6 +271,14 @@ function normalizeRequiredMessageId(messageId) {
   return messageId.trim();
 }
 
+function normalizeRequiredAssetId(assetId, message = 'Upload asset not found') {
+  if (typeof assetId !== 'string' || assetId.trim().length === 0) {
+    throw new NotFoundRouteError(message);
+  }
+
+  return assetId.trim();
+}
+
 function normalizeRequiredAssetIds(assetIds) {
   if (!Array.isArray(assetIds) || assetIds.length === 0) {
     throw new NotFoundRouteError('At least one upload asset is required');
@@ -243,4 +291,6 @@ module.exports = {
   completeUploadNegotiation,
   createUploadNegotiation,
   getDataFilePath,
+  getUploadBlobRootPath,
+  storeDevUploadAsset,
 };

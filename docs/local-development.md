@@ -77,6 +77,7 @@ The repository root `.env.example` should define placeholders for:
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `EXPO_PUBLIC_AIBABY_OWNER_USER_ID`
 - `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
+- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL_PARSING`
@@ -106,6 +107,8 @@ For now, local work is primarily:
 Because the app runtimes are not bootstrapped yet, there is no single `npm run dev` entry point today.
 
 For the current Expo shell slice, you can optionally set `EXPO_PUBLIC_AIBABY_OWNER_USER_ID` and `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID` in `.env.local` to bootstrap owner-scoped current-profile loading without hard-coding route params.
+
+If you want the Expo app to call a separately running local Next.js backend instead of relying on same-origin paths, also set `EXPO_PUBLIC_AIBABY_API_BASE_URL` (for example `http://192.168.1.10:3000`).
 
 ## Follow-up work expected after this doc
 

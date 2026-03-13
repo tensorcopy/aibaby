@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import test, { afterEach } from 'node:test';
 
 import { POST as completeUpload } from '../../../app/api/uploads/complete/route.ts';
+import { PUT as putDevUpload } from '../../../app/api/uploads/dev/[messageId]/[assetId]/route.ts';
 
 const require = createRequire(import.meta.url);
 
@@ -199,6 +200,45 @@ test('POST /api/uploads/complete marks the requested assets as uploaded', async 
       },
     ],
   });
+});
+
+test('PUT /api/uploads/dev/:messageId/:assetId stores the negotiated upload payload', async () => {
+  const calls: Array<unknown> = [];
+
+  setUploadRouteDependenciesForTest({
+    async storeDevUploadAsset(input: Record<string, unknown>) {
+      calls.push({
+        ...input,
+        body: Buffer.isBuffer(input.body) ? input.body.toString('utf8') : input.body,
+      });
+    },
+  });
+
+  const response = await putDevUpload(
+    new Request('http://localhost/api/uploads/dev/msg_123/asset_123', {
+      method: 'PUT',
+      headers: {
+        'content-type': 'image/jpeg',
+      },
+      body: 'binary-image-data',
+    }),
+    {
+      params: Promise.resolve({
+        messageId: 'msg_123',
+        assetId: 'asset_123',
+      }),
+    },
+  );
+
+  assert.equal(response.status, 204);
+  assert.deepEqual(calls, [
+    {
+      messageId: 'msg_123',
+      assetId: 'asset_123',
+      body: 'binary-image-data',
+      contentType: 'image/jpeg',
+    },
+  ]);
 });
 
 test('POST /api/uploads/complete returns 400 for an empty asset list', async () => {
