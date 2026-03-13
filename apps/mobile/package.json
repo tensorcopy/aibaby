@@ -7,7 +7,8 @@
   "scripts": {
     "start": "expo start",
     "test:app-shell": "node --experimental-strip-types --test src/features/app-shell/*.test.ts",
-    "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts"
+    "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts",
+    "test:meal-log": "node --experimental-strip-types --test src/features/meal-log/*.test.ts"
   },
   "dependencies": {
     "@aibaby/ui": "0.0.0",
