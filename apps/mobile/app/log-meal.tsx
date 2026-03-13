@@ -25,6 +25,7 @@ import {
   type MealComposerSubmission,
 } from "../src/features/chat-input/composer.ts";
 import { executeMealUploadFlow } from "../src/features/chat-input/upload.ts";
+import { executeTextMealParseFlow } from "../src/features/chat-input/text-submit.ts";
 
 type MealThreadEntry = MealComposerSubmission & {
   deliveryStatus: "local" | "uploading" | "uploaded" | "error";
@@ -100,39 +101,63 @@ export default function LogMealRoute() {
       deliveryStatus: hasAttachments ? "uploading" : "local",
       detailText: hasAttachments
         ? "Uploading photos to the negotiated storage target…"
-        : "Text-only draft is still local until the parsing submission API lands.",
+        : "Sending the text note into the parsing flow…",
     };
 
     setThread((currentThread) => [threadEntry, ...currentThread]);
     setDraft(result.nextDraft);
     setAttachmentError(null);
 
-    if (!hasAttachments || !babyId) {
+    if (!babyId) {
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const uploaded = await executeMealUploadFlow({
-        babyId,
-        submission: result.submission,
-        auth: session.auth,
-        apiBaseUrl: session.apiBaseUrl,
-      });
+      if (hasAttachments) {
+        const uploaded = await executeMealUploadFlow({
+          babyId,
+          submission: result.submission,
+          auth: session.auth,
+          apiBaseUrl: session.apiBaseUrl,
+        });
 
-      setThread((currentThread) =>
-        currentThread.map((entry) =>
-          entry.id === result.submission.id
-            ? {
-                ...entry,
-                deliveryStatus: "uploaded",
-                remoteMessageId: uploaded.messageId,
-                detailText: `Uploaded ${uploaded.uploadedAssets.length} photo${uploaded.uploadedAssets.length === 1 ? "" : "s"} to ${uploaded.messageId}. Image parsing can build on this server-side message next.`,
-              }
-            : entry,
-        ),
-      );
+        setThread((currentThread) =>
+          currentThread.map((entry) =>
+            entry.id === result.submission.id
+              ? {
+                  ...entry,
+                  deliveryStatus: "uploaded",
+                  remoteMessageId: uploaded.messageId,
+                  detailText: `Uploaded ${uploaded.uploadedAssets.length} photo${uploaded.uploadedAssets.length === 1 ? "" : "s"} to ${uploaded.messageId}. Image parsing can build on this server-side message next.`,
+                }
+              : entry,
+          ),
+        );
+      } else {
+        const parsed = await executeTextMealParseFlow({
+          babyId,
+          submission: result.submission,
+          auth: session.auth,
+          apiBaseUrl: session.apiBaseUrl,
+        });
+
+        setThread((currentThread) =>
+          currentThread.map((entry) =>
+            entry.id === result.submission.id
+              ? {
+                  ...entry,
+                  deliveryStatus: "uploaded",
+                  remoteMessageId: parsed.messageId,
+                  detailText: parsed.parsedCandidate.followUpQuestion
+                    ? `${parsed.parsedCandidate.summary} Follow-up: ${parsed.parsedCandidate.followUpQuestion}`
+                    : parsed.parsedCandidate.summary,
+                }
+              : entry,
+          ),
+        );
+      }
     } catch (error) {
       const message =
         error instanceof Error && error.message.trim().length > 0
