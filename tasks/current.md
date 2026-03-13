@@ -18,7 +18,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-022 `done` Build image upload pipeline
 - AIB-023 `done` Build text-to-record parsing flow
 - AIB-024 `done` Build draft feeding record generation
-- AIB-025 `todo` Build confirmation / correction flow for AI-generated records
+- AIB-025 `done` Build confirmation / correction flow for AI-generated records
 - AIB-026 `todo` Persist original input plus structured output
 - AIB-027 `todo` Build today's timeline page
 

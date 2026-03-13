@@ -1,5 +1,5 @@
-const { resolveOwnerUserIdFromRequest } = require('../baby-profile/auth');
-const { createDraftMealRecord } = require('./local-store');
+const { resolveOwnerUserIdFromRequest } = require("../baby-profile/auth");
+const { confirmDraftMealRecord, createDraftMealRecord } = require("./local-store");
 
 let routeDependencies = createDefaultRouteDependencies();
 
@@ -23,6 +23,7 @@ function createDefaultRouteDependencies() {
     async getOwnerUserId(request) {
       return resolveOwnerUserIdFromRequest(request);
     },
+    confirmDraftMealRecord,
     createDraftMealRecord,
   };
 }
