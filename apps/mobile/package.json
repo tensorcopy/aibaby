@@ -7,12 +7,14 @@
   "scripts": {
     "start": "expo start",
     "test:app-shell": "node --experimental-strip-types --test src/features/app-shell/*.test.ts",
-    "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts"
+    "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts",
+    "test:chat-input": "node --experimental-strip-types --test src/features/chat-input/*.test.ts"
   },
   "dependencies": {
     "@aibaby/ui": "0.0.0",
     "@react-native-community/datetimepicker": "^8.4.4",
     "expo": "^54.0.0",
+    "expo-image-picker": "^55.0.12",
     "expo-router": "^6.0.0",
     "react": "^19.1.0",
     "react-native": "^0.81.0",
