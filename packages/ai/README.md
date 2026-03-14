@@ -12,5 +12,6 @@ Planned responsibilities:
 Current first-pass implementation:
 
 - deterministic daily summary generation contract in `src/daily-summary.js`
+- deterministic weekly summary aggregation in `src/weekly-summary.js`
 
 No provider-specific implementation has been added yet.
