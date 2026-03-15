@@ -119,6 +119,7 @@ Notes:
 - use your LAN IP instead of `localhost` if Expo is running on a physical device
 - `apps/web` persists local-dev data under `apps/web/.data/`
 - the mobile shell can still render without a backend, but create/edit and meal logging flows need the API to complete successfully
+- open `http://localhost:3000` to use the web manual-test shell for profile creation, text meal submission, draft generation, and today's timeline inspection
 
 ## Follow-up work expected after this doc
 
