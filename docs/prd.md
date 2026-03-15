@@ -96,6 +96,7 @@ Without increasing the burden on parents, complete the following loop:
 - Use photos plus AI to reduce logging cost
 - Use daily and weekly summaries to provide immediate feedback
 - Use age-based reminders to proactively tell parents what to focus on now
+- Open directly into an AI conversation instead of a dashboard-first utility flow
 
 ### 6.2 One-line Description
 **Raise your baby as if you were chatting with an assistant who understands parenting, keeps records, and sends reminders.**
@@ -109,6 +110,7 @@ Without increasing the burden on parents, complete the following loop:
 3. **Conservative recommendations**: Offer supportive guidance only, never medical judgment
 4. **Reviewable history**: Every record should eventually become part of a structured history
 5. **Chat first, pages second**: Use chat for input and pages for review
+6. **Conversation is home**: The first screen should feel like talking to an AI parenting assistant
 
 ---
 
@@ -162,6 +164,7 @@ Users send photos, text, or both in chat, and the system automatically generates
 3. Automatically classify the meal type (breakfast / lunch / dinner / snack / milk)
 4. Generate a structured record
 5. Ask follow-up questions when information is incomplete
+6. Accept a single conversational send action that can include both images and a short text description
 
 #### Structured Record Fields
 - Record time
@@ -176,6 +179,7 @@ Users send photos, text, or both in chat, and the system automatically generates
 #### Acceptance Criteria
 - After the user uploads an image, the system generates at least one candidate food record
 - After the user sends text, the system extracts the meal type and food items
+- The user can send photos and a text description together in one message
 - The user can correct AI recognition results
 - All records can enter the "Today Timeline"
 
