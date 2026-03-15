@@ -35,6 +35,7 @@ The repository now has a first-pass runnable local stack:
 
 - `apps/web` can run a local Next.js dev server for the current API and status page
 - `apps/mobile` can run the Expo shell for the current baby profile and meal logging slices
+- the web homepage now acts as a manual test shell for baby-profile creation, text meal parsing, draft generation, and today's timeline review
 
 The app is still MVP-in-progress: persistence is local-dev oriented, auth is bootstrapped through env vars, and production deployment wiring is not in place yet.
 
