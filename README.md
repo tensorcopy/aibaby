@@ -31,10 +31,17 @@ This repository follows the accepted stack and boundaries documented in:
 
 ## Status
 
-This is scaffold-only. No application runtime, database schema, or AI pipeline has been implemented yet.
+The repository now has a first-pass runnable local stack:
+
+- `apps/web` can run a local Next.js dev server for the current API and status page
+- `apps/mobile` can run the Expo shell for the current baby profile and meal logging slices
+
+The app is still MVP-in-progress: persistence is local-dev oriented, auth is bootstrapped through env vars, and production deployment wiring is not in place yet.
 
 ## Local setup
 
 - install dependencies with `npm install`
 - follow `docs/local-development.md` for setup expectations and env-file conventions
 - copy `.env.example` to `.env.local` when a task introduces real local credentials
+- run `npm run dev:web` for the backend
+- run `npm run dev:mobile` for Expo

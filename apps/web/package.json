@@ -4,12 +4,22 @@
   "version": "0.0.0",
   "description": "Next.js app and backend scaffold placeholder for AI Baby",
   "dependencies": {
+    "next": "^15.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "zod": "^3.24.2"
   },
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "test:baby-profile-api": "node --experimental-strip-types --test src/features/baby-profile/*.test.js src/features/baby-profile/*.test.ts",
     "test:uploads-api": "node --experimental-strip-types --test src/features/uploads/*.test.ts",
     "test:text-meal-api": "node --experimental-strip-types --test src/features/text-meal/*.test.ts",
     "test:meal-drafts-api": "node --experimental-strip-types --test src/features/meal-drafts/*.test.js src/features/meal-drafts/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "typescript": "5.9.3"
   }
 }
