@@ -1,0 +1,37 @@
+<svg width="420" height="900" viewBox="0 0 420 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="900" rx="36" fill="#F4F0E8"/>
+  <rect x="24" y="24" width="372" height="852" rx="32" fill="#FBF8F3"/>
+  <rect x="24" y="24" width="372" height="852" rx="32" stroke="#E5DDD2"/>
+  <circle cx="351" cy="119" r="58" fill="#D6E7E0"/>
+  <circle cx="73" cy="786" r="76" fill="#F2D7C8"/>
+
+  <text x="40" y="78" fill="#243038" font-size="28" font-family="Arial" font-weight="700">AI Baby</text>
+  <text x="40" y="108" fill="#708089" font-size="15" font-family="Arial">Calm, premium care tracking for everyday routines.</text>
+
+  <text x="40" y="158" fill="#243038" font-size="36" font-family="Arial" font-weight="700">Good evening,</text>
+  <text x="40" y="198" fill="#243038" font-size="36" font-family="Arial" font-weight="700">Test Baby</text>
+
+  <rect x="40" y="236" width="340" height="160" rx="26" fill="#FFFFFF"/>
+  <rect x="40" y="236" width="340" height="160" rx="26" stroke="#E5DDD2"/>
+  <text x="64" y="276" fill="#708089" font-size="13" font-family="Arial" font-weight="700">PROFILE SNAPSHOT</text>
+  <text x="64" y="318" fill="#243038" font-size="28" font-family="Arial" font-weight="700">5 months old</text>
+  <text x="64" y="352" fill="#526169" font-size="18" font-family="Arial">Mixed feeding   America/Los_Angeles</text>
+  <line x1="64" y1="372" x2="356" y2="372" stroke="#EEE6DD"/>
+  <text x="64" y="406" fill="#8A6E5A" font-size="16" font-family="Arial" font-weight="700">Primary caregiver: Zhen</text>
+
+  <rect x="40" y="422" width="340" height="58" rx="18" fill="#566B7A"/>
+  <text x="150" y="458" fill="#FFFFFF" font-size="21" font-family="Arial" font-weight="700">Log today's meal</text>
+
+  <text x="40" y="534" fill="#243038" font-size="24" font-family="Arial" font-weight="700">Home sections</text>
+  <text x="40" y="560" fill="#708089" font-size="15" font-family="Arial">Less toy-like, more premium, still warm and baby-centered.</text>
+
+  <rect x="40" y="590" width="340" height="92" rx="24" fill="#FAF7F2" stroke="#E5DDD2"/>
+  <text x="62" y="628" fill="#243038" font-size="22" font-family="Arial" font-weight="700">Today's timeline</text>
+  <text x="62" y="657" fill="#708089" font-size="15" font-family="Arial">A clean feed of meals, notes, and confirmations.</text>
+
+  <rect x="40" y="700" width="340" height="92" rx="24" fill="#FAF7F2" stroke="#E5DDD2"/>
+  <text x="62" y="738" fill="#243038" font-size="22" font-family="Arial" font-weight="700">Summary history</text>
+  <text x="62" y="767" fill="#708089" font-size="15" font-family="Arial">Gentle trend cards and weekly nutrition highlights.</text>
+
+  <rect x="140" y="824" width="140" height="8" rx="4" fill="#D9D0C5"/>
+</svg>

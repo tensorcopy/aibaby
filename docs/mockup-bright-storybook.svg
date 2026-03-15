@@ -1,0 +1,42 @@
+<svg width="420" height="900" viewBox="0 0 420 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="900" rx="36" fill="#FFF4E8"/>
+  <path d="M0 0H420V205C360 224 299 212 240 178C154 128 87 150 0 192V0Z" fill="#FFB84D"/>
+  <circle cx="338" cy="112" r="48" fill="#FF6B7C"/>
+  <circle cx="72" cy="160" r="34" fill="#5FD6D1"/>
+  <rect x="24" y="24" width="372" height="852" rx="32" fill="none" stroke="#F1D9B5"/>
+
+  <text x="40" y="78" fill="#1D2540" font-size="28" font-family="Arial" font-weight="700">AI Baby</text>
+  <text x="40" y="109" fill="#2F395C" font-size="16" font-family="Arial">A brighter, more expressive story of your baby's day.</text>
+
+  <rect x="34" y="144" width="352" height="184" rx="30" fill="#FFFFFF"/>
+  <rect x="34" y="144" width="352" height="184" rx="30" stroke="#FFD18C"/>
+  <text x="58" y="184" fill="#F05B61" font-size="15" font-family="Arial" font-weight="700">TODAY'S HERO CARD</text>
+  <text x="58" y="224" fill="#1D2540" font-size="34" font-family="Arial" font-weight="700">Test Baby</text>
+  <text x="58" y="256" fill="#44506F" font-size="18" font-family="Arial">5 months   Mixed feeding</text>
+  <rect x="58" y="276" width="132" height="36" rx="18" fill="#5FD6D1"/>
+  <text x="87" y="299" fill="#0B4C53" font-size="15" font-family="Arial" font-weight="700">Happy routine</text>
+
+  <rect x="34" y="350" width="352" height="74" rx="28" fill="#1E5BFF"/>
+  <text x="128" y="395" fill="#FFFFFF" font-size="24" font-family="Arial" font-weight="700">Capture a meal</text>
+
+  <text x="38" y="474" fill="#1D2540" font-size="26" font-family="Arial" font-weight="700">Pick a chapter</text>
+  <text x="38" y="501" fill="#586482" font-size="15" font-family="Arial">This direction feels youthful, vibrant, and brand-forward.</text>
+
+  <rect x="34" y="530" width="166" height="156" rx="28" fill="#FFEEF1"/>
+  <rect x="34" y="530" width="166" height="156" rx="28" stroke="#FFC7D0"/>
+  <circle cx="78" cy="572" r="20" fill="#FF6B7C"/>
+  <text x="56" y="621" fill="#1D2540" font-size="22" font-family="Arial" font-weight="700">Today</text>
+  <text x="56" y="651" fill="#59657F" font-size="15" font-family="Arial">Meals, notes, and edits</text>
+
+  <rect x="220" y="530" width="166" height="156" rx="28" fill="#ECFFFC"/>
+  <rect x="220" y="530" width="166" height="156" rx="28" stroke="#BFEDEA"/>
+  <circle cx="264" cy="572" r="20" fill="#5FD6D1"/>
+  <text x="242" y="621" fill="#1D2540" font-size="22" font-family="Arial" font-weight="700">Summaries</text>
+  <text x="242" y="651" fill="#59657F" font-size="15" font-family="Arial">Daily and weekly wins</text>
+
+  <rect x="34" y="706" width="352" height="112" rx="28" fill="#FFF7D4" stroke="#FFE08C"/>
+  <text x="58" y="750" fill="#715500" font-size="22" font-family="Arial" font-weight="700">Design personality</text>
+  <text x="58" y="780" fill="#7A6840" font-size="15" font-family="Arial">Playful blocks, stronger color, more celebration.</text>
+
+  <rect x="140" y="840" width="140" height="8" rx="4" fill="#E1CFAE"/>
+</svg>

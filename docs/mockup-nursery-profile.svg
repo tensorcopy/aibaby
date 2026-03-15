@@ -1,0 +1,37 @@
+<svg width="430" height="932" viewBox="0 0 430 932" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="430" height="932" rx="40" fill="#F4F0E8"/>
+  <circle cx="338" cy="98" r="62" fill="#E9D7E1"/>
+  <rect x="23" y="24" width="384" height="884" rx="34" fill="#FBF8F3" stroke="#E5DDD2"/>
+  <text x="42" y="74" fill="#243038" font-size="20" font-family="Arial">←</text>
+  <text x="68" y="78" fill="#243038" font-size="28" font-family="Arial" font-weight="700">Baby profile</text>
+  <text x="42" y="110" fill="#708089" font-size="15" font-family="Arial">A guided record that feels closer to a nursery book than an admin form.</text>
+
+  <rect x="40" y="146" width="350" height="118" rx="26" fill="#FFFFFF" stroke="#E5DDD2"/>
+  <text x="64" y="184" fill="#708089" font-size="12" font-family="Arial" font-weight="700">PROFILE SNAPSHOT</text>
+  <text x="64" y="222" fill="#243038" font-size="28" font-family="Arial" font-weight="700">Test Baby</text>
+  <text x="64" y="248" fill="#526169" font-size="16" font-family="Arial">5 months   Mixed feeding</text>
+
+  <rect x="40" y="286" width="350" height="124" rx="24" fill="#FAF7F2" stroke="#E5DDD2"/>
+  <text x="62" y="323" fill="#243038" font-size="20" font-family="Arial" font-weight="700">Baby basics</text>
+  <rect x="62" y="340" width="306" height="46" rx="16" fill="#FFFFFF" stroke="#EEE6DD"/>
+  <text x="78" y="368" fill="#8C988F" font-size="13" font-family="Arial">Name</text>
+  <text x="184" y="368" fill="#243038" font-size="16" font-family="Arial" font-weight="700">Test Baby</text>
+
+  <rect x="40" y="430" width="350" height="168" rx="24" fill="#FAF7F2" stroke="#E5DDD2"/>
+  <text x="62" y="467" fill="#243038" font-size="20" font-family="Arial" font-weight="700">Care details</text>
+  <rect x="62" y="486" width="306" height="46" rx="16" fill="#FFFFFF" stroke="#EEE6DD"/>
+  <text x="78" y="514" fill="#8C988F" font-size="13" font-family="Arial">Birth date</text>
+  <text x="214" y="514" fill="#243038" font-size="16" font-family="Arial" font-weight="700">2025-10-14</text>
+  <rect x="62" y="544" width="306" height="46" rx="16" fill="#FFFFFF" stroke="#EEE6DD"/>
+  <text x="78" y="572" fill="#8C988F" font-size="13" font-family="Arial">Timezone</text>
+  <text x="182" y="572" fill="#243038" font-size="16" font-family="Arial" font-weight="700">America/Los_Angeles</text>
+
+  <rect x="40" y="620" width="350" height="104" rx="24" fill="#FFFDF8" stroke="#E5DDD2"/>
+  <text x="62" y="659" fill="#8A6E5A" font-size="19" font-family="Arial" font-weight="700">Gentle guidance</text>
+  <text x="62" y="689" fill="#708089" font-size="15" font-family="Arial">If save fails, keep the screen recoverable with a clear retry and a safe back path.</text>
+
+  <rect x="40" y="778" width="350" height="62" rx="20" fill="#566B7A"/>
+  <text x="183" y="817" fill="#FFFFFF" font-size="22" font-family="Arial" font-weight="700">Save</text>
+
+  <rect x="145" y="858" width="140" height="8" rx="4" fill="#D9D0C5"/>
+</svg>

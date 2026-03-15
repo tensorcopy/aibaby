@@ -1,0 +1,41 @@
+<svg width="420" height="900" viewBox="0 0 420 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="420" height="900" rx="36" fill="#FFF9EE"/>
+  <circle cx="368" cy="84" r="92" fill="#FFE28A"/>
+  <circle cx="69" cy="164" r="64" fill="#CFF3FF"/>
+  <rect x="24" y="24" width="372" height="852" rx="32" fill="#FFFDF8" stroke="#F5E7C8"/>
+  <text x="38" y="76" fill="#1F2A44" font-size="28" font-family="Arial" font-weight="700">AI Baby</text>
+  <text x="38" y="106" fill="#60708A" font-size="15" font-family="Arial">A soft, happy view of today with your baby.</text>
+
+  <rect x="34" y="136" width="352" height="176" rx="28" fill="#FFFFFF"/>
+  <rect x="34" y="136" width="352" height="176" rx="28" stroke="#D8ECFF"/>
+  <text x="56" y="172" fill="#5D78FF" font-size="13" font-family="Arial" font-weight="700">ACTIVE BABY PROFILE</text>
+  <text x="56" y="210" fill="#1F2A44" font-size="32" font-family="Arial" font-weight="700">Test Baby</text>
+  <text x="56" y="242" fill="#4C5C78" font-size="18" font-family="Arial">5 months   Mixed feeding</text>
+  <rect x="56" y="262" width="106" height="34" rx="17" fill="#FFF1B7"/>
+  <text x="78" y="284" fill="#7B5A00" font-size="15" font-family="Arial" font-weight="700">Today: 3 meals</text>
+
+  <rect x="34" y="334" width="352" height="64" rx="24" fill="#4B78FF"/>
+  <text x="136" y="374" fill="#FFFFFF" font-size="22" font-family="Arial" font-weight="700">Log a meal</text>
+
+  <text x="40" y="444" fill="#27334C" font-size="24" font-family="Arial" font-weight="700">Today's gentle rhythm</text>
+  <text x="40" y="470" fill="#6C7B93" font-size="15" font-family="Arial">Quick cards designed to feel more like a nursery app.</text>
+
+  <rect x="34" y="496" width="352" height="104" rx="24" fill="#FFF3F6"/>
+  <rect x="34" y="496" width="352" height="104" rx="24" stroke="#FFD3DE"/>
+  <circle cx="76" cy="548" r="24" fill="#FF9FBA"/>
+  <text x="112" y="538" fill="#25324B" font-size="22" font-family="Arial" font-weight="700">Breakfast</text>
+  <text x="112" y="566" fill="#66758D" font-size="15" font-family="Arial">Oatmeal, banana, yogurt</text>
+  <text x="112" y="589" fill="#D26488" font-size="14" font-family="Arial" font-weight="700">Saved 8:15 AM</text>
+
+  <rect x="34" y="620" width="168" height="132" rx="24" fill="#E9FAF2" stroke="#C8F1DB"/>
+  <text x="54" y="662" fill="#214235" font-size="22" font-family="Arial" font-weight="700">Today</text>
+  <text x="54" y="692" fill="#557064" font-size="15" font-family="Arial">Timeline</text>
+  <text x="54" y="730" fill="#2B8D66" font-size="16" font-family="Arial" font-weight="700">Open screen</text>
+
+  <rect x="218" y="620" width="168" height="132" rx="24" fill="#EEF2FF" stroke="#D8E0FF"/>
+  <text x="238" y="662" fill="#243158" font-size="22" font-family="Arial" font-weight="700">Summaries</text>
+  <text x="238" y="692" fill="#657298" font-size="15" font-family="Arial">Daily and weekly</text>
+  <text x="238" y="730" fill="#5D78FF" font-size="16" font-family="Arial" font-weight="700">Open screen</text>
+
+  <rect x="140" y="814" width="140" height="8" rx="4" fill="#DFE7F1"/>
+</svg>
