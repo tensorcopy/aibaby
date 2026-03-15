@@ -84,6 +84,16 @@ test("createDraftMealRecord materializes a draft meal record from a parsed text 
     assert.equal(result.mealRecord.items.length, 2);
     assert.equal(result.mealRecord.items[0].food_name, "noodles");
     assert.equal(result.generationIngestionEvent.payload_json.kind, "draft_meal_record_generation");
+    assert.deepEqual(result.generationIngestionEvent.payload_json.sourceInput, {
+      messageId: "msg_123",
+      text: "half a bowl of noodles and two pieces of beef",
+      quickAction: null,
+      submittedAt: "2026-03-13T04:10:00.000Z",
+    });
+    assert.equal(
+      result.generationIngestionEvent.payload_json.structuredOutput.mealRecord.mealRecordId,
+      result.mealRecord.id,
+    );
 
     const persistedStore = JSON.parse(await fs.readFile(mealDraftStorePath, "utf8"));
     assert.equal(persistedStore.mealRecords.length, 1);
@@ -201,6 +211,15 @@ test("confirmDraftMealRecord persists a confirmed or corrected meal record", asy
     assert.equal(
       persistedStore.ingestionEvents[1].payload_json.kind,
       "draft_meal_record_confirmation",
+    );
+    assert.deepEqual(persistedStore.ingestionEvents[1].payload_json.sourceInput, {
+      messageId: "msg_123",
+      rawText: "half a bowl of noodles and two pieces of beef",
+      mealRecordId: "meal_123",
+    });
+    assert.equal(
+      persistedStore.ingestionEvents[1].payload_json.structuredOutput.mealRecord.status,
+      "edited",
     );
   } finally {
     delete process.env.AIBABY_MEAL_DRAFT_DEV_DATA_FILE;
