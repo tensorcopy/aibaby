@@ -1,0 +1,153 @@
+{
+  "version": "v1",
+  "stages": [
+    {
+      "key": "newborn_foundation",
+      "label": "Newborn foundation",
+      "ageRange": {
+        "minDays": 0,
+        "maxDays": 119
+      },
+      "summary": "Focus on milk intake rhythm, caregiver confidence, and early feeding cues.",
+      "nutritionFocus": [
+        "milk feeds",
+        "feeding cues",
+        "supplement routine"
+      ],
+      "developmentFocus": [
+        "head control",
+        "caregiver rhythm",
+        "sleep and feeding observation"
+      ],
+      "safetyFocus": [
+        "responsive feeding",
+        "safe bottle and breast handling",
+        "newborn choking awareness"
+      ],
+      "reminderTemplates": [
+        {
+          "key": "milk_rhythm",
+          "title": "Build a calm milk rhythm",
+          "body": "At this stage, consistent milk feeds and clear logs help you notice patterns without overthinking every feed.",
+          "whyThisMatters": "Newborn feeding patterns shift quickly, so a simple rhythm matters more than variety.",
+          "actions": [
+            "Keep logging milk feeds consistently",
+            "Note any supplements when given",
+            "Watch for satiety and hunger cues"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "starting_solids",
+      "label": "Starting solids",
+      "ageRange": {
+        "minDays": 120,
+        "maxDays": 209
+      },
+      "summary": "Support first solids with iron-rich foods, simple variety, and gentle observation.",
+      "nutritionFocus": [
+        "iron-rich foods",
+        "simple variety",
+        "milk plus solids balance"
+      ],
+      "developmentFocus": [
+        "interest in food",
+        "seated feeding practice",
+        "texture exposure"
+      ],
+      "safetyFocus": [
+        "safe texture size",
+        "allergy observation",
+        "upright feeding posture"
+      ],
+      "reminderTemplates": [
+        {
+          "key": "iron_and_variety",
+          "title": "Keep iron and variety in view",
+          "body": "This is a good stage to introduce simple iron-rich foods and keep meals low-pressure while your baby learns.",
+          "whyThisMatters": "Early solids are more about repeated exposure and iron support than large amounts eaten.",
+          "actions": [
+            "Offer one clear iron-rich food this week",
+            "Keep meals short and calm",
+            "Log new foods so patterns stay visible"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "texture_building",
+      "label": "Texture building",
+      "ageRange": {
+        "minDays": 210,
+        "maxDays": 299
+      },
+      "summary": "Expand texture range and food diversity while watching repeated gaps.",
+      "nutritionFocus": [
+        "protein variety",
+        "fruit and vegetable consistency",
+        "iron-rich repetition"
+      ],
+      "developmentFocus": [
+        "finger food practice",
+        "texture progression",
+        "self-feeding interest"
+      ],
+      "safetyFocus": [
+        "safe finger food prep",
+        "supervised mealtimes",
+        "texture progression without rushing"
+      ],
+      "reminderTemplates": [
+        {
+          "key": "texture_and_variety",
+          "title": "Build texture confidence",
+          "body": "Your baby may be ready for more texture practice now, along with steadier variety across the week.",
+          "whyThisMatters": "Repeated exposure to different foods and textures supports confidence without needing perfect meals every day.",
+          "actions": [
+            "Repeat familiar foods in new textures",
+            "Offer fruit or vegetables across several days",
+            "Keep iron-rich foods in the weekly rotation"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "shared_table_transition",
+      "label": "Shared table transition",
+      "ageRange": {
+        "minDays": 300,
+        "maxDays": 455
+      },
+      "summary": "Move toward family-style eating patterns with steadier variety and safe table habits.",
+      "nutritionFocus": [
+        "balanced variety",
+        "family meal participation",
+        "steady iron and vegetable intake"
+      ],
+      "developmentFocus": [
+        "self-feeding confidence",
+        "shared mealtime routines",
+        "taste repetition"
+      ],
+      "safetyFocus": [
+        "table-food safety",
+        "portion and texture checks",
+        "consistent supervision"
+      ],
+      "reminderTemplates": [
+        {
+          "key": "table_routine",
+          "title": "Shape a steady table routine",
+          "body": "This stage is a good time to reinforce family mealtime rhythm and keep variety steady across the week.",
+          "whyThisMatters": "Patterns across the week matter more now than any single meal.",
+          "actions": [
+            "Aim for repeated vegetable exposure",
+            "Keep protein and iron-rich foods in rotation",
+            "Use family meals to model eating variety"
+          ]
+        }
+      ]
+    }
+  ]
+}

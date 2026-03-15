@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "description": "AI orchestration package scaffold placeholder for AI Baby",
   "scripts": {
+    "test:age-stage": "node --test src/age-stage.test.js",
     "test:daily-summary": "node --test src/daily-summary.test.js",
     "test:text-meal-parser": "node --test src/text-meal-parser.test.js",
     "test:weekly-summary": "node --test src/weekly-summary.test.js"
