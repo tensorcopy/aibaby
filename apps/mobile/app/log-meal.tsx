@@ -26,7 +26,6 @@ import {
   submitMealComposerDraft,
   toggleMealComposerQuickAction,
   type MealComposerAttachment,
-  type MealComposerSubmission,
 } from "../src/features/chat-input/composer.ts";
 import {
   addMealRecordConfirmationItem,
@@ -35,20 +34,13 @@ import {
   executeMealRecordConfirmationFlow,
   removeMealRecordConfirmationItem,
   updateMealRecordConfirmationDraft,
-  type ConfirmableMealRecord,
-  type MealRecordConfirmationDraft,
 } from "../src/features/chat-input/draft-confirmation.ts";
+import { useMealThread } from "../src/features/chat-input/MealThreadContext.tsx";
 import { executeTextMealParseFlow } from "../src/features/chat-input/text-submit.ts";
+import {
+  type MealThreadEntry,
+} from "../src/features/chat-input/thread.ts";
 import { executeMealUploadFlow } from "../src/features/chat-input/upload.ts";
-
-type MealThreadEntry = MealComposerSubmission & {
-  deliveryStatus: "local" | "uploading" | "uploaded" | "error";
-  detailText: string;
-  remoteMessageId?: string;
-  mealRecord?: ConfirmableMealRecord;
-  confirmationDraft?: MealRecordConfirmationDraft;
-  confirmationState?: "idle" | "editing" | "saving" | "confirmed";
-};
 
 export default function LogMealRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
@@ -66,9 +58,9 @@ export function MealChatExperience({
 }) {
   const session = useMobileSession();
   const babyId = explicitBabyId ?? session.currentBabyId;
+  const { thread, prependEntry, updateEntry } = useMealThread(babyId);
 
   const [draft, setDraft] = useState(createMealComposerDraft);
-  const [thread, setThread] = useState<MealThreadEntry[]>([]);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [isPickingImages, setIsPickingImages] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -132,7 +124,7 @@ export function MealChatExperience({
         : "Sending the text note into the parsing flow…",
     };
 
-    setThread((currentThread) => [threadEntry, ...currentThread]);
+    prependEntry(threadEntry);
     setDraft(result.nextDraft);
     setAttachmentError(null);
 
@@ -151,18 +143,12 @@ export function MealChatExperience({
           apiBaseUrl: session.apiBaseUrl,
         });
 
-        setThread((currentThread) =>
-          currentThread.map((entry) =>
-            entry.id === result.submission.id
-              ? {
-                  ...entry,
-                  deliveryStatus: "uploaded",
-                  remoteMessageId: uploaded.messageId,
-                  detailText: `Uploaded ${uploaded.uploadedAssets.length} photo${uploaded.uploadedAssets.length === 1 ? "" : "s"} to ${uploaded.messageId}. Image parsing can build on this server-side message next.`,
-                }
-              : entry,
-          ),
-        );
+        updateEntry(result.submission.id, (entry) => ({
+          ...entry,
+          deliveryStatus: "uploaded",
+          remoteMessageId: uploaded.messageId,
+          detailText: `Uploaded ${uploaded.uploadedAssets.length} photo${uploaded.uploadedAssets.length === 1 ? "" : "s"} to ${uploaded.messageId}. Image parsing can build on this server-side message next.`,
+        }));
       } else {
         const parsed = await executeTextMealParseFlow({
           babyId,
@@ -177,23 +163,17 @@ export function MealChatExperience({
           apiBaseUrl: session.apiBaseUrl,
         });
 
-        setThread((currentThread) =>
-          currentThread.map((entry) =>
-            entry.id === result.submission.id
-              ? {
-                  ...entry,
-                  deliveryStatus: "uploaded",
-                  remoteMessageId: parsed.messageId,
-                  mealRecord: generated.mealRecord,
-                  confirmationDraft: createMealRecordConfirmationDraft(generated.mealRecord),
-                  confirmationState: "idle",
-                  detailText: generated.mealRecord.followUpQuestion
-                    ? `${generated.mealRecord.aiSummary} Follow-up: ${generated.mealRecord.followUpQuestion}`
-                    : generated.mealRecord.aiSummary,
-                }
-              : entry,
-          ),
-        );
+        updateEntry(result.submission.id, (entry) => ({
+          ...entry,
+          deliveryStatus: "uploaded",
+          remoteMessageId: parsed.messageId,
+          mealRecord: generated.mealRecord,
+          confirmationDraft: createMealRecordConfirmationDraft(generated.mealRecord),
+          confirmationState: "idle",
+          detailText: generated.mealRecord.followUpQuestion
+            ? `${generated.mealRecord.aiSummary} Follow-up: ${generated.mealRecord.followUpQuestion}`
+            : generated.mealRecord.aiSummary,
+        }));
       }
     } catch (error) {
       const message =
@@ -202,17 +182,11 @@ export function MealChatExperience({
           : "We couldn't finish the upload handoff right now.";
 
       setAttachmentError(message);
-      setThread((currentThread) =>
-        currentThread.map((entry) =>
-          entry.id === result.submission.id
-            ? {
-                ...entry,
-                deliveryStatus: "error",
-                detailText: message,
-              }
-            : entry,
-        ),
-      );
+      updateEntry(result.submission.id, (entry) => ({
+        ...entry,
+        deliveryStatus: "error",
+        detailText: message,
+      }));
     } finally {
       setIsSubmitting(false);
     }
@@ -229,16 +203,10 @@ export function MealChatExperience({
     }
 
     setAttachmentError(null);
-    setThread((currentThread) =>
-      currentThread.map((candidate) =>
-        candidate.id === entryId
-          ? {
-              ...candidate,
-              confirmationState: "saving",
-            }
-          : candidate,
-      ),
-    );
+    updateEntry(entryId, (candidate) => ({
+      ...candidate,
+      confirmationState: "saving",
+    }));
 
     try {
       const confirmed = await executeMealRecordConfirmationFlow({
@@ -249,36 +217,24 @@ export function MealChatExperience({
         apiBaseUrl: session.apiBaseUrl,
       });
 
-      setThread((currentThread) =>
-        currentThread.map((candidate) =>
-          candidate.id === entryId
-            ? {
-                ...candidate,
-                mealRecord: confirmed.mealRecord,
-                confirmationDraft: createMealRecordConfirmationDraft(confirmed.mealRecord),
-                confirmationState: "confirmed",
-                detailText: confirmed.mealRecord.aiSummary,
-              }
-            : candidate,
-        ),
-      );
+      updateEntry(entryId, (candidate) => ({
+        ...candidate,
+        mealRecord: confirmed.mealRecord,
+        confirmationDraft: createMealRecordConfirmationDraft(confirmed.mealRecord),
+        confirmationState: "confirmed",
+        detailText: confirmed.mealRecord.aiSummary,
+      }));
     } catch (error) {
       const message =
         error instanceof Error && error.message.trim().length > 0
           ? error.message
           : "We couldn't confirm the meal record right now.";
       setAttachmentError(message);
-      setThread((currentThread) =>
-        currentThread.map((candidate) =>
-          candidate.id === entryId
-            ? {
-                ...candidate,
-                confirmationState: "editing",
-                detailText: message,
-              }
-            : candidate,
-        ),
-      );
+      updateEntry(entryId, (candidate) => ({
+        ...candidate,
+        confirmationState: "editing",
+        detailText: message,
+      }));
     }
   }
 
@@ -325,8 +281,8 @@ export function MealChatExperience({
       ) : null}
 
       <View style={styles.card}>
-        <Text style={styles.cardEyebrow}>Capture gently</Text>
-        <Text style={styles.cardTitle}>Meal draft</Text>
+        <Text style={styles.cardEyebrow}>Compose</Text>
+        <Text style={styles.cardTitle}>Send a message</Text>
         <Text style={styles.cardSubtitle}>{model.helperText}</Text>
 
         <View style={styles.quickActionRow}>
@@ -420,9 +376,20 @@ export function MealChatExperience({
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardEyebrow}>AI support</Text>
-        <Text style={styles.cardTitle}>Meal draft thread</Text>
-        <Text style={styles.cardSubtitle}>{model.emptyStateMessage}</Text>
+        <Text style={styles.cardEyebrow}>Conversation</Text>
+        <Text style={styles.cardTitle}>Persistent meal chat</Text>
+        <Text style={styles.cardSubtitle}>
+          Your messages stay here while you move through profile, timeline, and summaries.
+        </Text>
+
+        <View style={styles.assistantBubble}>
+          <Text style={styles.assistantLabel}>AI Baby</Text>
+          <Text style={styles.assistantText}>
+            {babyId
+              ? "Send a note, a photo, or both together. I’ll keep the meal context here and turn it into a draft record you can confirm."
+              : "Create a baby profile first, then start chatting with a meal note or a photo."}
+          </Text>
+        </View>
 
         {thread.length === 0 ? (
           <View style={styles.emptyState}>
@@ -433,45 +400,48 @@ export function MealChatExperience({
           <View style={styles.threadList}>
             {thread.map((submission) => (
               <View key={submission.id} style={styles.threadCard}>
-                <Text style={styles.threadMeta}>{formatMealComposerSubmissionMeta(submission)}</Text>
-                {submission.text ? <Text style={styles.threadText}>{submission.text}</Text> : null}
-                {submission.attachments.length > 0 ? (
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.threadAttachmentRow}
-                  >
-                    {submission.attachments.map((attachment) => (
-                      <Image
-                        key={attachment.id}
-                        source={{ uri: attachment.uri }}
-                        style={styles.threadAttachmentImage}
-                      />
-                    ))}
-                  </ScrollView>
-                ) : null}
+                <View style={styles.userBubble}>
+                  <Text style={styles.threadMeta}>{formatMealComposerSubmissionMeta(submission)}</Text>
+                  {submission.text ? <Text style={styles.threadText}>{submission.text}</Text> : null}
+                  {submission.attachments.length > 0 ? (
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.threadAttachmentRow}
+                    >
+                      {submission.attachments.map((attachment) => (
+                        <Image
+                          key={attachment.id}
+                          source={{ uri: attachment.uri }}
+                          style={styles.threadAttachmentImage}
+                        />
+                      ))}
+                    </ScrollView>
+                  ) : null}
+                </View>
 
-                {submission.mealRecord ? (
-                  <View style={styles.confirmationCard}>
-                    <View style={styles.confirmationHeader}>
-                      <Text style={styles.confirmationTitle}>AI meal draft</Text>
-                      <Text style={styles.confirmationStatus}>{submission.mealRecord.status}</Text>
-                    </View>
+                <View style={styles.assistantBubble}>
+                  <Text style={styles.assistantLabel}>AI Baby</Text>
+                  {submission.mealRecord ? (
+                    <View style={styles.confirmationCard}>
+                      <View style={styles.confirmationHeader}>
+                        <Text style={styles.confirmationTitle}>Meal draft ready</Text>
+                        <Text style={styles.confirmationStatus}>{submission.mealRecord.status}</Text>
+                      </View>
 
-                    {submission.confirmationState === "editing" || submission.confirmationState === "saving" ? (
-                      <>
-                        <View style={styles.quickActionRow}>
-                          {mealComposerQuickActions.map((action) => {
-                            const isSelected = submission.confirmationDraft?.mealType === action.key;
-                            return (
-                              <Pressable
-                                key={`${submission.id}:${action.key}`}
-                                accessibilityRole="button"
-                                disabled={submission.confirmationState === "saving"}
-                                onPress={() =>
-                                  setThread((currentThread) =>
-                                    currentThread.map((entry) =>
-                                      entry.id === submission.id && entry.confirmationDraft
+                      {submission.confirmationState === "editing" || submission.confirmationState === "saving" ? (
+                        <>
+                          <View style={styles.quickActionRow}>
+                            {mealComposerQuickActions.map((action) => {
+                              const isSelected = submission.confirmationDraft?.mealType === action.key;
+                              return (
+                                <Pressable
+                                  key={`${submission.id}:${action.key}`}
+                                  accessibilityRole="button"
+                                  disabled={submission.confirmationState === "saving"}
+                                  onPress={() =>
+                                    updateEntry(submission.id, (entry) =>
+                                      entry.confirmationDraft
                                         ? {
                                             ...entry,
                                             confirmationDraft: updateMealRecordConfirmationDraft(
@@ -480,39 +450,37 @@ export function MealChatExperience({
                                             ),
                                           }
                                         : entry,
-                                    ),
-                                  )
-                                }
-                                style={[
-                                  styles.quickActionChip,
-                                  isSelected ? styles.quickActionChipSelected : null,
-                                ]}
-                              >
-                                <Text
+                                    )
+                                  }
                                   style={[
-                                    styles.quickActionChipText,
-                                    isSelected ? styles.quickActionChipTextSelected : null,
+                                    styles.quickActionChip,
+                                    isSelected ? styles.quickActionChipSelected : null,
                                   ]}
                                 >
-                                  {action.label}
-                                </Text>
-                              </Pressable>
-                            );
-                          })}
-                        </View>
+                                  <Text
+                                    style={[
+                                      styles.quickActionChipText,
+                                      isSelected ? styles.quickActionChipTextSelected : null,
+                                    ]}
+                                  >
+                                    {action.label}
+                                  </Text>
+                                </Pressable>
+                              );
+                            })}
+                          </View>
 
-                        {submission.confirmationDraft?.items.map((item, index) => (
-                          <View key={item.id} style={styles.editItemCard}>
-                            <Text style={styles.editItemLabel}>Item {index + 1}</Text>
-                            <TextInput
-                              placeholder="Food name"
-                              placeholderTextColor="#94a3b8"
-                              style={styles.editInput}
-                              value={item.foodName}
-                              onChangeText={(value) =>
-                                setThread((currentThread) =>
-                                  currentThread.map((entry) =>
-                                    entry.id === submission.id && entry.confirmationDraft
+                          {submission.confirmationDraft?.items.map((item, index) => (
+                            <View key={item.id} style={styles.editItemCard}>
+                              <Text style={styles.editItemLabel}>Item {index + 1}</Text>
+                              <TextInput
+                                placeholder="Food name"
+                                placeholderTextColor="#94a3b8"
+                                style={styles.editInput}
+                                value={item.foodName}
+                                onChangeText={(value) =>
+                                  updateEntry(submission.id, (entry) =>
+                                    entry.confirmationDraft
                                       ? {
                                           ...entry,
                                           confirmationDraft: updateMealRecordConfirmationDraft(
@@ -525,19 +493,17 @@ export function MealChatExperience({
                                           ),
                                         }
                                       : entry,
-                                  ),
-                                )
-                              }
-                            />
-                            <TextInput
-                              placeholder="Amount"
-                              placeholderTextColor="#94a3b8"
-                              style={styles.editInput}
-                              value={item.amountText}
-                              onChangeText={(value) =>
-                                setThread((currentThread) =>
-                                  currentThread.map((entry) =>
-                                    entry.id === submission.id && entry.confirmationDraft
+                                  )
+                                }
+                              />
+                              <TextInput
+                                placeholder="Amount"
+                                placeholderTextColor="#94a3b8"
+                                style={styles.editInput}
+                                value={item.amountText}
+                                onChangeText={(value) =>
+                                  updateEntry(submission.id, (entry) =>
+                                    entry.confirmationDraft
                                       ? {
                                           ...entry,
                                           confirmationDraft: updateMealRecordConfirmationDraft(
@@ -550,16 +516,14 @@ export function MealChatExperience({
                                           ),
                                         }
                                       : entry,
-                                  ),
-                                )
-                              }
-                            />
-                            <Pressable
-                              accessibilityRole="button"
-                              onPress={() =>
-                                setThread((currentThread) =>
-                                  currentThread.map((entry) =>
-                                    entry.id === submission.id && entry.confirmationDraft
+                                  )
+                                }
+                              />
+                              <Pressable
+                                accessibilityRole="button"
+                                onPress={() =>
+                                  updateEntry(submission.id, (entry) =>
+                                    entry.confirmationDraft
                                       ? {
                                           ...entry,
                                           confirmationDraft: removeMealRecordConfirmationItem(
@@ -568,23 +532,21 @@ export function MealChatExperience({
                                           ),
                                         }
                                       : entry,
-                                  ),
-                                )
-                              }
-                              style={styles.inlineSecondaryButton}
-                            >
-                              <Text style={styles.inlineSecondaryButtonText}>Remove item</Text>
-                            </Pressable>
-                          </View>
-                        ))}
+                                  )
+                                }
+                                style={styles.inlineSecondaryButton}
+                              >
+                                <Text style={styles.inlineSecondaryButtonText}>Remove item</Text>
+                              </Pressable>
+                            </View>
+                          ))}
 
-                        <View style={styles.inlineActionRow}>
-                          <Pressable
-                            accessibilityRole="button"
-                            onPress={() =>
-                              setThread((currentThread) =>
-                                currentThread.map((entry) =>
-                                  entry.id === submission.id && entry.confirmationDraft
+                          <View style={styles.inlineActionRow}>
+                            <Pressable
+                              accessibilityRole="button"
+                              onPress={() =>
+                                updateEntry(submission.id, (entry) =>
+                                  entry.confirmationDraft
                                     ? {
                                         ...entry,
                                         confirmationDraft: addMealRecordConfirmationItem(
@@ -592,19 +554,17 @@ export function MealChatExperience({
                                         ),
                                       }
                                     : entry,
-                                ),
-                              )
-                            }
-                            style={styles.inlineSecondaryButton}
-                          >
-                            <Text style={styles.inlineSecondaryButtonText}>Add item</Text>
-                          </Pressable>
-                          <Pressable
-                            accessibilityRole="button"
-                            onPress={() =>
-                              setThread((currentThread) =>
-                                currentThread.map((entry) =>
-                                  entry.id === submission.id && entry.mealRecord
+                                )
+                              }
+                              style={styles.inlineSecondaryButton}
+                            >
+                              <Text style={styles.inlineSecondaryButtonText}>Add item</Text>
+                            </Pressable>
+                            <Pressable
+                              accessibilityRole="button"
+                              onPress={() =>
+                                updateEntry(submission.id, (entry) =>
+                                  entry.mealRecord
                                     ? {
                                         ...entry,
                                         confirmationDraft: createMealRecordConfirmationDraft(
@@ -614,84 +574,78 @@ export function MealChatExperience({
                                         detailText: entry.mealRecord.aiSummary,
                                       }
                                     : entry,
-                                ),
-                              )
-                            }
-                            style={styles.inlineSecondaryButton}
-                          >
-                            <Text style={styles.inlineSecondaryButtonText}>Cancel</Text>
-                          </Pressable>
-                          <Pressable
-                            accessibilityRole="button"
-                            disabled={submission.confirmationState === "saving"}
-                            onPress={() => {
-                              void handleConfirm(submission.id);
-                            }}
-                            style={styles.inlinePrimaryButton}
-                          >
-                            <Text style={styles.inlinePrimaryButtonText}>
-                              {submission.confirmationState === "saving"
-                                ? "Saving…"
-                                : "Save changes"}
-                            </Text>
-                          </Pressable>
-                        </View>
-                      </>
-                    ) : (
-                      <>
-                        <Text style={styles.confirmationMealType}>
-                          Meal type: {submission.mealRecord.mealType}
-                        </Text>
-                        <View style={styles.confirmationItemList}>
-                          {submission.mealRecord.items.map((item) => (
-                            <Text key={item.id} style={styles.confirmationItemText}>
-                              • {item.foodName}
-                              {item.amountText ? ` — ${item.amountText}` : ""}
-                            </Text>
-                          ))}
-                        </View>
-                        <View style={styles.inlineActionRow}>
-                          <Pressable
-                            accessibilityRole="button"
-                            onPress={() => {
-                              void handleConfirm(submission.id);
-                            }}
-                            style={styles.inlinePrimaryButton}
-                          >
-                            <Text style={styles.inlinePrimaryButtonText}>Confirm draft</Text>
-                          </Pressable>
-                          <Pressable
-                            accessibilityRole="button"
-                            onPress={() =>
-                              setThread((currentThread) =>
-                                currentThread.map((entry) =>
-                                  entry.id === submission.id
-                                    ? {
-                                        ...entry,
-                                        confirmationState: "editing",
-                                      }
-                                    : entry,
-                                ),
-                              )
-                            }
-                            style={styles.inlineSecondaryButton}
-                          >
-                            <Text style={styles.inlineSecondaryButtonText}>Edit draft</Text>
-                          </Pressable>
-                        </View>
-                      </>
-                    )}
-                  </View>
-                ) : null}
+                                )
+                              }
+                              style={styles.inlineSecondaryButton}
+                            >
+                              <Text style={styles.inlineSecondaryButtonText}>Cancel</Text>
+                            </Pressable>
+                            <Pressable
+                              accessibilityRole="button"
+                              disabled={submission.confirmationState === "saving"}
+                              onPress={() => {
+                                void handleConfirm(submission.id);
+                              }}
+                              style={styles.inlinePrimaryButton}
+                            >
+                              <Text style={styles.inlinePrimaryButtonText}>
+                                {submission.confirmationState === "saving"
+                                  ? "Saving…"
+                                  : "Save changes"}
+                              </Text>
+                            </Pressable>
+                          </View>
+                        </>
+                      ) : (
+                        <>
+                          <Text style={styles.confirmationMealType}>
+                            Meal type: {submission.mealRecord.mealType}
+                          </Text>
+                          <View style={styles.confirmationItemList}>
+                            {submission.mealRecord.items.map((item) => (
+                              <Text key={item.id} style={styles.confirmationItemText}>
+                                • {item.foodName}
+                                {item.amountText ? ` — ${item.amountText}` : ""}
+                              </Text>
+                            ))}
+                          </View>
+                          <View style={styles.inlineActionRow}>
+                            <Pressable
+                              accessibilityRole="button"
+                              onPress={() => {
+                                void handleConfirm(submission.id);
+                              }}
+                              style={styles.inlinePrimaryButton}
+                            >
+                              <Text style={styles.inlinePrimaryButtonText}>Confirm draft</Text>
+                            </Pressable>
+                            <Pressable
+                              accessibilityRole="button"
+                              onPress={() =>
+                                updateEntry(submission.id, (entry) => ({
+                                  ...entry,
+                                  confirmationState: "editing",
+                                }))
+                              }
+                              style={styles.inlineSecondaryButton}
+                            >
+                              <Text style={styles.inlineSecondaryButtonText}>Edit draft</Text>
+                            </Pressable>
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  ) : null}
 
-                <Text
-                  style={[
-                    styles.threadFootnote,
-                    submission.deliveryStatus === "error" ? styles.threadFootnoteError : null,
-                  ]}
-                >
-                  {submission.detailText}
-                </Text>
+                  <Text
+                    style={[
+                      styles.threadFootnote,
+                      submission.deliveryStatus === "error" ? styles.threadFootnoteError : null,
+                    ]}
+                  >
+                    {submission.detailText}
+                  </Text>
+                </View>
               </View>
             ))}
           </View>
@@ -954,6 +908,18 @@ const styles = StyleSheet.create({
   },
   threadCard: {
     gap: 10,
+  },
+  userBubble: {
+    gap: 10,
+    borderRadius: nurseryRadii.card,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.primaryTint,
+    padding: 18,
+    alignSelf: "flex-end",
+  },
+  assistantBubble: {
+    gap: 10,
     borderRadius: nurseryRadii.card,
     borderWidth: 1,
     borderColor: nurseryColors.line,
@@ -981,9 +947,21 @@ const styles = StyleSheet.create({
     borderRadius: nurseryRadii.field,
     backgroundColor: nurseryColors.primaryTint,
   },
+  assistantLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: nurseryColors.primaryStrong,
+  },
+  assistantText: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: nurseryColors.ink,
+  },
   confirmationCard: {
     gap: 10,
-    borderRadius: nurseryRadii.card,
+    borderRadius: nurseryRadii.field,
     backgroundColor: nurseryColors.surfaceMuted,
     padding: 16,
   },
