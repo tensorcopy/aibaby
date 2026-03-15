@@ -53,6 +53,7 @@ import {
   createBabyProfileRouteTextInputChrome,
 } from "../src/features/baby-profile/routeScreenChrome.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
+import { createMobileHomeHref } from "../src/features/app-shell/rootNavigation.ts";
 import {
   confirmBabyProfileBirthDatePickerDraft,
   createBabyProfileBirthDatePickerDraft,
@@ -170,6 +171,9 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   }
 
   const { route: model } = screenModel;
+  const homeHref = createMobileHomeHref({
+    babyId: state.status === "ready" ? state.babyId ?? babyId : babyId,
+  });
 
   async function onSavePress() {
     setBirthDatePickerDraft(null);
@@ -198,12 +202,48 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
 
       {(() => {
         const requestErrorBanner = createBabyProfileRouteRequestErrorBanner(
-          screenModel.requestErrorMessage,
+          {
+            message: screenModel.requestErrorMessage,
+            retryDisabled: screenModel.isSaving,
+            homeHref,
+          },
         );
 
         return requestErrorBanner ? (
           <View style={styles.errorBanner}>
+            <Text style={styles.errorBannerTitle}>{requestErrorBanner.title}</Text>
             <Text style={styles.errorBannerText}>{requestErrorBanner.message}</Text>
+            <Text style={styles.errorBannerHint}>
+              Your edits are still on this screen. You can retry the save or go back without
+              saving.
+            </Text>
+            <View style={styles.errorBannerActionRow}>
+              <Pressable
+                accessibilityRole="button"
+                disabled={requestErrorBanner.retryDisabled}
+                onPress={() => {
+                  void onSavePress();
+                }}
+                style={[
+                  styles.errorBannerRetryButton,
+                  requestErrorBanner.retryDisabled ? styles.retryButtonDisabled : null,
+                ]}
+              >
+                {requestErrorBanner.showRetrySpinner ? (
+                  <ActivityIndicator color="#0f172a" size="small" />
+                ) : null}
+                <Text style={styles.errorBannerRetryButtonText}>
+                  {requestErrorBanner.retryLabel}
+                </Text>
+              </Pressable>
+              <Link asChild href={requestErrorBanner.dismissHref}>
+                <Pressable accessibilityRole="button" style={styles.errorBannerDismissButton}>
+                  <Text style={styles.errorBannerDismissButtonText}>
+                    {requestErrorBanner.dismissLabel}
+                  </Text>
+                </Pressable>
+              </Link>
+            </View>
           </View>
         ) : null;
       })()}
@@ -616,6 +656,7 @@ const styles = StyleSheet.create({
     color: nurseryColors.inkMuted,
   },
   errorBanner: {
+    gap: 10,
     borderRadius: nurseryRadii.card,
     borderWidth: 1,
     borderColor: nurseryColors.errorLine,
@@ -623,10 +664,53 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 16,
   },
+  errorBannerTitle: {
+    color: nurseryColors.errorText,
+    fontSize: 16,
+    fontWeight: "700",
+  },
   errorBannerText: {
     color: nurseryColors.errorText,
     fontSize: 14,
     lineHeight: 20,
+  },
+  errorBannerHint: {
+    color: nurseryColors.inkSoft,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  errorBannerActionRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  errorBannerRetryButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
+    borderRadius: nurseryRadii.field,
+    backgroundColor: nurseryColors.surfaceStrong,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  errorBannerRetryButtonText: {
+    color: nurseryColors.ink,
+    fontWeight: "700",
+  },
+  errorBannerDismissButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: nurseryRadii.field,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surface,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  errorBannerDismissButtonText: {
+    color: nurseryColors.inkSoft,
+    fontWeight: "700",
   },
   sectionGroup: {
     gap: 12,

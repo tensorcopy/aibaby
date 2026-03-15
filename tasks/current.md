@@ -21,7 +21,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-025 `done` Build confirmation / correction flow for AI-generated records
 - AIB-026 `todo` Persist original input plus structured output
 - AIB-027 `done` Build today's timeline page
-- AIB-028 `in_progress` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
+- AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the current mobile landing screen with a chat-first AI assistant entry route
 - AIB-057 `done` Support a single mixed-send composer action that submits photos and text together as one conversational message
 - AIB-058 `done` Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
@@ -56,7 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-028 Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
+- No current in-progress tasks
 
 ## Done
 
@@ -82,6 +82,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-023 `done` Build the first-pass text-only parsing flow that classifies meal type and food items and returns a candidate record preview
 - AIB-024 `done` Build the first-pass draft feeding record generation flow from parsed text submissions and persist draft meal records plus meal items
 - AIB-027 `done` Build the first-pass web today timeline page and manual test shell on top of the local-dev API routes
+- AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the default mobile entry route with the chat-first AI meal logging surface and in-thread navigation shortcuts
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
