@@ -1,0 +1,30 @@
+export const nurseryColors = {
+  canvas: "#F4F0E8",
+  surface: "#FBF8F3",
+  surfaceStrong: "#FFFFFF",
+  surfaceMuted: "#F7F1E8",
+  line: "#E5DDD2",
+  lineSoft: "#EEE6DD",
+  ink: "#243038",
+  inkMuted: "#708089",
+  inkSoft: "#526169",
+  primary: "#566B7A",
+  primaryStrong: "#455967",
+  primaryTint: "#E7EDF0",
+  sage: "#D6E7E0",
+  sageStrong: "#365B52",
+  peach: "#F2D7C8",
+  peachStrong: "#8A6E5A",
+  berry: "#E9D7E1",
+  berryStrong: "#6D5161",
+  errorTint: "#F7E5E2",
+  errorLine: "#E7B8AF",
+  errorText: "#8A4A3C",
+} as const;
+
+export const nurseryRadii = {
+  card: 24,
+  button: 20,
+  field: 18,
+  pill: 999,
+} as const;

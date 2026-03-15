@@ -11,6 +11,10 @@ import {
   View,
 } from "react-native";
 
+import {
+  nurseryColors,
+  nurseryRadii,
+} from "../src/features/app-shell/nurseryTheme.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 import {
   appendMealComposerAttachments,
@@ -271,6 +275,7 @@ export default function LogMealRoute() {
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <Text style={styles.heroEyebrow}>Meal logging</Text>
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
 
@@ -282,6 +287,7 @@ export default function LogMealRoute() {
       ) : null}
 
       <View style={styles.card}>
+        <Text style={styles.cardEyebrow}>Capture gently</Text>
         <Text style={styles.cardTitle}>Meal draft</Text>
         <Text style={styles.cardSubtitle}>{model.helperText}</Text>
 
@@ -376,6 +382,7 @@ export default function LogMealRoute() {
       </View>
 
       <View style={styles.card}>
+        <Text style={styles.cardEyebrow}>AI support</Text>
         <Text style={styles.cardTitle}>Meal draft thread</Text>
         <Text style={styles.cardSubtitle}>{model.emptyStateMessage}</Text>
 
@@ -697,54 +704,68 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 24,
-    gap: 16,
-    backgroundColor: "#f8fafc",
+    gap: 18,
+    backgroundColor: nurseryColors.canvas,
+  },
+  heroEyebrow: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: nurseryColors.peachStrong,
   },
   title: {
-    fontSize: 30,
+    fontSize: 32,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   warningBanner: {
     gap: 6,
-    borderRadius: 16,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#fdba74",
-    backgroundColor: "#fff7ed",
-    padding: 16,
+    borderColor: nurseryColors.peach,
+    backgroundColor: nurseryColors.surface,
+    padding: 18,
   },
   warningBannerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#9a3412",
+    color: nurseryColors.peachStrong,
   },
   warningBannerMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#9a3412",
+    color: nurseryColors.peachStrong,
   },
   card: {
     gap: 12,
-    borderRadius: 20,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
-    backgroundColor: "#ffffff",
-    padding: 18,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surface,
+    padding: 20,
+  },
+  cardEyebrow: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: nurseryColors.inkMuted,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   cardSubtitle: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   quickActionRow: {
     flexDirection: "row",
@@ -752,36 +773,36 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   quickActionChip: {
-    borderRadius: 999,
+    borderRadius: nurseryRadii.pill,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    backgroundColor: "#f8fafc",
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceStrong,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   quickActionChipSelected: {
-    borderColor: "#2563eb",
-    backgroundColor: "#dbeafe",
+    borderColor: nurseryColors.berry,
+    backgroundColor: nurseryColors.berry,
   },
   quickActionChipText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   quickActionChipTextSelected: {
-    color: "#1d4ed8",
+    color: nurseryColors.berryStrong,
   },
   input: {
     minHeight: 120,
-    borderRadius: 16,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: nurseryColors.line,
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 16,
     lineHeight: 22,
-    color: "#0f172a",
-    backgroundColor: "#ffffff",
+    color: nurseryColors.ink,
+    backgroundColor: nurseryColors.surfaceStrong,
     textAlignVertical: "top",
   },
   attachmentRow: {
@@ -794,21 +815,22 @@ const styles = StyleSheet.create({
   attachmentImage: {
     width: 132,
     height: 132,
-    borderRadius: 16,
-    backgroundColor: "#e2e8f0",
+    borderRadius: nurseryRadii.card,
+    backgroundColor: nurseryColors.primaryTint,
   },
   attachmentRemoveButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 12,
+    borderRadius: nurseryRadii.field,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: nurseryColors.line,
     paddingVertical: 8,
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   attachmentRemoveButtonText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   actionRow: {
     flexDirection: "row",
@@ -818,24 +840,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
+    borderRadius: nurseryRadii.button,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    paddingVertical: 14,
-    backgroundColor: "#ffffff",
+    borderColor: nurseryColors.line,
+    paddingVertical: 16,
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   secondaryButtonText: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   primaryButton: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#2563eb",
+    borderRadius: nurseryRadii.button,
+    paddingVertical: 16,
+    backgroundColor: nurseryColors.primary,
   },
   primaryButtonText: {
     fontSize: 15,
@@ -848,49 +870,49 @@ const styles = StyleSheet.create({
   errorMessage: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#b91c1c",
+    color: nurseryColors.errorText,
   },
   emptyState: {
     gap: 6,
-    borderRadius: 16,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
     borderStyle: "dashed",
-    borderColor: "#cbd5e1",
-    backgroundColor: "#f8fafc",
-    padding: 16,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceMuted,
+    padding: 18,
   },
   emptyStateTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   emptyStateMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   threadList: {
     gap: 12,
   },
   threadCard: {
     gap: 10,
-    borderRadius: 18,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#bfdbfe",
-    backgroundColor: "#eff6ff",
-    padding: 16,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceStrong,
+    padding: 18,
   },
   threadMeta: {
     fontSize: 12,
     fontWeight: "700",
-    letterSpacing: 0.4,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
-    color: "#1d4ed8",
+    color: nurseryColors.peachStrong,
   },
   threadText: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   threadAttachmentRow: {
     gap: 10,
@@ -898,14 +920,14 @@ const styles = StyleSheet.create({
   threadAttachmentImage: {
     width: 96,
     height: 96,
-    borderRadius: 14,
-    backgroundColor: "#bfdbfe",
+    borderRadius: nurseryRadii.field,
+    backgroundColor: nurseryColors.primaryTint,
   },
   confirmationCard: {
     gap: 10,
-    borderRadius: 16,
-    backgroundColor: "#ffffff",
-    padding: 14,
+    borderRadius: nurseryRadii.card,
+    backgroundColor: nurseryColors.surfaceMuted,
+    padding: 16,
   },
   confirmationHeader: {
     flexDirection: "row",
@@ -915,18 +937,18 @@ const styles = StyleSheet.create({
   confirmationTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   confirmationStatus: {
     fontSize: 12,
     fontWeight: "700",
     textTransform: "uppercase",
-    color: "#2563eb",
+    color: nurseryColors.primaryStrong,
   },
   confirmationMealType: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   confirmationItemList: {
     gap: 4,
@@ -934,28 +956,28 @@ const styles = StyleSheet.create({
   confirmationItemText: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   editItemCard: {
     gap: 8,
-    borderRadius: 14,
-    backgroundColor: "#f8fafc",
+    borderRadius: nurseryRadii.field,
+    backgroundColor: nurseryColors.surfaceStrong,
     padding: 12,
   },
   editItemLabel: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   editInput: {
-    borderRadius: 12,
+    borderRadius: nurseryRadii.field,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: nurseryColors.line,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
-    color: "#0f172a",
-    backgroundColor: "#ffffff",
+    color: nurseryColors.ink,
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   inlineActionRow: {
     flexDirection: "row",
@@ -963,10 +985,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   inlinePrimaryButton: {
-    borderRadius: 12,
+    borderRadius: nurseryRadii.field,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: "#2563eb",
+    backgroundColor: nurseryColors.primary,
   },
   inlinePrimaryButtonText: {
     fontSize: 14,
@@ -974,33 +996,33 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   inlineSecondaryButton: {
-    borderRadius: 12,
+    borderRadius: nurseryRadii.field,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: nurseryColors.line,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: "#ffffff",
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   inlineSecondaryButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   threadFootnote: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   threadFootnoteError: {
-    color: "#b91c1c",
+    color: nurseryColors.errorText,
   },
   homeButton: {
     marginTop: 8,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#0f172a",
+    borderRadius: nurseryRadii.button,
+    paddingVertical: 16,
+    backgroundColor: nurseryColors.primaryStrong,
   },
   homeButtonText: {
     color: "#ffffff",
