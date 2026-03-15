@@ -12,6 +12,7 @@ This document should be updated whenever implementation decisions become concret
 
 The MVP should optimize for:
 - low-friction chat-first input
+- chat as the primary mobile landing surface
 - fast iteration speed
 - explainable AI output
 - safe handling of sensitive family data
@@ -102,6 +103,10 @@ A user submits:
 - text only
 - image only
 - image plus text
+
+Mobile entry expectation:
+- the default mobile route opens into the AI chat thread rather than a dashboard home screen
+- the primary composer supports one mixed send action for text plus images together
 
 Pipeline:
 1. upload image if present
@@ -442,6 +447,11 @@ Suggested constraints:
 - `GET /api/conversations/:id/messages`
 - `POST /api/conversations/:id/messages`
 - `POST /api/messages/:id/retry-ingestion`
+
+Chat UX notes:
+- the mobile app should open directly into the active AI chat thread
+- meal logging should feel like a persistent assistant conversation, not a separate utility form
+- mixed media plus text submission should be a first-class interaction
 
 ## Uploads
 - `POST /api/uploads/presign`
