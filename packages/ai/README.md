@@ -13,6 +13,7 @@ Current first-pass implementation:
 
 - curated age-stage resolver in `src/age-stage.js`
 - deterministic daily summary generation contract in `src/daily-summary.js`
+- deterministic reminder content selection in `src/reminder-content.js`
 - deterministic weekly summary aggregation in `src/weekly-summary.js`
 
 No provider-specific implementation has been added yet.
