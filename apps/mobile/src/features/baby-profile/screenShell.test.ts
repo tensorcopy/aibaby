@@ -10,6 +10,7 @@ import {
   updateBabyProfileScreenField,
 } from "./screenShell.ts";
 import { BabyProfileTransportError } from "./transport.ts";
+import { getBabyProfileAgeSummary } from "@aibaby/ui";
 
 const profile = {
   id: "baby_123",
@@ -53,7 +54,10 @@ test("createBabyProfileScreenState bootstraps edit mode from a stored profile", 
   assert.equal(state.loadTarget, "explicit");
   assert.equal(state.form.mode, "edit");
   assert.equal(state.babyId, "baby_123");
-  assert.equal(state.ageSummary?.displayLabel, "4 months");
+  assert.equal(
+    state.ageSummary?.displayLabel,
+    getBabyProfileAgeSummary(profile.birthDate)?.displayLabel,
+  );
 });
 
 test("loadBabyProfileScreenState falls back to an empty create flow when the current profile is missing", async () => {

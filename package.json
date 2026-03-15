@@ -6,5 +6,15 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "dev:mobile": "npm --workspace @aibaby/mobile run start",
+    "dev:web": "npm --workspace @aibaby/web run dev",
+    "test:mobile": "npm --workspace @aibaby/mobile run test:app-shell && npm --workspace @aibaby/mobile run test:baby-profile-flow && npm --workspace @aibaby/mobile run test:chat-input",
+    "test:web": "npm --workspace @aibaby/web run test:baby-profile-api && npm --workspace @aibaby/web run test:uploads-api && npm --workspace @aibaby/web run test:text-meal-api && npm --workspace @aibaby/web run test:meal-drafts-api"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "typescript": "^5.9.3"
+  }
 }

@@ -4,7 +4,11 @@
 
 This guide defines the current local-development baseline for the repository.
 
-The repository is scaffolded, but the Expo app, Next.js app, Prisma schema, and Supabase wiring are not implemented yet. Use this document as the setup and environment convention source of truth until those pieces land.
+The repository now supports a first-pass local run loop:
+- `apps/web` runs a local Next.js dev server that exposes the current API routes
+- `apps/mobile` runs the Expo shell for the current mobile slices
+
+Prisma, Supabase, and production auth are still not wired in. Local development currently uses the owner-scoped dev bootstrap and file-backed web persistence.
 
 ## Prerequisites
 
@@ -14,11 +18,11 @@ Install the following before working in the repo:
 - npm 10.x or newer
 - Git
 
-Planned but not required yet:
+Recommended for local app testing:
 
-- Expo CLI or the local Expo toolchain
-- Supabase CLI
-- a PostgreSQL instance for local database work
+- Expo Go or an iOS / Android simulator
+- Supabase CLI later, when auth and storage move beyond local-dev stubs
+- a PostgreSQL instance later, when Prisma-backed persistence lands
 
 ## First-time setup
 
@@ -28,12 +32,12 @@ From the repository root:
 npm install
 ```
 
-At the current scaffold stage, this installs workspace metadata only. App-specific runtime dependencies will be added in follow-up implementation PRs.
+This installs the workspace dependencies used by the current Expo and Next.js local-development flows.
 
 ## Workspace layout
 
-- `apps/mobile`: future Expo / React Native app
-- `apps/web`: future Next.js app and API surface
+- `apps/mobile`: Expo / React Native caregiver app shell
+- `apps/web`: Next.js local backend surface and status page
 - `packages/db`: future Prisma schema and database helpers
 - `packages/ai`: future AI orchestration logic
 - `packages/ui`: future shared UI package
@@ -86,7 +90,11 @@ The repository root `.env.example` should define placeholders for:
 - `SENTRY_DSN`
 - `TRIGGER_SECRET_KEY`
 
-Not every variable is used yet. The goal is to standardize names before implementation expands.
+For the current local run loop, the most important variables are:
+
+- `EXPO_PUBLIC_AIBABY_OWNER_USER_ID`
+- `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
+- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 
 ## Working rules for local env files
 
@@ -97,24 +105,26 @@ Not every variable is used yet. The goal is to standardize names before implemen
 
 ## Current development workflow
 
-For now, local work is primarily:
+Current local run workflow:
 
-1. read the repo state docs
-2. update or add code within the scaffolded workspace
-3. keep task status current in `tasks/current.md`
-4. validate changes with the commands that exist for the touched workspace
+1. run `npm install`
+2. copy `.env.example` to `.env.local`
+3. set `EXPO_PUBLIC_AIBABY_OWNER_USER_ID` in `.env.local`
+4. optionally set `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID` if you already want the home route pointed at one saved profile
+5. set `EXPO_PUBLIC_AIBABY_API_BASE_URL` to your local backend URL, such as `http://192.168.1.10:3000`
+6. start the backend with `npm run dev:web`
+7. start Expo with `npm run dev:mobile`
 
-Because the app runtimes are not bootstrapped yet, there is no single `npm run dev` entry point today.
-
-For the current Expo shell slice, you can optionally set `EXPO_PUBLIC_AIBABY_OWNER_USER_ID` and `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID` in `.env.local` to bootstrap owner-scoped current-profile loading without hard-coding route params.
-
-If you want the Expo app to call a separately running local Next.js backend instead of relying on same-origin paths, also set `EXPO_PUBLIC_AIBABY_API_BASE_URL` (for example `http://192.168.1.10:3000`).
+Notes:
+- use your LAN IP instead of `localhost` if Expo is running on a physical device
+- `apps/web` persists local-dev data under `apps/web/.data/`
+- the mobile shell can still render without a backend, but create/edit and meal logging flows need the API to complete successfully
 
 ## Follow-up work expected after this doc
 
 Subsequent implementation PRs should:
 
-- add real root and workspace scripts
-- wire Expo and Next.js bootstraps
-- add Prisma and Supabase configuration files
-- update this document with concrete run, lint, test, and migration commands
+- replace the owner-scoped local bootstrap with real Supabase auth
+- replace file-backed local persistence with Prisma-backed storage
+- add lint and build scripts once the runtime scaffolds stabilize
+- add concrete migration commands when the database layer is live
