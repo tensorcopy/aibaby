@@ -52,10 +52,11 @@ This file is the lightweight shared backlog for human and agent coordination.
 ### UX and visual design
 - AIB-055 `done` Define a warmer baby-product visual direction for mobile and web, including color, typography, spacing, and component tone
 - AIB-056 `done` Apply the new baby-product UX direction to the current mobile MVP screens, starting with home, baby profile, and meal logging
+- AIB-059 `in_progress` Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-059 Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
 
 ## Done
 
