@@ -33,7 +33,7 @@ test('POST /api/uploads/presign creates upload targets and metadata shells', asy
       return {
         message: {
           id: 'msg_123',
-          message_type: 'user_image',
+          message_type: 'user_mixed',
           ingestion_status: 'pending',
         },
         mediaAssets: [
@@ -61,6 +61,8 @@ test('POST /api/uploads/presign creates upload targets and metadata shells', asy
       },
       body: JSON.stringify({
         babyId: ' baby_123 ',
+        text: ' Breakfast notes with photo ',
+        quickAction: 'breakfast',
         files: [
           {
             fileName: ' breakfast.jpg ',
@@ -79,6 +81,8 @@ test('POST /api/uploads/presign creates upload targets and metadata shells', asy
     {
       ownerUserId: 'user_123',
       babyId: 'baby_123',
+      text: 'Breakfast notes with photo',
+      quickAction: 'breakfast',
       files: [
         {
           fileName: 'breakfast.jpg',
@@ -93,7 +97,7 @@ test('POST /api/uploads/presign creates upload targets and metadata shells', asy
 
   const payload = await response.json();
   assert.equal(payload.messageId, 'msg_123');
-  assert.equal(payload.messageType, 'user_image');
+  assert.equal(payload.messageType, 'user_mixed');
   assert.equal(payload.ingestionStatus, 'pending');
   assert.equal(payload.uploads.length, 1);
   assert.equal(payload.uploads[0].assetId, 'asset_123');

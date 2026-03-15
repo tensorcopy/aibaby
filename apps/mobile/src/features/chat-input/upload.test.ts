@@ -115,6 +115,8 @@ test("executeMealUploadFlow negotiates upload targets, PUTs each photo, and comp
         },
         body: JSON.stringify({
           babyId: "baby_123",
+          text: "Salmon and broccoli",
+          quickAction: "dinner",
           files: [
             {
               fileName: "plate.jpg",

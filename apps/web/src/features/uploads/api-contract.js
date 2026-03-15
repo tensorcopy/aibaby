@@ -19,11 +19,15 @@ const uploadFileSchema = z
 const uploadPresignRequestSchema = z
   .object({
     babyId: z.string().trim().min(1, 'Baby id is required'),
+    text: z.string().trim().min(1, 'Text must not be empty').max(4000, 'Text must be 4000 characters or fewer').optional(),
+    quickAction: z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'milk']).optional(),
     files: z.array(uploadFileSchema).min(1, 'At least one file is required').max(5, 'At most 5 files can be uploaded at once'),
   })
   .strict()
   .transform((payload) => ({
     babyId: payload.babyId.trim(),
+    text: payload.text?.trim(),
+    quickAction: payload.quickAction,
     files: payload.files.map((file) => ({
       ...file,
       fileName: file.fileName.trim(),

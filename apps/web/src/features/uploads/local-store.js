@@ -8,9 +8,11 @@ const { NotFoundRouteError, UnauthorizedRouteError } = require('../baby-profile/
 const defaultDataFilePath = path.resolve(__dirname, '../../../.data/uploads.json');
 const defaultUploadBlobRootPath = path.resolve(__dirname, '../../../.data/upload-blobs');
 
-async function createUploadNegotiation({ ownerUserId, babyId, files }) {
+async function createUploadNegotiation({ ownerUserId, babyId, files, text, quickAction }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
   const normalizedBabyId = normalizeRequiredBabyId(babyId);
+  const normalizedText = normalizeOptionalString(text);
+  const normalizedQuickAction = normalizeOptionalQuickAction(quickAction);
   const data = await readStore();
   const now = new Date().toISOString();
   const messageId = buildMessageId();
@@ -19,9 +21,9 @@ async function createUploadNegotiation({ ownerUserId, babyId, files }) {
     id: messageId,
     owner_user_id: normalizedOwnerUserId,
     baby_id: normalizedBabyId,
-    message_type: 'user_image',
+    message_type: normalizedText ? 'user_mixed' : 'user_image',
     ingestion_status: 'pending',
-    text: null,
+    text: normalizedText ?? null,
     created_at: now,
     updated_at: now,
   };
@@ -59,6 +61,8 @@ async function createUploadNegotiation({ ownerUserId, babyId, files }) {
     trigger_type: 'user_message',
     payload_json: {
       kind: 'upload_negotiation',
+      text: normalizedText ?? null,
+      quickAction: normalizedQuickAction ?? null,
       assetIds: mediaAssets.map((asset) => asset.id),
     },
     processing_status: 'pending',
@@ -285,6 +289,29 @@ function normalizeRequiredAssetIds(assetIds) {
   }
 
   return [...new Set(assetIds.map((assetId) => String(assetId).trim()).filter(Boolean))];
+}
+
+function normalizeOptionalString(value) {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : undefined;
+}
+
+function normalizeOptionalQuickAction(quickAction) {
+  const normalized = normalizeOptionalString(quickAction);
+
+  if (!normalized) {
+    return undefined;
+  }
+
+  if (['breakfast', 'lunch', 'dinner', 'snack', 'milk'].includes(normalized)) {
+    return normalized;
+  }
+
+  return undefined;
 }
 
 module.exports = {

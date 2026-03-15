@@ -63,6 +63,8 @@ export async function executeMealUploadFlow({
 
   const presignPayload = {
     babyId: normalizeRequiredString(babyId, "Baby id is required for uploads."),
+    text: normalizeOptionalString(submission.text),
+    quickAction: normalizeOptionalString(submission.quickAction),
     files: submission.attachments.map((attachment, index) =>
       toUploadFileDescriptor(attachment, index),
     ),
