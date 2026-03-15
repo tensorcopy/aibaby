@@ -40,7 +40,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-042 `done` Build scheduled reminder trigger flow
 - AIB-043 `done` Build 7-day review page
 - AIB-044 `done` Build 30-day review page
-- AIB-045 `in_progress` Build reminder history timeline
+- AIB-045 `done` Build reminder history timeline
 
 ### Export and portability
 - AIB-050 `done` Define export package structure
@@ -55,8 +55,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-059 `done` Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
 
 ## In Progress
-
-- AIB-045 Build reminder history timeline
 ## Done
 
 - AIB-000 `done` Move product requirements and shared project state into repository-managed files
