@@ -10,6 +10,7 @@
     "test:app-shell": "node --experimental-strip-types --test src/features/app-shell/*.test.ts",
     "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts",
     "test:chat-input": "node --experimental-strip-types --test src/features/chat-input/*.test.ts",
+    "test:reminders": "node --experimental-strip-types --test src/features/reminders/*.test.ts",
     "test:review": "node --experimental-strip-types --test src/features/review/*.test.ts",
     "test:summary-history": "node --experimental-strip-types --test src/features/summary-history/*.test.ts"
   },
