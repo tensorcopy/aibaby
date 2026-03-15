@@ -21,6 +21,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-025 `done` Build confirmation / correction flow for AI-generated records
 - AIB-026 `todo` Persist original input plus structured output
 - AIB-027 `done` Build today's timeline page
+- AIB-028 `todo` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 
 ### Summaries
 - AIB-030 `done` Define daily summary rules and output format
@@ -44,6 +45,10 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-052 `done` Decide media export behavior: local files vs referenced URLs
 - AIB-053 `done` Define YAML frontmatter fields for exported notes
 - AIB-054 `todo` Build first-pass Markdown export flow
+
+### UX and visual design
+- AIB-055 `todo` Define a warmer baby-product visual direction for mobile and web, including color, typography, spacing, and component tone
+- AIB-056 `todo` Apply the new baby-product UX direction to the current mobile MVP screens, starting with home, baby profile, and meal logging
 
 ## In Progress
 
