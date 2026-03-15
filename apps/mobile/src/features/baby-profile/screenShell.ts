@@ -145,23 +145,26 @@ export function updateBabyProfileScreenField<K extends keyof BabyProfileFormInpu
 export async function loadBabyProfileScreenState({
   babyId,
   auth,
+  apiBaseUrl,
   defaultTimezone,
   toLoadRequest = toBabyProfileLoadRequest,
   executeLoadRequest = executeBabyProfileLoadRequest,
 }: {
   babyId?: string;
   auth?: BabyProfileAuth;
+  apiBaseUrl?: string;
   defaultTimezone?: string;
   toLoadRequest?: (babyId?: string) => BabyProfileLoadRequest;
   executeLoadRequest?: (args: {
     request: BabyProfileLoadRequest;
     auth?: BabyProfileAuth;
+    apiBaseUrl?: string;
   }) => Promise<BabyProfileResponse>;
 } = {}): Promise<BabyProfileScreenReadyState | BabyProfileScreenErrorState> {
   const request = toLoadRequest(babyId);
 
   try {
-    const profile = await executeLoadRequest({ request, auth });
+    const profile = await executeLoadRequest({ request, auth, apiBaseUrl });
     return createBabyProfileScreenState(profile, request.target);
   } catch (error) {
     if (request.target === "current" && isNotFoundTransportError(error)) {
@@ -181,13 +184,16 @@ export async function loadBabyProfileScreenState({
 export async function saveBabyProfileScreenState({
   state,
   auth,
+  apiBaseUrl,
   executeSubmitRequest = executeBabyProfileSubmitRequest,
 }: {
   state: BabyProfileScreenReadyState;
   auth?: BabyProfileAuth;
+  apiBaseUrl?: string;
   executeSubmitRequest?: (args: {
     request: BabyProfileSubmitRequest;
     auth?: BabyProfileAuth;
+    apiBaseUrl?: string;
   }) => Promise<BabyProfileResponse>;
 }): Promise<BabyProfileScreenReadyState> {
   const submission = submitBabyProfileCreateEditState(state.form);
@@ -216,7 +222,7 @@ export async function saveBabyProfileScreenState({
   }
 
   try {
-    const profile = await executeSubmitRequest({ request, auth });
+    const profile = await executeSubmitRequest({ request, auth, apiBaseUrl });
     const nextState = createBabyProfileScreenState(profile, state.loadTarget);
 
     return {

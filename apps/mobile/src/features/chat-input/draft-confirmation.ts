@@ -3,7 +3,7 @@ import {
   type BabyProfileAuth,
 } from "../baby-profile/transport.ts";
 
-import { resolveApiUrl } from "./upload.ts";
+import { resolveApiUrl } from "../app-shell/apiUrl.ts";
 
 export type ConfirmableMealRecord = {
   id: string;
