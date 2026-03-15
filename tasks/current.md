@@ -38,7 +38,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-040 `done` Build age-stage calculation logic
 - AIB-041 `done` Define reminder content model and templates
 - AIB-042 `done` Build scheduled reminder trigger flow
-- AIB-043 `todo` Build 7-day review page
+- AIB-043 `in_progress` Build 7-day review page
 - AIB-044 `todo` Build 30-day review page
 - AIB-045 `todo` Build reminder history timeline
 
@@ -56,6 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
+- AIB-043 Build 7-day review page
 ## Done
 
 - AIB-000 `done` Move product requirements and shared project state into repository-managed files
