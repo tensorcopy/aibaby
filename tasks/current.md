@@ -52,11 +52,11 @@ This file is the lightweight shared backlog for human and agent coordination.
 ### UX and visual design
 - AIB-055 `done` Define a warmer baby-product visual direction for mobile and web, including color, typography, spacing, and component tone
 - AIB-056 `done` Apply the new baby-product UX direction to the current mobile MVP screens, starting with home, baby profile, and meal logging
-- AIB-059 `in_progress` Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
+- AIB-059 `done` Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
 
 ## In Progress
 
-- AIB-059 Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
+- No current in-progress tasks
 
 ## Done
 
@@ -93,6 +93,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-053 `done` Define the canonical YAML frontmatter field set for exported notes
 - AIB-055 `done` Define the Scandinavian Nursery visual direction for AI Baby, including color, typography, spacing, and screen-level mockups for home, baby profile, and meal logging
 - AIB-056 `done` Apply the Scandinavian Nursery visual direction to the mobile home, baby profile, and log meal MVP screens
+- AIB-059 `done` Define the end-to-end MVP UX blueprint covering chat, profile, timeline, summaries, reminders, review pages, state behavior, and navigation before further feature implementation
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
