@@ -20,7 +20,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-024 `done` Build draft feeding record generation
 - AIB-025 `done` Build confirmation / correction flow for AI-generated records
 - AIB-026 `todo` Persist original input plus structured output
-- AIB-027 `todo` Build today's timeline page
+- AIB-027 `in_progress` Build today's timeline page
 
 ### Summaries
 - AIB-030 `done` Define daily summary rules and output format
@@ -47,7 +47,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-027 `in_progress` Build today's timeline page
 
 ## Done
 
