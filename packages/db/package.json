@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test:baby-profile": "node --test src/baby-profile.test.js",
-    "test:daily-report": "node --test src/daily-report.test.js"
+    "test:daily-report": "node --test src/daily-report.test.js",
+    "test:weekly-report": "node --test src/weekly-report.test.js"
   }
 }
