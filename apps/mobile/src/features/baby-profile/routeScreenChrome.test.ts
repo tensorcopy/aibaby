@@ -44,15 +44,32 @@ test("createBabyProfileRouteErrorChrome keeps the retry button disabled and labe
 });
 
 test("createBabyProfileRouteRequestErrorBanner returns null when there is no inline save error", () => {
-  assert.equal(createBabyProfileRouteRequestErrorBanner(null), null);
+  assert.equal(
+    createBabyProfileRouteRequestErrorBanner({
+      message: null,
+      retryDisabled: false,
+      homeHref: "/?babyId=baby_123",
+    }),
+    null,
+  );
 });
 
 test("createBabyProfileRouteRequestErrorBanner renders the inline save error copy when present", () => {
   assert.deepEqual(
-    createBabyProfileRouteRequestErrorBanner("Failed to reach the baby profile API"),
+    createBabyProfileRouteRequestErrorBanner({
+      message: "Failed to reach the baby profile API",
+      retryDisabled: false,
+      homeHref: "/?babyId=baby_123",
+    }),
     {
       kind: "request-error-banner",
+      title: "Profile save failed",
       message: "Failed to reach the baby profile API",
+      retryLabel: "Try again",
+      retryDisabled: false,
+      showRetrySpinner: false,
+      dismissLabel: "Back to AI Baby",
+      dismissHref: "/?babyId=baby_123",
     },
   );
 });

@@ -17,7 +17,13 @@ export type BabyProfileRouteErrorChrome = {
 
 export type BabyProfileRouteRequestErrorBanner = {
   kind: "request-error-banner";
+  title: string;
   message: string;
+  retryLabel: string;
+  retryDisabled: boolean;
+  showRetrySpinner: boolean;
+  dismissLabel: string;
+  dismissHref: string;
 };
 
 export type BabyProfileRouteSaveButtonChrome = {
@@ -93,7 +99,15 @@ export function createBabyProfileRouteErrorChrome({
 }
 
 export function createBabyProfileRouteRequestErrorBanner(
-  message: string | null,
+  {
+    message,
+    retryDisabled,
+    homeHref,
+  }: {
+    message: string | null;
+    retryDisabled: boolean;
+    homeHref: string;
+  },
 ): BabyProfileRouteRequestErrorBanner | null {
   if (!message) {
     return null;
@@ -101,7 +115,13 @@ export function createBabyProfileRouteRequestErrorBanner(
 
   return {
     kind: "request-error-banner",
+    title: "Profile save failed",
     message,
+    retryLabel: retryDisabled ? "Retrying…" : "Try again",
+    retryDisabled,
+    showRetrySpinner: retryDisabled,
+    dismissLabel: "Back to AI Baby",
+    dismissHref: homeHref,
   };
 }
 
