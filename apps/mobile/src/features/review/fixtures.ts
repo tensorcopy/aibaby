@@ -39,6 +39,32 @@ export const reviewFixtures = {
         caveat: "Some meals may still be missing from the record.",
       },
     },
+    {
+      id: "daily_2026_02_27",
+      babyId: "baby_123",
+      reportDate: "2026-02-27",
+      renderedSummary:
+        "Protein and milk were visible, but produce variety was still building. Repeating one familiar fruit kept the day easier to understand.",
+      suggestionsText: "Repeat one familiar fruit again tomorrow.",
+      structuredSummary: {
+        completenessBand: "medium",
+        gaps: [{ key: "vegetable" }],
+        caveat: null,
+      },
+    },
+    {
+      id: "daily_2026_02_20",
+      babyId: "baby_123",
+      reportDate: "2026-02-20",
+      renderedSummary:
+        "The record was lighter, with milk feeds clearer than solids. A steadier lunch log would make the next review more useful.",
+      suggestionsText: "Try logging one clearer midday meal tomorrow.",
+      structuredSummary: {
+        completenessBand: "low",
+        gaps: [{ key: "protein" }, { key: "vegetable" }],
+        caveat: "Some solids may still be missing from the log.",
+      },
+    },
   ],
   weeklyReports: [
     {
@@ -58,6 +84,25 @@ export const reviewFixtures = {
         gaps: ["Vegetables were missing from most logged days."],
         strengths: ["Milk feeds were logged consistently across the week."],
         caveat: "This weekly view is based on 6 of 7 days with confirmed or backfilled records.",
+      },
+    },
+    {
+      id: "weekly_2026_02_22",
+      babyId: "baby_123",
+      weekStartDate: "2026-02-22",
+      weekEndDate: "2026-02-28",
+      renderedSummary:
+        "This weekly summary is based on 5 logged days. Milk feeds stayed visible, while vegetables and protein variety were less steady.",
+      suggestionsText: "Keep one simple protein plus one vegetable in rotation next week.",
+      structuredSummary: {
+        dayCoverage: {
+          reportedDays: 4,
+          backfilledDays: 1,
+          missingDays: 2,
+        },
+        gaps: ["Protein foods and vegetables were inconsistent across the week."],
+        strengths: ["Milk feeds were logged consistently across the week."],
+        caveat: "This weekly view is based on 5 of 7 days with confirmed or backfilled records.",
       },
     },
   ],
@@ -86,6 +131,20 @@ export const reviewFixtures = {
       metadata: {
         title: "Repeat one iron-rich food this week",
         body: "Iron-rich foods have been inconsistent lately, so this week is a good moment to repeat one clear iron-rich option.",
+      },
+      status: "delivered",
+      notificationStatus: "delivered",
+    },
+    {
+      id: "reminder_2026_02_24",
+      babyId: "baby_123",
+      ageStageKey: "starting_solids",
+      scheduledFor: "2026-02-24",
+      renderedText:
+        "This is a good week to repeat one simple protein and one vegetable without adding too much variety at once.",
+      metadata: {
+        title: "Keep the middle of the week simple",
+        body: "Repeat one simple protein and one vegetable without adding too much variety at once.",
       },
       status: "delivered",
       notificationStatus: "delivered",

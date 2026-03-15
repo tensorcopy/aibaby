@@ -35,3 +35,19 @@ test("createReviewScreenModel builds a 7-day review with summary and reminder ca
   assert.equal(model.reminders.length, 2);
   assert.equal(model.homeHref, "/?babyId=baby_123");
 });
+
+test("createReviewScreenModel widens the window for a 30-day review", () => {
+  const model = createReviewScreenModel({
+    babyId: "baby_123",
+    windowDays: 30,
+    asOf: "2026-03-14",
+    dailyReports: reviewFixtures.dailyReports,
+    weeklyReports: reviewFixtures.weeklyReports,
+    reminders: reviewFixtures.reminders,
+  });
+
+  assert.equal(model.title, "30-day review");
+  assert.equal(model.windowCards[0]?.value, "5 logged days");
+  assert.equal(model.reminders.length, 3);
+  assert.equal(model.summaries.length, 4);
+});
