@@ -19,7 +19,7 @@ function parseTextMealParseRequest(body) {
   return textMealParseRequestSchema.parse(body);
 }
 
-function buildTextMealParseResponse({ message, ingestionEvent, parsedCandidate }) {
+function buildTextMealParseResponse({ message, ingestionEvent, parsedCandidate, mealRecord, mealItems }) {
   return {
     messageId: message.id,
     ingestionStatus: message.ingestion_status,
@@ -32,6 +32,23 @@ function buildTextMealParseResponse({ message, ingestionEvent, parsedCandidate }
       followUpQuestion: parsedCandidate.followUpQuestion,
       summary: parsedCandidate.summary,
       items: parsedCandidate.items,
+    },
+    draftRecord: {
+      id: mealRecord.id,
+      babyId: mealRecord.babyId,
+      sourceMessageId: mealRecord.sourceMessageId,
+      mealType: mealRecord.mealType,
+      eatenAt: mealRecord.eatenAt,
+      rawText: mealRecord.rawText,
+      aiSummary: mealRecord.aiSummary,
+      status: mealRecord.status,
+      confidenceScore: mealRecord.confidenceScore,
+      items: mealItems.map((item) => ({
+        id: item.id,
+        foodName: item.foodName,
+        amountText: item.amountText,
+        confidenceScore: item.confidenceScore,
+      })),
     },
   };
 }

@@ -12,5 +12,7 @@ Planned responsibilities:
 Current first-pass implementation:
 
 - deterministic daily summary generation contract in `src/daily-summary.js`
+- deterministic weekly summary generation contract in `src/weekly-summary.js`
+- repository-backed age-stage reminder templates and deterministic reminder rendering in `src/stage-reminders.js`
 
 No provider-specific implementation has been added yet.

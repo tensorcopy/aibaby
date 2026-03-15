@@ -68,10 +68,7 @@ export default function BabyProfileRoute() {
 
 export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   const session = useMobileSession();
-  const auth = useMemo(
-    () => (session.ownerUserId ? { ownerUserId: session.ownerUserId } : undefined),
-    [session.ownerUserId],
-  );
+  const auth = useMemo(() => session.auth, [session.auth]);
   const [state, setState] = useState<BabyProfileScreenState>(() =>
     createBabyProfileRouteScreenLoadState(babyId),
   );

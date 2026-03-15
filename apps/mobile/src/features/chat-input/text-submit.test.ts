@@ -40,6 +40,25 @@ test('executeTextMealParseFlow posts a text-only meal note for parsing', async (
               },
             ],
           },
+          draftRecord: {
+            id: 'meal_123',
+            babyId: 'baby_123',
+            sourceMessageId: 'msg_123',
+            mealType: 'lunch',
+            eatenAt: '2026-03-13T04:10:00.000Z',
+            rawText: 'half a bowl of noodles and two pieces of beef',
+            aiSummary: 'Parsed a lunch note with noodles and beef. Ready for draft record generation after confirmation.',
+            status: 'draft',
+            confidenceScore: 0.65,
+            items: [
+              {
+                id: 'mealitem_123',
+                foodName: 'noodles',
+                amountText: 'half a bowl',
+                confidenceScore: 0.65,
+              },
+            ],
+          },
         }),
         { status: 201 },
       );
@@ -47,6 +66,8 @@ test('executeTextMealParseFlow posts a text-only meal note for parsing', async (
   });
 
   assert.equal(result.messageId, 'msg_123');
+  assert.equal(result.draftRecord.id, 'meal_123');
+  assert.equal(result.draftRecord.items.length, 1);
   assert.deepEqual(calls, [
     {
       url: 'https://example.test/api/messages/text-parse',

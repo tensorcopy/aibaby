@@ -1,18 +1,46 @@
 # `apps/mobile`
 
-Placeholder for the Expo / React Native caregiver app.
+First-pass Expo caregiver app shell for AIbaby.
 
-Planned responsibilities:
+This package now has a runnable Expo Router bootstrap around the implemented
+mobile routes, plus local session env wiring so the app can target the current
+local backend during development.
 
-- baby profile flows
-- chat-first meal logging UI
-- timeline, summary, and reminder screens
-- device registration for push notifications
+## Run locally
+
+From the repo root:
+
+```sh
+cp apps/mobile/.env.example apps/mobile/.env.local
+npm run dev --workspace @aibaby/mobile
+```
+
+Useful scripts:
+
+- `npm run start --workspace @aibaby/mobile`
+- `npm run android --workspace @aibaby/mobile`
+- `npm run ios --workspace @aibaby/mobile`
+
+Session/bootstrap env:
+
+- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
+- `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`
+- `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
+
+Use `npm run demo:session -- demo-owner-1` to print a local session token for
+`EXPO_PUBLIC_AIBABY_SESSION_TOKEN`.
+
+The first-pass app shell currently includes:
+
+- Expo Router root stack in `app/_layout.tsx`
+- home, baby profile, meal logging, timeline, summaries, review, and reminders routes
+- lightweight mobile session bootstrap through `MobileSessionProvider`
 
 Not included yet:
 
-- auth wiring
-- production UI components
+- real auth/session handoff
+- production asset set and native app metadata
+- release build configuration
 
 ## Baby profile flow slice
 
@@ -54,3 +82,42 @@ AIB-022 now also adds the first reviewable mobile-to-storage upload handoff:
 - `src/features/chat-input/upload.ts` negotiates upload targets with `POST /api/uploads/presign`, streams each selected image to the returned `PUT` target, and finalizes the handoff with `POST /api/uploads/complete`
 - `app/log-meal.tsx` now upgrades photo submissions from local-only placeholders into real upload attempts and surfaces per-submission upload status in the draft thread
 - `MobileSessionProvider` now accepts `EXPO_PUBLIC_AIBABY_API_BASE_URL`, so Expo can target a separately running local backend during development
+
+## Text-to-draft slice
+
+AIB-024 now also extends the text submission flow:
+
+- `src/features/chat-input/text-submit.ts` expects the backend to return both the parsed candidate and a generated draft meal record
+- `app/log-meal.tsx` surfaces that draft record creation in the local meal thread so the next confirmation/correction slice has a stable handoff
+
+## Confirmation and timeline slices
+
+AIB-025 through AIB-027 now also add:
+
+- `src/features/chat-input/meal-record-confirmation.ts` and `meal-record-confirm.ts` for editing and confirming AI-generated meal drafts against the shared API
+- `app/log-meal.tsx` inline correction controls for meal type and items, plus confirm/save handoff into `POST /api/meals/:mealId/confirm`
+- `src/features/today-timeline/transport.ts` and `app/today.tsx` for loading and rendering today's meal timeline from `GET /api/babies/:babyId/meals?date=YYYY-MM-DD`
+
+## Summary history slice
+
+AIB-035 now also adds:
+
+- `src/features/summaries/history.ts` for loading first-pass daily and weekly summary history from the shared API
+- `app/summaries.tsx` for rendering saved daily and weekly summary cards in one review screen
+
+## Review and reminder history slices
+
+AIB-043 through AIB-045 now also add:
+
+- `src/features/review-window/transport.ts` for loading 7-day and 30-day review windows from meal, summary, and reminder endpoints
+- `src/features/reminders/history.ts` for loading saved reminder history from the shared API
+- `app/review.tsx` for rendering 7-day and 30-day review pages, including links into day-level detail
+- `app/reminders.tsx` for rendering the saved reminder timeline
+- `app/today.tsx` date-query support so review pages can open any saved day, not only the current one
+
+## Export trigger slice
+
+AIB-064 now also adds:
+
+- `src/features/exports/transport.ts` for triggering `POST /api/babies/:babyId/export/markdown`
+- `app/summaries.tsx` inline export creation so the mobile app can request a Markdown bundle and surface the saved backend path

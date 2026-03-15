@@ -2,13 +2,22 @@
   "name": "@aibaby/mobile",
   "private": true,
   "version": "0.0.0",
-  "description": "Expo / React Native app scaffold placeholder for AI Baby",
+  "description": "Expo / React Native app shell for AIbaby",
   "main": "expo-router/entry",
   "scripts": {
+    "dev": "expo start --clear",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "test": "npm run test:app-shell && npm run test:baby-profile-flow && npm run test:chat-input && npm run test:today-timeline && npm run test:summaries && npm run test:reminders && npm run test:review-window && npm run test:exports",
     "start": "expo start",
-    "test:app-shell": "node --experimental-strip-types --test src/features/app-shell/*.test.ts",
-    "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts",
-    "test:chat-input": "node --experimental-strip-types --test src/features/chat-input/*.test.ts"
+    "test:app-shell": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/app-shell/*.test.ts",
+    "test:baby-profile-flow": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/baby-profile/*.test.ts",
+    "test:chat-input": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/chat-input/*.test.ts",
+    "test:exports": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/exports/*.test.ts",
+    "test:reminders": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/reminders/*.test.ts",
+    "test:review-window": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/review-window/*.test.ts",
+    "test:today-timeline": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/today-timeline/*.test.ts",
+    "test:summaries": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/summaries/*.test.ts"
   },
   "dependencies": {
     "@aibaby/ui": "0.0.0",

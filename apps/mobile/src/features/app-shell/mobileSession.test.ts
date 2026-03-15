@@ -6,13 +6,14 @@ import {
   readMobileSessionBootstrapEnv,
 } from "./mobileSession.ts";
 
-test("createMobileSessionContextValue normalizes owner-scoped bootstrap fields", () => {
+test("createMobileSessionContextValue prefers a session token for auth bootstrap", () => {
   const setCurrentBabyId = () => {};
 
   assert.deepEqual(
     createMobileSessionContextValue(
       {
         ownerUserId: " user_123 ",
+        sessionToken: " aibaby-local-session.token ",
         currentBabyId: " baby_123 ",
         apiBaseUrl: " https://example.test ",
       },
@@ -22,10 +23,11 @@ test("createMobileSessionContextValue normalizes owner-scoped bootstrap fields",
     ),
     {
       ownerUserId: "user_123",
+      sessionToken: "aibaby-local-session.token",
       currentBabyId: "baby_123",
       apiBaseUrl: "https://example.test",
       auth: {
-        ownerUserId: "user_123",
+        authorization: "Bearer aibaby-local-session.token",
       },
       setCurrentBabyId,
     },
@@ -48,11 +50,13 @@ test("readMobileSessionBootstrapEnv pulls the mobile-safe Expo shell bootstrap v
   assert.deepEqual(
     readMobileSessionBootstrapEnv({
       EXPO_PUBLIC_AIBABY_OWNER_USER_ID: "user_123",
+      EXPO_PUBLIC_AIBABY_SESSION_TOKEN: "aibaby-local-session.token",
       EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID: "baby_123",
       EXPO_PUBLIC_AIBABY_API_BASE_URL: "https://example.test",
     }),
     {
       ownerUserId: "user_123",
+      sessionToken: "aibaby-local-session.token",
       currentBabyId: "baby_123",
       apiBaseUrl: "https://example.test",
     },

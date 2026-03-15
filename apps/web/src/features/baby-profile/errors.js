@@ -18,7 +18,14 @@ class NotFoundRouteError extends RouteDependencyError {
   }
 }
 
+class BadRequestRouteError extends RouteDependencyError {
+  constructor(message = 'Bad request') {
+    super(message, 400);
+  }
+}
+
 module.exports = {
+  BadRequestRouteError,
   NotFoundRouteError,
   RouteDependencyError,
   UnauthorizedRouteError,

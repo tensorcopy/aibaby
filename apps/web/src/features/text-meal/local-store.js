@@ -4,6 +4,12 @@ const path = require('node:path');
 
 const { NotFoundRouteError, UnauthorizedRouteError } = require('../baby-profile/errors');
 const { parseTextMealInput } = require('../../../../../packages/ai/src/text-meal-parser.js');
+const {
+  parseStoredMealItem,
+  parseStoredMealRecord,
+  toMealItemRow,
+  toMealRecordRow,
+} = require('../../../../../packages/db/src/meal-record.js');
 
 const defaultDataFilePath = path.resolve(__dirname, '../../../.data/text-meal-submissions.json');
 
@@ -51,14 +57,34 @@ async function parseTextMealSubmission({ ownerUserId, babyId, text, quickAction,
     updated_at: now,
   };
 
+  const mealRecord = buildDraftMealRecord({
+    babyId: normalizedBabyId,
+    messageId,
+    text: normalizedText,
+    parsedCandidate,
+    eatenAt: message.created_at,
+    createdAt: now,
+  });
+  const mealItems = parsedCandidate.items.map((item) =>
+    buildDraftMealItem({
+      mealRecordId: mealRecord.id,
+      item,
+      createdAt: now,
+    }),
+  );
+
   data.messages.push(message);
   data.ingestionEvents.push(ingestionEvent);
+  data.mealRecords.push(toMealRecordRow(mealRecord));
+  data.mealItems.push(...mealItems.map(toMealItemRow));
   await writeStore(data);
 
   return {
     message,
     ingestionEvent,
     parsedCandidate,
+    mealRecord,
+    mealItems,
   };
 }
 
@@ -95,6 +121,8 @@ function normalizeStore(store) {
   return {
     messages: Array.isArray(store.messages) ? store.messages : [],
     ingestionEvents: Array.isArray(store.ingestionEvents) ? store.ingestionEvents : [],
+    mealRecords: Array.isArray(store.mealRecords) ? store.mealRecords : [],
+    mealItems: Array.isArray(store.mealItems) ? store.mealItems : [],
   };
 }
 
@@ -102,6 +130,8 @@ function createEmptyStore() {
   return {
     messages: [],
     ingestionEvents: [],
+    mealRecords: [],
+    mealItems: [],
   };
 }
 
@@ -111,6 +141,14 @@ function buildMessageId() {
 
 function buildIngestionEventId() {
   return `ing_${randomUUID().replace(/-/g, '').slice(0, 12)}`;
+}
+
+function buildMealRecordId() {
+  return `meal_${randomUUID().replace(/-/g, '').slice(0, 12)}`;
+}
+
+function buildMealItemId() {
+  return `mealitem_${randomUUID().replace(/-/g, '').slice(0, 12)}`;
 }
 
 function normalizeRequiredOwnerUserId(ownerUserId) {
@@ -135,6 +173,45 @@ function normalizeRequiredText(text) {
   }
 
   return text.trim();
+}
+
+function buildDraftMealRecord({ babyId, messageId, text, parsedCandidate, eatenAt, createdAt }) {
+  return parseStoredMealRecord({
+    id: buildMealRecordId(),
+    babyId,
+    sourceMessageId: messageId,
+    mealType: parsedCandidate.mealType,
+    eatenAt,
+    rawText: text,
+    aiSummary: parsedCandidate.summary,
+    status: 'draft',
+    confidenceScore: mapConfidenceLabelToScore(parsedCandidate.confidenceLabel),
+    createdAt,
+    updatedAt: createdAt,
+  });
+}
+
+function buildDraftMealItem({ mealRecordId, item, createdAt }) {
+  return parseStoredMealItem({
+    id: buildMealItemId(),
+    mealRecordId,
+    foodName: item.foodName,
+    amountText: item.amountText ?? null,
+    confidenceScore: mapConfidenceLabelToScore(item.confidenceLabel),
+    createdAt,
+  });
+}
+
+function mapConfidenceLabelToScore(confidenceLabel) {
+  switch (confidenceLabel) {
+    case 'high':
+      return 0.9;
+    case 'medium':
+      return 0.65;
+    case 'low':
+    default:
+      return 0.35;
+  }
 }
 
 module.exports = {

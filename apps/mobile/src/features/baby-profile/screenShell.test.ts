@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { getBabyProfileAgeSummary } from "@aibaby/ui";
 
 import {
   createBabyProfileScreenErrorState,
@@ -53,7 +54,7 @@ test("createBabyProfileScreenState bootstraps edit mode from a stored profile", 
   assert.equal(state.loadTarget, "explicit");
   assert.equal(state.form.mode, "edit");
   assert.equal(state.babyId, "baby_123");
-  assert.equal(state.ageSummary?.displayLabel, "4 months");
+  assert.deepEqual(state.ageSummary, getBabyProfileAgeSummary(profile.birthDate));
 });
 
 test("loadBabyProfileScreenState falls back to an empty create flow when the current profile is missing", async () => {

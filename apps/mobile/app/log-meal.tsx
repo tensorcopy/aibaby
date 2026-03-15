@@ -24,13 +24,37 @@ import {
   type MealComposerAttachment,
   type MealComposerSubmission,
 } from "../src/features/chat-input/composer.ts";
+import { executeMealRecordConfirmationFlow } from "../src/features/chat-input/meal-record-confirm.ts";
+import {
+  appendMealRecordCorrectionItem,
+  createMealRecordCorrectionDraft,
+  mealRecordTypeOptions,
+  removeMealRecordCorrectionItem,
+  updateMealRecordCorrectionItemField,
+  updateMealRecordCorrectionMealType,
+  type MealRecord,
+  type MealRecordCorrectionDraft,
+  type MealRecordItem,
+  type MealRecordType,
+} from "../src/features/chat-input/meal-record-confirmation.ts";
 import { executeMealUploadFlow } from "../src/features/chat-input/upload.ts";
 import { executeTextMealParseFlow } from "../src/features/chat-input/text-submit.ts";
+import {
+  BrandScrollView,
+  brandColors,
+  brandLayout,
+  brandShadow,
+} from "../src/design/brand.tsx";
 
 type MealThreadEntry = MealComposerSubmission & {
   deliveryStatus: "local" | "uploading" | "uploaded" | "error";
   detailText: string;
   remoteMessageId?: string;
+  mealRecord?: MealRecord;
+  correctionDraft?: MealRecordCorrectionDraft;
+  isEditingCorrection?: boolean;
+  confirmationStatus?: "draft" | "saving" | "confirmed";
+  correctionError?: string | null;
 };
 
 export default function LogMealRoute() {
@@ -53,6 +77,15 @@ export default function LogMealRoute() {
       }),
     [babyId, draft],
   );
+
+  function updateThreadEntry(
+    entryId: string,
+    updater: (entry: MealThreadEntry) => MealThreadEntry,
+  ) {
+    setThread((currentThread) =>
+      currentThread.map((entry) => (entry.id === entryId ? updater(entry) : entry)),
+    );
+  }
 
   async function handlePickImages() {
     if (!model.canAttachPhotos || isPickingImages) {
@@ -150,9 +183,15 @@ export default function LogMealRoute() {
                   ...entry,
                   deliveryStatus: "uploaded",
                   remoteMessageId: parsed.messageId,
-                  detailText: parsed.parsedCandidate.followUpQuestion
-                    ? `${parsed.parsedCandidate.summary} Follow-up: ${parsed.parsedCandidate.followUpQuestion}`
-                    : parsed.parsedCandidate.summary,
+                  mealRecord: parsed.draftRecord,
+                  correctionDraft: createMealRecordCorrectionDraft({
+                    mealRecord: parsed.draftRecord,
+                  }),
+                  isEditingCorrection: Boolean(parsed.parsedCandidate.followUpQuestion),
+                  confirmationStatus:
+                    parsed.draftRecord.status === "confirmed" ? "confirmed" : "draft",
+                  correctionError: null,
+                  detailText: buildDraftRecordThreadDetail(parsed),
                 }
               : entry,
           ),
@@ -181,12 +220,165 @@ export default function LogMealRoute() {
     }
   }
 
+  function handleOpenCorrectionEditor(entryId: string) {
+    updateThreadEntry(entryId, (entry) =>
+      entry.mealRecord
+        ? {
+            ...entry,
+            isEditingCorrection: true,
+            correctionDraft: createMealRecordCorrectionDraft({
+              mealRecord: entry.mealRecord,
+            }),
+            correctionError: null,
+          }
+        : entry,
+    );
+  }
+
+  function handleCancelCorrectionEditor(entryId: string) {
+    updateThreadEntry(entryId, (entry) =>
+      entry.mealRecord
+        ? {
+            ...entry,
+            isEditingCorrection: false,
+            correctionDraft: createMealRecordCorrectionDraft({
+              mealRecord: entry.mealRecord,
+            }),
+            correctionError: null,
+          }
+        : entry,
+    );
+  }
+
+  function handleChangeCorrectionMealType(entryId: string, mealType: MealRecordType) {
+    updateThreadEntry(entryId, (entry) =>
+      entry.correctionDraft
+        ? {
+            ...entry,
+            correctionDraft: updateMealRecordCorrectionMealType({
+              draft: entry.correctionDraft,
+              mealType,
+            }),
+          }
+        : entry,
+    );
+  }
+
+  function handleChangeCorrectionItemField(
+    entryId: string,
+    itemId: string,
+    field: "foodName" | "amountText",
+    value: string,
+  ) {
+    updateThreadEntry(entryId, (entry) =>
+      entry.correctionDraft
+        ? {
+            ...entry,
+            correctionDraft: updateMealRecordCorrectionItemField({
+              draft: entry.correctionDraft,
+              itemId,
+              field,
+              value,
+            }),
+          }
+        : entry,
+    );
+  }
+
+  function handleAddCorrectionItem(entryId: string) {
+    updateThreadEntry(entryId, (entry) =>
+      entry.correctionDraft
+        ? {
+            ...entry,
+            correctionDraft: appendMealRecordCorrectionItem(entry.correctionDraft),
+          }
+        : entry,
+    );
+  }
+
+  function handleRemoveCorrectionItem(entryId: string, itemId: string) {
+    updateThreadEntry(entryId, (entry) =>
+      entry.correctionDraft
+        ? {
+            ...entry,
+            correctionDraft: removeMealRecordCorrectionItem({
+              draft: entry.correctionDraft,
+              itemId,
+            }),
+          }
+        : entry,
+    );
+  }
+
+  async function handleConfirmDraft(entryId: string) {
+    const entry = thread.find((candidate) => candidate.id === entryId);
+
+    if (!entry?.mealRecord) {
+      return;
+    }
+
+    const correctionDraft =
+      entry.correctionDraft ??
+      createMealRecordCorrectionDraft({
+        mealRecord: entry.mealRecord,
+      });
+
+    updateThreadEntry(entryId, (current) => ({
+      ...current,
+      confirmationStatus: "saving",
+      correctionError: null,
+    }));
+
+    try {
+      const confirmed = await executeMealRecordConfirmationFlow({
+        mealRecordId: entry.mealRecord.id,
+        correctionDraft,
+        auth: session.auth,
+        apiBaseUrl: session.apiBaseUrl,
+      });
+
+      updateThreadEntry(entryId, (current) => ({
+        ...current,
+        mealRecord: confirmed.mealRecord,
+        correctionDraft: createMealRecordCorrectionDraft({
+          mealRecord: confirmed.mealRecord,
+        }),
+        isEditingCorrection: false,
+        confirmationStatus: "confirmed",
+        correctionError: null,
+        detailText: buildConfirmedMealRecordThreadDetail(confirmed.mealRecord),
+      }));
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message.trim().length > 0
+          ? error.message
+          : "We couldn't confirm this record right now.";
+
+      updateThreadEntry(entryId, (current) => ({
+        ...current,
+        confirmationStatus: current.mealRecord?.status === "confirmed" ? "confirmed" : "draft",
+        correctionError: message,
+      }));
+    }
+  }
+
   const homeHref = babyId ? `/?babyId=${encodeURIComponent(babyId)}` : "/";
 
   return (
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Text style={styles.title}>{model.title}</Text>
-      <Text style={styles.subtitle}>{model.subtitle}</Text>
+    <BrandScrollView keyboardShouldPersistTaps="handled">
+      <View style={styles.heroCard}>
+        <Text style={styles.heroEyebrow}>Baby mealtime studio</Text>
+        <Text style={styles.title}>{model.title}</Text>
+        <Text style={styles.subtitle}>{model.subtitle}</Text>
+        <View style={styles.heroPillRow}>
+          <View style={[styles.heroPill, styles.heroPillWarm]}>
+            <Text style={styles.heroPillText}>Photo-first capture</Text>
+          </View>
+          <View style={[styles.heroPill, styles.heroPillMint]}>
+            <Text style={styles.heroPillText}>Quick text note</Text>
+          </View>
+        </View>
+      </View>
 
       {!babyId ? (
         <View style={styles.warningBanner}>
@@ -196,8 +388,18 @@ export default function LogMealRoute() {
       ) : null}
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Meal draft</Text>
-        <Text style={styles.cardSubtitle}>{model.helperText}</Text>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardHeaderCopy}>
+            <Text style={styles.cardEyebrow}>Compose</Text>
+            <Text style={styles.cardTitle}>Meal draft</Text>
+            <Text style={styles.cardSubtitle}>{model.helperText}</Text>
+          </View>
+          <View style={styles.cardBadge}>
+            <Text style={styles.cardBadgeText}>
+              {draft.attachments.length > 0 ? `${draft.attachments.length} photos` : "Text note"}
+            </Text>
+          </View>
+        </View>
 
         <View style={styles.quickActionRow}>
           {mealComposerQuickActions.map((action) => {
@@ -237,7 +439,11 @@ export default function LogMealRoute() {
         />
 
         {draft.attachments.length > 0 ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.attachmentRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.attachmentRow}
+          >
             {draft.attachments.map((attachment) => (
               <View key={attachment.id} style={styles.attachmentCard}>
                 <Image source={{ uri: attachment.uri }} style={styles.attachmentImage} />
@@ -290,8 +496,13 @@ export default function LogMealRoute() {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Meal draft thread</Text>
-        <Text style={styles.cardSubtitle}>{model.emptyStateMessage}</Text>
+        <View style={styles.cardHeader}>
+          <View style={styles.cardHeaderCopy}>
+            <Text style={styles.cardEyebrow}>Review</Text>
+            <Text style={styles.cardTitle}>Meal draft thread</Text>
+            <Text style={styles.cardSubtitle}>{model.emptyStateMessage}</Text>
+          </View>
+        </View>
 
         {thread.length === 0 ? (
           <View style={styles.emptyState}>
@@ -327,6 +538,181 @@ export default function LogMealRoute() {
                 >
                   {submission.detailText}
                 </Text>
+                {submission.mealRecord ? (
+                  <View style={styles.threadRecordSection}>
+                    <View style={styles.threadStatusRow}>
+                      <Text
+                        style={[
+                          styles.threadStatusBadge,
+                          submission.confirmationStatus === "confirmed"
+                            ? styles.threadStatusBadgeConfirmed
+                            : styles.threadStatusBadgePending,
+                        ]}
+                      >
+                        {submission.confirmationStatus === "confirmed" ? "Confirmed" : "Needs confirmation"}
+                      </Text>
+                    </View>
+
+                    <View style={styles.threadItemList}>
+                      {submission.mealRecord.items.map((item) => (
+                        <Text key={item.id} style={styles.threadItemText}>
+                          {formatMealRecordItem(item)}
+                        </Text>
+                      ))}
+                    </View>
+
+                    {submission.correctionError ? (
+                      <Text style={styles.errorMessage}>{submission.correctionError}</Text>
+                    ) : null}
+
+                    {submission.confirmationStatus !== "confirmed" && submission.correctionDraft ? (
+                      submission.isEditingCorrection ? (
+                        <View style={styles.correctionEditor}>
+                          <Text style={styles.correctionEditorTitle}>Confirm or correct this draft</Text>
+
+                          <View style={styles.quickActionRow}>
+                            {mealRecordTypeOptions.map((option) => {
+                              const isSelected = submission.correctionDraft?.mealType === option.key;
+
+                              return (
+                                <Pressable
+                                  key={`${submission.id}:${option.key}`}
+                                  accessibilityRole="button"
+                                  disabled={submission.confirmationStatus === "saving"}
+                                  onPress={() => handleChangeCorrectionMealType(submission.id, option.key)}
+                                  style={[
+                                    styles.quickActionChip,
+                                    isSelected ? styles.quickActionChipSelected : null,
+                                  ]}
+                                >
+                                  <Text
+                                    style={[
+                                      styles.quickActionChipText,
+                                      isSelected ? styles.quickActionChipTextSelected : null,
+                                    ]}
+                                  >
+                                    {option.label}
+                                  </Text>
+                                </Pressable>
+                              );
+                            })}
+                          </View>
+
+                          {submission.correctionDraft.items.map((item) => (
+                            <View key={item.id} style={styles.correctionItemCard}>
+                              <TextInput
+                                editable={submission.confirmationStatus !== "saving"}
+                                placeholder="Food item"
+                                placeholderTextColor="#94a3b8"
+                                style={styles.correctionItemInput}
+                                value={item.foodName}
+                                onChangeText={(value) =>
+                                  handleChangeCorrectionItemField(
+                                    submission.id,
+                                    item.id,
+                                    "foodName",
+                                    value,
+                                  )
+                                }
+                              />
+                              <TextInput
+                                editable={submission.confirmationStatus !== "saving"}
+                                placeholder="Amount or note"
+                                placeholderTextColor="#94a3b8"
+                                style={styles.correctionItemInput}
+                                value={item.amountText}
+                                onChangeText={(value) =>
+                                  handleChangeCorrectionItemField(
+                                    submission.id,
+                                    item.id,
+                                    "amountText",
+                                    value,
+                                  )
+                                }
+                              />
+                              <Pressable
+                                accessibilityRole="button"
+                                disabled={submission.confirmationStatus === "saving"}
+                                onPress={() => handleRemoveCorrectionItem(submission.id, item.id)}
+                                style={styles.inlineGhostButton}
+                              >
+                                <Text style={styles.inlineGhostButtonText}>Remove</Text>
+                              </Pressable>
+                            </View>
+                          ))}
+
+                          <View style={styles.threadActionRow}>
+                            <Pressable
+                              accessibilityRole="button"
+                              disabled={submission.confirmationStatus === "saving"}
+                              onPress={() => handleAddCorrectionItem(submission.id)}
+                              style={styles.inlineGhostButton}
+                            >
+                              <Text style={styles.inlineGhostButtonText}>Add item</Text>
+                            </Pressable>
+                            <Pressable
+                              accessibilityRole="button"
+                              disabled={submission.confirmationStatus === "saving"}
+                              onPress={() => handleCancelCorrectionEditor(submission.id)}
+                              style={styles.inlineGhostButton}
+                            >
+                              <Text style={styles.inlineGhostButtonText}>Cancel</Text>
+                            </Pressable>
+                            <Pressable
+                              accessibilityRole="button"
+                              disabled={submission.confirmationStatus === "saving"}
+                              onPress={() => {
+                                void handleConfirmDraft(submission.id);
+                              }}
+                              style={[
+                                styles.inlinePrimaryButton,
+                                submission.confirmationStatus === "saving"
+                                  ? styles.buttonDisabled
+                                  : null,
+                              ]}
+                            >
+                              <Text style={styles.inlinePrimaryButtonText}>
+                                {submission.confirmationStatus === "saving"
+                                  ? "Saving…"
+                                  : "Save & confirm"}
+                              </Text>
+                            </Pressable>
+                          </View>
+                        </View>
+                      ) : (
+                        <View style={styles.threadActionRow}>
+                          <Pressable
+                            accessibilityRole="button"
+                            disabled={submission.confirmationStatus === "saving"}
+                            onPress={() => handleOpenCorrectionEditor(submission.id)}
+                            style={styles.inlineGhostButton}
+                          >
+                            <Text style={styles.inlineGhostButtonText}>Edit draft</Text>
+                          </Pressable>
+                          <Pressable
+                            accessibilityRole="button"
+                            disabled={submission.confirmationStatus === "saving"}
+                            onPress={() => {
+                              void handleConfirmDraft(submission.id);
+                            }}
+                            style={[
+                              styles.inlinePrimaryButton,
+                              submission.confirmationStatus === "saving"
+                                ? styles.buttonDisabled
+                                : null,
+                            ]}
+                          >
+                            <Text style={styles.inlinePrimaryButtonText}>
+                              {submission.confirmationStatus === "saving"
+                                ? "Saving…"
+                                : "Confirm"}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      )
+                    ) : null}
+                  </View>
+                ) : null}
               </View>
             ))}
           </View>
@@ -338,8 +724,32 @@ export default function LogMealRoute() {
           <Text style={styles.homeButtonText}>Back to app home</Text>
         </Pressable>
       </Link>
-    </ScrollView>
+    </BrandScrollView>
   );
+}
+
+function buildDraftRecordThreadDetail(parsed: Awaited<ReturnType<typeof executeTextMealParseFlow>>) {
+  const itemCount = parsed.draftRecord.items.length;
+  const itemLabel = `${itemCount} item${itemCount === 1 ? "" : "s"}`;
+  const draftSummary = `Draft record ${parsed.draftRecord.id} saved as ${parsed.draftRecord.mealType} with ${itemLabel}.`;
+
+  if (parsed.parsedCandidate.followUpQuestion) {
+    return `${draftSummary} ${parsed.parsedCandidate.summary} Follow-up: ${parsed.parsedCandidate.followUpQuestion}`;
+  }
+
+  return `${draftSummary} ${parsed.parsedCandidate.summary}`;
+}
+
+function buildConfirmedMealRecordThreadDetail(mealRecord: MealRecord) {
+  const itemCount = mealRecord.items.length;
+  const itemLabel = `${itemCount} item${itemCount === 1 ? "" : "s"}`;
+  return `Confirmed ${mealRecord.mealType} record ${mealRecord.id} with ${itemLabel}. ${mealRecord.aiSummary}`;
+}
+
+function formatMealRecordItem(item: MealRecordItem) {
+  return item.amountText?.trim()
+    ? `• ${item.foodName} (${item.amountText})`
+    : `• ${item.foodName}`;
 }
 
 function toMealComposerAttachment(
@@ -374,57 +784,117 @@ function inferAttachmentMimeType(fileName: string): string {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
+  heroCard: {
+    gap: 12,
+    borderRadius: 34,
+    borderWidth: 1,
+    borderColor: "#f5c9b1",
+    backgroundColor: "#fff0e5",
     padding: 24,
-    gap: 16,
-    backgroundColor: "#f8fafc",
+    ...brandShadow,
+  },
+  heroEyebrow: {
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    color: "#c25e29",
   },
   title: {
-    fontSize: 30,
-    fontWeight: "700",
-    color: "#0f172a",
+    fontSize: 32,
+    fontWeight: "800",
+    color: brandColors.text,
   },
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
-    color: "#475569",
+    color: brandColors.textMuted,
+  },
+  heroPillRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  heroPill: {
+    borderRadius: brandLayout.pillRadius,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  heroPillWarm: {
+    backgroundColor: brandColors.white,
+  },
+  heroPillMint: {
+    backgroundColor: "#dff5ec",
+  },
+  heroPillText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: brandColors.text,
   },
   warningBanner: {
     gap: 6,
-    borderRadius: 16,
+    borderRadius: 24,
     borderWidth: 1,
-    borderColor: "#fdba74",
-    backgroundColor: "#fff7ed",
-    padding: 16,
+    borderColor: "#f2d3ae",
+    backgroundColor: brandColors.warningSurface,
+    padding: 18,
   },
   warningBannerTitle: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "#9a3412",
+    fontWeight: "800",
+    color: brandColors.warningText,
   },
   warningBannerMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#9a3412",
+    color: brandColors.warningText,
   },
   card: {
-    gap: 12,
-    borderRadius: 20,
+    gap: 14,
+    borderRadius: 30,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
-    backgroundColor: "#ffffff",
-    padding: 18,
+    borderColor: brandColors.borderSoft,
+    backgroundColor: brandColors.surface,
+    padding: 22,
+    ...brandShadow,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  cardHeaderCopy: {
+    flex: 1,
+    gap: 4,
+  },
+  cardEyebrow: {
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: "#2d7288",
+  },
+  cardBadge: {
+    alignSelf: "flex-start",
+    borderRadius: brandLayout.pillRadius,
+    backgroundColor: "#edf9f4",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  cardBadgeText: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: brandColors.mintDeep,
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#0f172a",
+    fontSize: 22,
+    fontWeight: "800",
+    color: brandColors.text,
   },
   cardSubtitle: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#475569",
+    color: brandColors.textMuted,
   },
   quickActionRow: {
     flexDirection: "row",
@@ -432,36 +902,36 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   quickActionChip: {
-    borderRadius: 999,
+    borderRadius: brandLayout.pillRadius,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    backgroundColor: "#f8fafc",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    borderColor: "#edd3c7",
+    backgroundColor: "#fff7f1",
+    paddingHorizontal: 13,
+    paddingVertical: 9,
   },
   quickActionChipSelected: {
-    borderColor: "#2563eb",
-    backgroundColor: "#dbeafe",
+    borderColor: "#f5b497",
+    backgroundColor: "#ffe1d2",
   },
   quickActionChipText: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#334155",
+    fontWeight: "700",
+    color: brandColors.textMuted,
   },
   quickActionChipTextSelected: {
-    color: "#1d4ed8",
+    color: "#b6552f",
   },
   input: {
     minHeight: 120,
-    borderRadius: 16,
+    borderRadius: 22,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: "#edd3c7",
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 16,
     lineHeight: 22,
-    color: "#0f172a",
-    backgroundColor: "#ffffff",
+    color: brandColors.text,
+    backgroundColor: brandColors.white,
     textAlignVertical: "top",
   },
   attachmentRow: {
@@ -474,21 +944,21 @@ const styles = StyleSheet.create({
   attachmentImage: {
     width: 132,
     height: 132,
-    borderRadius: 16,
-    backgroundColor: "#e2e8f0",
+    borderRadius: 20,
+    backgroundColor: "#ffe2d0",
   },
   attachmentRemoveButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    paddingVertical: 8,
+    borderColor: "#edd3c7",
+    paddingVertical: 9,
   },
   attachmentRemoveButtonText: {
     fontSize: 13,
-    fontWeight: "600",
-    color: "#334155",
+    fontWeight: "700",
+    color: brandColors.textMuted,
   },
   actionRow: {
     flexDirection: "row",
@@ -498,29 +968,29 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    paddingVertical: 14,
-    backgroundColor: "#ffffff",
+    borderColor: brandColors.borderSoft,
+    paddingVertical: 15,
+    backgroundColor: brandColors.white,
   },
   secondaryButtonText: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#334155",
+    fontWeight: "800",
+    color: brandColors.text,
   },
   primaryButton: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#2563eb",
+    borderRadius: 18,
+    paddingVertical: 15,
+    backgroundColor: brandColors.primary,
   },
   primaryButtonText: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#ffffff",
+    fontWeight: "800",
+    color: brandColors.white,
   },
   buttonDisabled: {
     opacity: 0.55,
@@ -528,49 +998,49 @@ const styles = StyleSheet.create({
   errorMessage: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#b91c1c",
+    color: brandColors.dangerText,
   },
   emptyState: {
     gap: 6,
-    borderRadius: 16,
+    borderRadius: 24,
     borderWidth: 1,
     borderStyle: "dashed",
-    borderColor: "#cbd5e1",
-    backgroundColor: "#f8fafc",
-    padding: 16,
+    borderColor: "#f4c7b5",
+    backgroundColor: "#fff9f4",
+    padding: 18,
   },
   emptyStateTitle: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#0f172a",
+    fontWeight: "800",
+    color: brandColors.text,
   },
   emptyStateMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#475569",
+    color: brandColors.textMuted,
   },
   threadList: {
-    gap: 12,
+    gap: 14,
   },
   threadCard: {
     gap: 10,
-    borderRadius: 18,
+    borderRadius: 28,
     borderWidth: 1,
-    borderColor: "#bfdbfe",
-    backgroundColor: "#eff6ff",
-    padding: 16,
+    borderColor: "#b7deef",
+    backgroundColor: "#f2faff",
+    padding: 18,
   },
   threadMeta: {
     fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.4,
+    fontWeight: "800",
+    letterSpacing: 0.6,
     textTransform: "uppercase",
-    color: "#1d4ed8",
+    color: "#2d7288",
   },
   threadText: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#0f172a",
+    color: brandColors.text,
   },
   threadAttachmentRow: {
     gap: 10,
@@ -578,28 +1048,122 @@ const styles = StyleSheet.create({
   threadAttachmentImage: {
     width: 96,
     height: 96,
-    borderRadius: 14,
-    backgroundColor: "#bfdbfe",
+    borderRadius: 16,
+    backgroundColor: "#dff0ff",
   },
   threadFootnote: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#475569",
+    color: brandColors.textMuted,
   },
   threadFootnoteError: {
-    color: "#b91c1c",
+    color: brandColors.dangerText,
   },
-  homeButton: {
-    marginTop: 8,
+  threadRecordSection: {
+    gap: 10,
+  },
+  threadStatusRow: {
+    flexDirection: "row",
+  },
+  threadStatusBadge: {
+    borderRadius: brandLayout.pillRadius,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    fontSize: 12,
+    fontWeight: "800",
+    overflow: "hidden",
+  },
+  threadStatusBadgePending: {
+    backgroundColor: "#fff1db",
+    color: brandColors.warningText,
+  },
+  threadStatusBadgeConfirmed: {
+    backgroundColor: brandColors.successSurface,
+    color: brandColors.successText,
+  },
+  threadItemList: {
+    gap: 4,
+  },
+  threadItemText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: brandColors.text,
+  },
+  correctionEditor: {
+    gap: 10,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: "#cde3ee",
+    backgroundColor: brandColors.white,
+    padding: 14,
+  },
+  correctionEditorTitle: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: brandColors.text,
+  },
+  correctionItemCard: {
+    gap: 8,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#d8eaf2",
+    backgroundColor: "#f8fcff",
+    padding: 12,
+  },
+  correctionItemInput: {
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#d8e1e8",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: brandColors.text,
+    backgroundColor: brandColors.white,
+  },
+  threadActionRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  inlineGhostButton: {
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#0f172a",
+    borderWidth: 1,
+    borderColor: brandColors.borderSoft,
+    backgroundColor: brandColors.white,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  inlineGhostButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: brandColors.text,
+  },
+  inlinePrimaryButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 14,
+    backgroundColor: brandColors.primary,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  inlinePrimaryButtonText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: brandColors.white,
+  },
+  homeButton: {
+    marginTop: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    paddingVertical: 16,
+    backgroundColor: brandColors.text,
   },
   homeButtonText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "700",
+    color: brandColors.white,
+    fontSize: 15,
+    fontWeight: "800",
   },
 });

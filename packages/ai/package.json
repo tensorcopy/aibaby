@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "description": "AI orchestration package scaffold placeholder for AI Baby",
   "scripts": {
+    "test": "npm run test:daily-summary && npm run test:weekly-summary && npm run test:text-meal-parser && npm run test:stage-reminders",
     "test:daily-summary": "node --test src/daily-summary.test.js",
+    "test:stage-reminders": "node --test src/stage-reminders.test.js",
+    "test:weekly-summary": "node --test src/weekly-summary.test.js",
     "test:text-meal-parser": "node --test src/text-meal-parser.test.js"
   }
 }

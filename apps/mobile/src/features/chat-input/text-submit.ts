@@ -3,6 +3,7 @@ import {
   type BabyProfileAuth,
 } from '../baby-profile/transport.ts';
 
+import type { MealRecord } from './meal-record-confirmation.ts';
 import type { MealComposerSubmission } from './composer.ts';
 import { resolveApiUrl } from './upload.ts';
 
@@ -23,6 +24,7 @@ export type TextMealParseResult = {
       confidenceLabel: string;
     }>;
   };
+  draftRecord: MealRecord;
 };
 
 export async function executeTextMealParseFlow({

@@ -22,8 +22,8 @@ This repository follows the accepted stack and boundaries documented in:
 
 ## Repository layout
 
-- `apps/mobile`: future Expo / React Native client for caregivers
-- `apps/web`: future Next.js app and API surface
+- `apps/mobile`: first-pass Expo / React Native client shell for caregivers
+- `apps/web`: first-pass local web runtime and API surface
 - `packages/db`: future Prisma schema, migrations, and database access code
 - `packages/ai`: future AI parsing, orchestration, and summary logic
 - `packages/ui`: future shared UI primitives and design tokens
@@ -31,10 +31,23 @@ This repository follows the accepted stack and boundaries documented in:
 
 ## Status
 
-This is scaffold-only. No application runtime, database schema, or AI pipeline has been implemented yet.
+The current repo is past scaffold-only. It now has:
+
+- a runnable local web shell in `apps/web`
+- a runnable Expo app shell in `apps/mobile`
+- first-pass local flows for baby profile, meal logging, timeline, summaries,
+  reminders, review, and Markdown export
+
+Database and auth are still local-dev placeholders; Prisma and Supabase wiring
+have not landed yet.
 
 ## Local setup
 
 - install dependencies with `npm install`
 - follow `docs/local-development.md` for setup expectations and env-file conventions
-- copy `.env.example` to `.env.local` when a task introduces real local credentials
+- copy `apps/mobile/.env.example` to `apps/mobile/.env.local` before starting Expo
+- use `npm run demo:session -- demo-owner-1` to generate a local mobile session token
+- use `npm run demo:seed` to generate a repeatable local dataset
+- use `npm run dev:web` and `npm run dev:mobile` for the current local shells
+- follow `docs/local-e2e-flow.md` for the first end-to-end local walkthrough
+- use `docs/smoke-checklist.md` for repeatable local regression checks

@@ -17,33 +17,46 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-021 `done` Build chat input UI for text and image submission
 - AIB-022 `done` Build image upload pipeline
 - AIB-023 `done` Build text-to-record parsing flow
-- AIB-024 `todo` Build draft feeding record generation
-- AIB-025 `todo` Build confirmation / correction flow for AI-generated records
-- AIB-026 `todo` Persist original input plus structured output
-- AIB-027 `todo` Build today's timeline page
+- AIB-024 `done` Build draft feeding record generation
+- AIB-025 `done` Build confirmation / correction flow for AI-generated records
+- AIB-026 `done` Persist original input plus structured output
+- AIB-027 `done` Build today's timeline page
 
 ### Summaries
 - AIB-030 `done` Define daily summary rules and output format
 - AIB-031 `done` Build daily summary generation flow
 - AIB-032 `done` Store and retrieve daily summaries
 - AIB-033 `done` Define weekly summary aggregation logic
-- AIB-034 `todo` Build weekly summary generation flow
-- AIB-035 `todo` Build summary history view
+- AIB-034 `done` Build weekly summary generation flow
+- AIB-035 `done` Build summary history view
 
 ### Reminders and review
-- AIB-040 `todo` Build age-stage calculation logic
-- AIB-041 `todo` Define reminder content model and templates
-- AIB-042 `todo` Build scheduled reminder trigger flow
-- AIB-043 `todo` Build 7-day review page
-- AIB-044 `todo` Build 30-day review page
-- AIB-045 `todo` Build reminder history timeline
+- AIB-040 `done` Build age-stage calculation logic
+- AIB-041 `done` Define reminder content model and templates
+- AIB-042 `done` Build scheduled reminder trigger flow
+- AIB-043 `done` Build 7-day review page
+- AIB-044 `done` Build 30-day review page
+- AIB-045 `done` Build reminder history timeline
 
 ### Export and portability
 - AIB-050 `done` Define export package structure
 - AIB-051 `done` Define Markdown note format for Obsidian compatibility
 - AIB-052 `done` Decide media export behavior: local files vs referenced URLs
 - AIB-053 `done` Define YAML frontmatter fields for exported notes
-- AIB-054 `todo` Build first-pass Markdown export flow
+- AIB-054 `done` Build first-pass Markdown export flow
+
+### Runnable app and integration
+- AIB-060 `done` Bootstrap a runnable Next.js web app shell with dev/start scripts and route mounting
+- AIB-061 `done` Bootstrap a runnable Expo app configuration for the existing mobile routes and session env
+- AIB-062 `done` Wire one documented end-to-end local flow between the mobile app and live local backend
+- AIB-063 `done` Add demo-data seed and reset commands for baby profile, meals, reports, reminders, and exports
+- AIB-064 `done` Add a first-pass export trigger surface in the mobile app for Markdown bundle generation
+- AIB-065 `done` Add a repo-managed smoke checklist for local startup, core flows, and export verification
+- AIB-066 `done` Replace local owner-header bootstrap with a first-pass real auth/session handoff
+- AIB-067 `done` Fix the Expo app config to expose the new session-token bootstrap instead of the removed owner-user-id field
+- AIB-068 `done` Make the demo seed flow stable across reruns so the mobile bootstrap baby id does not drift
+- AIB-069 `done` Promote the loaded current baby profile into the mobile session so home quick actions activate after auth-only bootstrap
+- AIB-070 `done` Stabilize the mobile baby-profile screen-shell test so it does not fail when the calendar month boundary changes
 
 ## In Progress
 
@@ -71,10 +84,34 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-021 `done` Build the first-pass mobile chat input UI for text and image meal draft submission
 - AIB-022 `done` Build the image upload negotiation, direct-storage handoff, and mobile upload completion flow
 - AIB-023 `done` Build the first-pass text-only parsing flow that classifies meal type and food items and returns a candidate record preview
+- AIB-024 `done` Build the first-pass draft feeding-record generation flow, including shared meal-record schemas and local-dev persistence
+- AIB-025 `done` Build the first-pass confirm/correct flow for meal drafts, including inline mobile editing and `/api/meals/:mealId/confirm`
+- AIB-026 `done` Persist original parse input plus corrected structured output through ingestion events and local-dev stores
+- AIB-027 `done` Build the first-pass today's timeline route and `/api/babies/:babyId/meals?date=YYYY-MM-DD`
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
 - AIB-032 `done` Build the first-pass daily summary storage and retrieval contract in `packages/db`
 - AIB-033 `done` Define the first-pass weekly summary aggregation rules and output shape
+- AIB-034 `done` Build the first-pass deterministic weekly summary generation flow in `packages/ai`
+- AIB-035 `done` Build the first-pass summary history screen and report-history APIs for daily and weekly summaries
+- AIB-040 `done` Build the first-pass deterministic age-stage band calculator and repository-managed baseline stage-band definitions
+- AIB-041 `done` Define the first-pass repository-managed reminder content model and stage-keyed templates
+- AIB-042 `done` Build the first-pass deterministic reminder trigger flow and `/api/babies/:babyId/reminders` APIs
+- AIB-043 `done` Build the first-pass 7-day review page with daily summaries, new-food highlights, and day-detail links
+- AIB-044 `done` Build the first-pass 30-day review page with common-food stats, weekly rollups, and reminder history
+- AIB-045 `done` Build the first-pass reminder history timeline screen
+- AIB-054 `done` Build the first-pass Markdown export generator and `/api/babies/:babyId/export/markdown` endpoint
+- AIB-060 `done` Build the first-pass runnable local web shell that mounts the current App Router-style route handlers through `npm run dev --workspace @aibaby/web`
+- AIB-061 `done` Build the first-pass Expo app shell config with app metadata, router bootstrap, and local session env defaults
+- AIB-062 `done` Document the first end-to-end local flow between Expo mobile and the local web runtime, including shared root scripts
+- AIB-063 `done` Add repeatable `demo:seed` and `demo:reset` commands for local baby profile, meals, reminders, reports coverage, and export data
+- AIB-064 `done` Add a first-pass mobile export trigger on the summaries screen for Markdown bundle generation
+- AIB-065 `done` Add a repository-managed local smoke checklist for startup, core user flows, and export verification
+- AIB-066 `done` Replace the mobile owner-header bootstrap with a first-pass bearer session-token handoff and local session-token tooling
+- AIB-067 `done` Fix the Expo public config to match the session-token mobile bootstrap used by the local QA flow
+- AIB-068 `done` Stabilize the demo seed baby id so repeated seeding does not break the mobile demo bootstrap
+- AIB-069 `done` Sync the loaded current baby profile id back into the mobile session after auth-scoped home loads
+- AIB-070 `done` Replace the month-boundary-sensitive screen-shell age assertion with a dynamic summary expectation during QA hardening
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
@@ -92,6 +129,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 - Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
 - Foundation choices are now documented well enough to start assigning implementation work
-- The initial repo scaffold exists, but it is intentionally non-runnable until follow-up PRs add actual Expo, Next.js, Prisma, and Supabase setup
-- Next best parallel workstreams: app scaffold, auth wiring, media upload path, and daily-summary rules
+- The web app is now locally runnable through the first-pass Node shell in `apps/web`; a full installed Next.js runtime remains a follow-up if and when we add the dependency
+- Next recommended execution order now: define the next backlog slice
 - Keep architecture and task files updated in the same branch as implementation work

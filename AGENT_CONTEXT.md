@@ -19,6 +19,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - Update repo state files when product intent, architecture, or task status changes
 - Keep commits small and scoped
 - Put all meaningful progress in commits and pull requests
+- After finishing a task, immediately pick up the next open `todo` task in `tasks/current.md` and continue without human intervention unless blocked or explicitly redirected
 
 ## Current project status
 

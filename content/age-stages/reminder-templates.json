@@ -1,0 +1,205 @@
+{
+  "version": "v1",
+  "templates": [
+    {
+      "ageStageKey": "newborn",
+      "stageLabel": "0-6 weeks",
+      "title": "Early feeding rhythm",
+      "cadenceDays": 14,
+      "feedingFocus": "Keep milk feeds responsive and watch for hunger, fullness, and comfort cues.",
+      "developmentFocus": "Notice short alert windows, burping comfort, and whether recovery after feeds is getting easier.",
+      "safetyReminders": [
+        "Hold the baby upright after feeds when spit-up or reflux is a concern.",
+        "Use paced bottle feeds when bottles are part of the routine.",
+        "Keep sleep surfaces clear and avoid feeding-position props."
+      ],
+      "playSuggestions": [
+        "Use brief face-to-face time during calm wake windows.",
+        "Talk through diaper changes so the baby hears your voice often."
+      ],
+      "routineFocus": [
+        "Note which parts of the day have the smoothest feeding rhythm.",
+        "Track comfort cues so cluster-feeding days are easier to recognize."
+      ],
+      "commonQuestions": [
+        "Is cluster feeding normal right now?",
+        "How do I tell hunger from comfort sucking?"
+      ]
+    },
+    {
+      "ageStageKey": "early_infant",
+      "stageLabel": "6-16 weeks",
+      "title": "Steadier milk routine",
+      "cadenceDays": 14,
+      "feedingFocus": "Keep milk feeds steady and notice whether longer stretches between feeds still match the baby's cues.",
+      "developmentFocus": "Watch head control, longer wake windows, and whether the baby stays settled after feeds.",
+      "safetyReminders": [
+        "Pause to burp when the baby gets gulping or fussy mid-feed.",
+        "Keep bottle nipples and pump parts matched to the baby's pace, not just age labels.",
+        "Do not prop bottles during feeds."
+      ],
+      "playSuggestions": [
+        "Try short tummy-time sessions after a comfortable post-feed break.",
+        "Use simple songs or mirrored facial expressions during alert time."
+      ],
+      "routineFocus": [
+        "Look for a repeatable feed-play-rest rhythm, even if it is still loose.",
+        "Notice which feeds are easiest and which ones need more pacing."
+      ],
+      "commonQuestions": [
+        "Is my baby ready for a more predictable schedule?",
+        "What does distracted feeding look like at this age?"
+      ]
+    },
+    {
+      "ageStageKey": "supported_sitter",
+      "stageLabel": "4-6 months",
+      "title": "Solids readiness watch",
+      "cadenceDays": 14,
+      "feedingFocus": "Keep milk as the main intake while watching for steady head control, supported sitting, and interest in food.",
+      "developmentFocus": "Notice oral readiness, hand-to-mouth coordination, and whether the baby can stay upright with support.",
+      "safetyReminders": [
+        "Wait for clear readiness signs before moving into solids.",
+        "Use upright supported seating for any tasting practice.",
+        "Avoid putting cereal or purees into bottles."
+      ],
+      "playSuggestions": [
+        "Offer texture play with spoons, cups, or teething-safe tools outside meals.",
+        "Let the baby watch family meals to build interest without pressure."
+      ],
+      "routineFocus": [
+        "Decide which time of day would be the calmest for first-solid practice later.",
+        "Keep milk logs clear so solids do not crowd out the main intake too early."
+      ],
+      "commonQuestions": [
+        "How do I know the baby is truly ready for solids?",
+        "Should we wait if sitting support is still inconsistent?"
+      ]
+    },
+    {
+      "ageStageKey": "solids_ready",
+      "stageLabel": "6-9 months",
+      "title": "First-solid variety",
+      "cadenceDays": 14,
+      "feedingFocus": "Build slow variety with iron-rich foods, produce, and familiar milk feeds still carrying most intake.",
+      "developmentFocus": "Notice chewing motions, tongue control, and how the baby handles new textures across repeated tries.",
+      "safetyReminders": [
+        "Introduce textures that match the baby's oral skills and upright posture.",
+        "Offer one higher-risk allergen at a time when possible so reactions are easier to track.",
+        "Avoid hard round foods and other obvious choking hazards."
+      ],
+      "playSuggestions": [
+        "Let the baby hold a spoon or soft finger food for sensory practice.",
+        "Model chewing and exaggerated mouth movements during meals."
+      ],
+      "routineFocus": [
+        "Repeat new foods several times before deciding they are disliked.",
+        "Log reactions, textures, and successful meal times so the pattern is easier to review."
+      ],
+      "commonQuestions": [
+        "How many solids should happen in a day right now?",
+        "What should I do when one texture goes well and another does not?"
+      ]
+    },
+    {
+      "ageStageKey": "finger_food_explorer",
+      "stageLabel": "9-12 months",
+      "title": "Texture and self-feeding practice",
+      "cadenceDays": 14,
+      "feedingFocus": "Expand finger foods, repeated iron-rich meals, and mixed textures while the baby practices self-feeding.",
+      "developmentFocus": "Watch pincer grasp, chewing endurance, cup practice, and how the baby manages more table-style foods.",
+      "safetyReminders": [
+        "Keep food pieces soft enough to mash and easy to grasp.",
+        "Stay close during self-feeding because gagging and mess still come with learning.",
+        "Cut round or slippery foods into safer shapes."
+      ],
+      "playSuggestions": [
+        "Offer safe scooping and cup-holding practice during meals.",
+        "Use naming games for foods, utensils, and family mealtime routines."
+      ],
+      "routineFocus": [
+        "Build repeated meal times so texture practice happens without rushing.",
+        "Keep one reliable iron-rich option in frequent rotation."
+      ],
+      "commonQuestions": [
+        "How much self-feeding practice is enough before frustration sets in?",
+        "When should cup practice start replacing bottles at the table?"
+      ]
+    },
+    {
+      "ageStageKey": "young_toddler",
+      "stageLabel": "12-18 months",
+      "title": "Family-meal transition",
+      "cadenceDays": 30,
+      "feedingFocus": "Shift toward family meals, predictable snacks, and letting the toddler practice independence without losing variety.",
+      "developmentFocus": "Notice appetite swings, utensil practice, and how mealtime behavior changes with routine or tiredness.",
+      "safetyReminders": [
+        "Keep supervising because choking risk is still real with fast eating or overstuffing.",
+        "Watch milk volume so it does not replace meals.",
+        "Seat the toddler for meals and snacks instead of walking around with food."
+      ],
+      "playSuggestions": [
+        "Let the toddler help with simple meal setup like carrying a spoon or napkin.",
+        "Use pretend feeding play with dolls or stuffed animals to reinforce routines."
+      ],
+      "routineFocus": [
+        "Protect a regular meal-snack rhythm so grazing does not take over.",
+        "Keep offering foods that were previously accepted even after refusal streaks."
+      ],
+      "commonQuestions": [
+        "Is this picky eating or a normal toddler appetite swing?",
+        "How much milk is too much once meals are established?"
+      ]
+    },
+    {
+      "ageStageKey": "older_toddler",
+      "stageLabel": "18-24 months",
+      "title": "Routine and variety reinforcement",
+      "cadenceDays": 30,
+      "feedingFocus": "Reinforce consistent meals, snack boundaries, and enough variety to keep protein, produce, and iron-rich foods visible.",
+      "developmentFocus": "Notice autonomy, opinion-driven refusals, and whether routines help the toddler stay calmer at the table.",
+      "safetyReminders": [
+        "Keep high-risk textures modified even if chewing seems strong.",
+        "Stay consistent about seated meals and supervised snacks.",
+        "Avoid pressure or bargaining that turns meals into battles."
+      ],
+      "playSuggestions": [
+        "Use simple sorting or color games with foods during prep, not during pressure moments at the table.",
+        "Invite the toddler to help wash produce or place items on a plate."
+      ],
+      "routineFocus": [
+        "Keep one or two dependable foods on the plate while still rotating exposure foods.",
+        "Log longer refusal streaks or reactions so review pages stay useful."
+      ],
+      "commonQuestions": [
+        "How do I respond to repeated refusal without making it worse?",
+        "What matters more right now: total volume or food variety?"
+      ]
+    },
+    {
+      "ageStageKey": "age_24_plus",
+      "stageLabel": "24+ months",
+      "title": "Toddler habits and observation",
+      "cadenceDays": 30,
+      "feedingFocus": "Use steady family-meal routines and keep reminders focused on variety, independence, and observation over time.",
+      "developmentFocus": "Notice language around food, stronger preferences, and whether routines still support calm meals and snacks.",
+      "safetyReminders": [
+        "Keep choking-risk foods modified and meals supervised.",
+        "Avoid using screens or bribes as the default tool for eating.",
+        "Keep hydration and stool patterns in mind when appetite changes."
+      ],
+      "playSuggestions": [
+        "Use pretend grocery, cooking, or color-sorting games to make foods familiar.",
+        "Let the toddler participate in simple prep steps that do not add pressure."
+      ],
+      "routineFocus": [
+        "Protect a predictable meal-snack structure with enough gaps for hunger to build.",
+        "Keep rotating familiar produce and protein options so variety does not narrow."
+      ],
+      "commonQuestions": [
+        "How much independence should I allow at meals right now?",
+        "When does a narrow food list deserve closer review?"
+      ]
+    }
+  ]
+}

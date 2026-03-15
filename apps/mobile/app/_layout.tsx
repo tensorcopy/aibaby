@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { MobileSessionProvider } from "../src/features/app-shell/MobileSessionContext.tsx";
+import { brandColors } from "../src/design/brand.tsx";
 
 export default function RootLayout() {
   return (
@@ -10,12 +11,16 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShadowVisible: false,
+            headerStyle: {
+              backgroundColor: "#fff8f2",
+            },
+            headerTintColor: brandColors.text,
             headerTitleStyle: {
-              color: "#0f172a",
-              fontWeight: "600",
+              color: brandColors.text,
+              fontWeight: "700",
             },
             contentStyle: {
-              backgroundColor: "#f8fafc",
+              backgroundColor: brandColors.page,
             },
           }}
         >
@@ -47,6 +52,18 @@ export default function RootLayout() {
           name="summaries"
           options={{
             title: "Summary history",
+          }}
+        />
+        <Stack.Screen
+          name="review"
+          options={{
+            title: "Review",
+          }}
+        />
+        <Stack.Screen
+          name="reminders"
+          options={{
+            title: "Reminders",
           }}
         />
         </Stack>

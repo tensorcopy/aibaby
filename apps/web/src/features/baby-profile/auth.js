@@ -1,4 +1,5 @@
 const { UnauthorizedRouteError } = require('./errors');
+const { parseLocalSessionToken } = require('./session-token');
 
 function resolveOwnerUserIdFromRequest(request) {
   const bearerOwnerUserId = parseBearerOwnerUserId(
@@ -27,13 +28,25 @@ function parseBearerOwnerUserId(authorizationHeader) {
     return undefined;
   }
 
-  const match = authorizationHeader.match(/^Bearer\s+dev-user:(.+)$/i);
+  const match = authorizationHeader.match(/^Bearer\s+(.+)$/i);
 
   if (!match) {
     return undefined;
   }
 
-  return normalizeOwnerUserId(match[1]);
+  const localSession = parseLocalSessionToken(match[1]);
+
+  if (localSession) {
+    return normalizeOwnerUserId(localSession.userId);
+  }
+
+  const legacyMatch = match[1].match(/^dev-user:(.+)$/i);
+
+  if (legacyMatch) {
+    return normalizeOwnerUserId(legacyMatch[1]);
+  }
+
+  return undefined;
 }
 
 function normalizeOwnerUserId(value) {

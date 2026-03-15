@@ -4,8 +4,16 @@
   "version": "0.0.0",
   "description": "Next.js app and backend scaffold placeholder for AI Baby",
   "scripts": {
-    "test:baby-profile-api": "node --experimental-strip-types --test src/features/baby-profile/*.test.js src/features/baby-profile/*.test.ts",
-    "test:uploads-api": "node --experimental-strip-types --test src/features/uploads/*.test.ts",
-    "test:text-meal-api": "node --experimental-strip-types --test src/features/text-meal/*.test.ts"
+    "dev": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types dev-server.mjs",
+    "start": "npm run dev",
+    "test": "npm run test:baby-profile-api && npm run test:uploads-api && npm run test:text-meal-api && npm run test:meal-records-api && npm run test:reports-api && npm run test:reminders-api && npm run test:exports-api && npm run test:runtime",
+    "test:baby-profile-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/baby-profile/*.test.js src/features/baby-profile/*.test.ts",
+    "test:exports-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/exports/*.test.ts",
+    "test:uploads-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/uploads/*.test.ts",
+    "test:text-meal-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/text-meal/*.test.ts",
+    "test:meal-records-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/meal-records/*.test.ts",
+    "test:reports-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/reports/*.test.ts",
+    "test:reminders-api": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/features/reminders/*.test.ts",
+    "test:runtime": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/runtime/*.test.ts"
   }
 }

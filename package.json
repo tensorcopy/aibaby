@@ -3,6 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "description": "Initial monorepo scaffold for the AI Baby MVP",
+  "scripts": {
+    "dev:web": "npm run dev --workspace @aibaby/web",
+    "dev:mobile": "npm run dev --workspace @aibaby/mobile",
+    "demo:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/demo-data.mjs seed",
+    "demo:reset": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/demo-data.mjs reset",
+    "demo:session": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/dev-session-token.mjs",
+    "test": "npm run test:demo-data && npm test --workspaces --if-present",
+    "test:demo-data": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test scripts/demo-data.test.mjs"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"

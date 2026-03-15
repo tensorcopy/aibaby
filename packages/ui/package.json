@@ -5,6 +5,8 @@
   "description": "Shared UI package scaffold placeholder for AI Baby",
   "main": "src/index.ts",
   "scripts": {
-    "test:baby-profile": "node --experimental-strip-types --test src/baby-profile/form.test.ts"
+    "test": "npm run test:baby-profile && npm run test:age-stage",
+    "test:baby-profile": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/baby-profile/form.test.ts",
+    "test:age-stage": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test src/baby-profile/age-stage.test.ts"
   }
 }
