@@ -9,7 +9,8 @@
     "start": "expo start",
     "test:app-shell": "node --experimental-strip-types --test src/features/app-shell/*.test.ts",
     "test:baby-profile-flow": "node --experimental-strip-types --test src/features/baby-profile/*.test.ts",
-    "test:chat-input": "node --experimental-strip-types --test src/features/chat-input/*.test.ts"
+    "test:chat-input": "node --experimental-strip-types --test src/features/chat-input/*.test.ts",
+    "test:summary-history": "node --experimental-strip-types --test src/features/summary-history/*.test.ts"
   },
   "dependencies": {
     "@aibaby/ui": "0.0.0",
