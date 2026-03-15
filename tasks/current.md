@@ -24,7 +24,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-028 `todo` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the current mobile landing screen with a chat-first AI assistant entry route
 - AIB-057 `done` Support a single mixed-send composer action that submits photos and text together as one conversational message
-- AIB-058 `todo` Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
+- AIB-058 `in_progress` Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
 
 ### Summaries
 - AIB-030 `done` Define daily summary rules and output format
@@ -56,7 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-058 Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
 
 ## Done
 
