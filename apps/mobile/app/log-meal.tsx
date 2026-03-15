@@ -52,9 +52,20 @@ type MealThreadEntry = MealComposerSubmission & {
 
 export default function LogMealRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
-  const session = useMobileSession();
   const routeBabyId = Array.isArray(params.babyId) ? params.babyId[0] : params.babyId;
-  const babyId = routeBabyId ?? session.currentBabyId;
+
+  return <MealChatExperience babyId={routeBabyId} showHomeButton />;
+}
+
+export function MealChatExperience({
+  babyId: explicitBabyId,
+  showHomeButton = false,
+}: {
+  babyId?: string;
+  showHomeButton?: boolean;
+}) {
+  const session = useMobileSession();
+  const babyId = explicitBabyId ?? session.currentBabyId;
 
   const [draft, setDraft] = useState(createMealComposerDraft);
   const [thread, setThread] = useState<MealThreadEntry[]>([]);
@@ -272,12 +283,39 @@ export default function LogMealRoute() {
   }
 
   const homeHref = babyId ? `/?babyId=${encodeURIComponent(babyId)}` : "/";
+  const profileHref = babyId
+    ? `/baby-profile?babyId=${encodeURIComponent(babyId)}`
+    : "/baby-profile";
+  const todayHref = babyId ? `/today?babyId=${encodeURIComponent(babyId)}` : "/today";
+  const summariesHref = babyId
+    ? `/summaries?babyId=${encodeURIComponent(babyId)}`
+    : "/summaries";
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.heroEyebrow}>Meal logging</Text>
-      <Text style={styles.title}>{model.title}</Text>
-      <Text style={styles.subtitle}>{model.subtitle}</Text>
+      <Text style={styles.title}>Chat with AI Baby</Text>
+      <Text style={styles.subtitle}>
+        Send a meal note, a photo, or both together and let the assistant turn it into a feeding record.
+      </Text>
+
+      <View style={styles.entryShortcutRow}>
+        <Link asChild href={profileHref}>
+          <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
+            <Text style={styles.entryShortcutText}>Profile</Text>
+          </Pressable>
+        </Link>
+        <Link asChild href={todayHref}>
+          <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
+            <Text style={styles.entryShortcutText}>Today</Text>
+          </Pressable>
+        </Link>
+        <Link asChild href={summariesHref}>
+          <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
+            <Text style={styles.entryShortcutText}>Summaries</Text>
+          </Pressable>
+        </Link>
+      </View>
 
       {!babyId ? (
         <View style={styles.warningBanner}>
@@ -660,11 +698,13 @@ export default function LogMealRoute() {
         )}
       </View>
 
-      <Link asChild href={homeHref}>
-        <Pressable accessibilityRole="button" style={styles.homeButton}>
-          <Text style={styles.homeButtonText}>Back to app home</Text>
-        </Pressable>
-      </Link>
+      {showHomeButton ? (
+        <Link asChild href={homeHref}>
+          <Pressable accessibilityRole="button" style={styles.homeButton}>
+            <Text style={styles.homeButtonText}>Back to chat home</Text>
+          </Pressable>
+        </Link>
+      ) : null}
     </ScrollView>
   );
 }
@@ -723,6 +763,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: nurseryColors.inkMuted,
+  },
+  entryShortcutRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  entryShortcutChip: {
+    borderRadius: nurseryRadii.pill,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceStrong,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  entryShortcutText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: nurseryColors.primaryStrong,
   },
   warningBanner: {
     gap: 6,
