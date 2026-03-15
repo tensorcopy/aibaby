@@ -33,9 +33,10 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-033 `done` Define weekly summary aggregation logic
 - AIB-034 `done` Build weekly summary generation flow
 - AIB-035 `done` Build summary history view
+- AIB-040 `done` Build the first-pass deterministic age-stage band calculator and repository-managed baseline stage-band definitions
 
 ### Reminders and review
-- AIB-040 `in_progress` Build age-stage calculation logic
+- AIB-040 `done` Build age-stage calculation logic
 - AIB-041 `todo` Define reminder content model and templates
 - AIB-042 `todo` Build scheduled reminder trigger flow
 - AIB-043 `todo` Build 7-day review page
@@ -56,7 +57,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-040 Build age-stage calculation logic
+- No current in-progress tasks
 
 ## Done
 
@@ -91,6 +92,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-033 `done` Define the first-pass weekly summary aggregation rules and output shape
 - AIB-034 `done` Build the first-pass deterministic weekly summary generation flow in `packages/ai`
 - AIB-035 `done` Build summary history view
+- AIB-040 `done` Build the first-pass deterministic age-stage band calculator and repository-managed baseline stage-band definitions
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options

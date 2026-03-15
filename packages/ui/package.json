@@ -5,6 +5,6 @@
   "description": "Shared UI package scaffold placeholder for AI Baby",
   "main": "src/index.ts",
   "scripts": {
-    "test:baby-profile": "node --experimental-strip-types --test src/baby-profile/form.test.ts"
+    "test:baby-profile": "node --experimental-strip-types --test src/baby-profile/*.test.ts"
   }
 }
