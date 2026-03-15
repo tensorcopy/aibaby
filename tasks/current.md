@@ -32,7 +32,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-032 `done` Store and retrieve daily summaries
 - AIB-033 `done` Define weekly summary aggregation logic
 - AIB-034 `done` Build weekly summary generation flow
-- AIB-035 `todo` Build summary history view
+- AIB-035 `in_progress` Build summary history view
 
 ### Reminders and review
 - AIB-040 `todo` Build age-stage calculation logic
@@ -56,7 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-035 Build summary history view
 
 ## Done
 
