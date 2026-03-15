@@ -23,6 +23,10 @@ import DateTimePicker, {
 import type { BabyProfileFormInput } from "@aibaby/ui";
 
 import {
+  nurseryColors,
+  nurseryRadii,
+} from "../src/features/app-shell/nurseryTheme.ts";
+import {
   updateBabyProfileScreenField,
   type BabyProfileScreenReadyState,
   type BabyProfileScreenState,
@@ -141,6 +145,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
 
     return (
       <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.heroEyebrow}>Baby profile</Text>
         <Text style={styles.title}>{chrome.title}</Text>
         <Text style={styles.subtitle}>{chrome.subtitle}</Text>
         <View style={styles.errorBanner}>
@@ -187,6 +192,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.heroEyebrow}>Baby profile</Text>
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
 
@@ -582,44 +588,58 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 24,
     gap: 12,
+    backgroundColor: nurseryColors.canvas,
   },
   loadingText: {
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   container: {
     padding: 20,
     gap: 16,
+    backgroundColor: nurseryColors.canvas,
+  },
+  heroEyebrow: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: nurseryColors.peachStrong,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   subtitle: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   errorBanner: {
-    borderRadius: 14,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#fecaca",
-    backgroundColor: "#fef2f2",
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderColor: nurseryColors.errorLine,
+    backgroundColor: nurseryColors.errorTint,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
   },
   errorBannerText: {
-    color: "#b91c1c",
+    color: nurseryColors.errorText,
     fontSize: 14,
     lineHeight: 20,
   },
   sectionGroup: {
     gap: 12,
+    borderRadius: nurseryRadii.card,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surface,
+    padding: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   fieldGroup: {
     gap: 8,
@@ -627,7 +647,7 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   dateInputRow: {
     flexDirection: "row",
@@ -636,17 +656,17 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    borderRadius: 12,
+    borderColor: nurseryColors.line,
+    borderRadius: nurseryRadii.field,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
-    color: "#0f172a",
-    backgroundColor: "#ffffff",
+    color: nurseryColors.ink,
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   textInputInvalid: {
-    borderColor: "#dc2626",
-    backgroundColor: "#fef2f2",
+    borderColor: nurseryColors.errorLine,
+    backgroundColor: nurseryColors.errorTint,
   },
   dateInput: {
     flex: 1,
@@ -662,43 +682,43 @@ const styles = StyleSheet.create({
   },
   choiceRowInvalid: {
     borderWidth: 1,
-    borderColor: "#fecaca",
-    borderRadius: 12,
+    borderColor: nurseryColors.errorLine,
+    borderRadius: nurseryRadii.field,
     padding: 8,
-    backgroundColor: "#fef2f2",
+    backgroundColor: nurseryColors.errorTint,
   },
   choiceChip: {
-    borderRadius: 999,
+    borderRadius: nurseryRadii.pill,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
+    borderColor: nurseryColors.line,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: "#ffffff",
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   choiceChipInvalid: {
-    borderColor: "#dc2626",
-    backgroundColor: "#ffffff",
+    borderColor: nurseryColors.errorLine,
+    backgroundColor: nurseryColors.surfaceStrong,
   },
   choiceChipSelected: {
-    borderColor: "#2563eb",
-    backgroundColor: "#dbeafe",
+    borderColor: nurseryColors.primary,
+    backgroundColor: nurseryColors.primaryTint,
   },
   choiceChipText: {
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   choiceChipSelectedText: {
-    color: "#1d4ed8",
+    color: nurseryColors.primaryStrong,
     fontWeight: "600",
   },
   errorText: {
-    color: "#b91c1c",
+    color: nurseryColors.errorText,
     fontSize: 13,
   },
   datePickerButton: {
-    borderRadius: 12,
+    borderRadius: nurseryRadii.field,
     borderWidth: 1,
-    borderColor: "#93c5fd",
-    backgroundColor: "#eff6ff",
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.primaryTint,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -706,37 +726,37 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   datePickerButtonText: {
-    color: "#1d4ed8",
+    color: nurseryColors.primaryStrong,
     fontWeight: "600",
   },
   hintText: {
-    color: "#64748b",
+    color: nurseryColors.inkMuted,
     fontSize: 13,
   },
   status: {
-    color: "#166534",
+    color: nurseryColors.sageStrong,
     fontSize: 14,
   },
   datePickerCard: {
     gap: 12,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    borderRadius: 16,
-    backgroundColor: "#ffffff",
-    padding: 14,
+    borderColor: nurseryColors.line,
+    borderRadius: nurseryRadii.card,
+    backgroundColor: nurseryColors.surfaceStrong,
+    padding: 18,
   },
   datePickerTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#0f172a",
+    fontSize: 16,
+    fontWeight: "700",
+    color: nurseryColors.ink,
   },
   datePickerSubtitle: {
-    color: "#475569",
+    color: nurseryColors.inkMuted,
     fontSize: 13,
     lineHeight: 18,
   },
   datePickerPreview: {
-    color: "#0f172a",
+    color: nurseryColors.ink,
     fontSize: 13,
     fontWeight: "600",
   },
@@ -754,14 +774,14 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   datePickerCancelButton: {
-    backgroundColor: "#e2e8f0",
+    backgroundColor: nurseryColors.surfaceMuted,
   },
   datePickerCancelButtonText: {
-    color: "#0f172a",
+    color: nurseryColors.ink,
     fontWeight: "600",
   },
   datePickerConfirmButton: {
-    backgroundColor: "#2563eb",
+    backgroundColor: nurseryColors.primary,
   },
   datePickerConfirmButtonText: {
     color: "#ffffff",
@@ -770,25 +790,25 @@ const styles = StyleSheet.create({
   retryButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#e2e8f0",
+    borderRadius: nurseryRadii.button,
+    paddingVertical: 16,
+    backgroundColor: nurseryColors.surfaceMuted,
     gap: 8,
   },
   retryButtonDisabled: {
     opacity: 0.8,
   },
   retryButtonText: {
-    color: "#0f172a",
+    color: nurseryColors.ink,
     fontSize: 16,
     fontWeight: "700",
   },
   submitButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#2563eb",
+    borderRadius: nurseryRadii.button,
+    paddingVertical: 18,
+    backgroundColor: nurseryColors.primary,
   },
   submitButtonDisabled: {
     opacity: 0.7,

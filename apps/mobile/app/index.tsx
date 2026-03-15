@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import {
+  nurseryColors,
+  nurseryRadii,
+} from "../src/features/app-shell/nurseryTheme.ts";
 import { createMobileHomeProfileSummary } from "../src/features/app-shell/homeProfileSummary.ts";
 import { createMobileRootNavigationModel } from "../src/features/app-shell/rootNavigation.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
@@ -95,14 +99,20 @@ export default function HomeRoute() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{model.title}</Text>
-      <Text style={styles.subtitle}>{model.subtitle}</Text>
+      <View style={styles.heroHeader}>
+        <Text style={styles.heroEyebrow}>Scandinavian Nursery</Text>
+        <Text style={styles.title}>{profileSummary ? "Good evening," : model.title}</Text>
+        <Text style={styles.heroName}>{profileSummary ? profileSummary.title : "AI Baby"}</Text>
+        <Text style={styles.subtitle}>{model.subtitle}</Text>
+      </View>
+
       {model.statusBanner ? (
         <View style={styles.statusBanner}>
           <Text style={styles.statusBannerTitle}>{model.statusBanner.title}</Text>
           <Text style={styles.statusBannerMessage}>{model.statusBanner.message}</Text>
         </View>
       ) : null}
+
       {profileSummary ? (
         <View style={styles.profileCard}>
           <View style={styles.profileCardHeader}>
@@ -122,15 +132,18 @@ export default function HomeRoute() {
           </View>
         </View>
       ) : null}
+
       {profileState.status === "loading" ? (
         <Text style={styles.supportingMessage}>Loading the saved baby profile summary…</Text>
       ) : null}
+
       {profileState.status === "error" ? (
         <View style={styles.errorBanner}>
           <Text style={styles.errorBannerTitle}>Profile summary unavailable</Text>
           <Text style={styles.errorBannerMessage}>{profileState.message}</Text>
         </View>
       ) : null}
+
       <Link asChild href={model.primaryAction.href}>
         <Pressable accessibilityRole="button" style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>{model.primaryAction.label}</Text>
@@ -138,9 +151,9 @@ export default function HomeRoute() {
       </Link>
 
       <View style={styles.quickActionsSection}>
-        <Text style={styles.quickActionsTitle}>Continue with the mobile flow</Text>
+        <Text style={styles.quickActionsTitle}>Continue gently</Text>
         <Text style={styles.quickActionsSubtitle}>
-          Keep the next MVP screens one tap away from the active baby profile.
+          Keep the core baby-care screens one calm tap away from home.
         </Text>
         <View style={styles.quickActionsList}>
           {model.quickActions.map((action) => {
@@ -187,44 +200,60 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 24,
-    gap: 16,
-    backgroundColor: "#f8fafc",
+    gap: 18,
+    backgroundColor: nurseryColors.canvas,
+  },
+  heroHeader: {
+    gap: 6,
+    paddingTop: 6,
+  },
+  heroEyebrow: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    color: nurseryColors.peachStrong,
   },
   title: {
-    fontSize: 30,
+    fontSize: 34,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
+  },
+  heroName: {
+    fontSize: 34,
+    fontWeight: "700",
+    color: nurseryColors.ink,
   },
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   statusBanner: {
     gap: 6,
-    borderRadius: 16,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#86efac",
-    backgroundColor: "#f0fdf4",
-    padding: 16,
+    borderColor: nurseryColors.sage,
+    backgroundColor: nurseryColors.surface,
+    padding: 18,
   },
   statusBannerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#166534",
+    color: nurseryColors.sageStrong,
   },
   statusBannerMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#166534",
+    color: nurseryColors.sageStrong,
   },
   profileCard: {
     gap: 16,
-    borderRadius: 20,
+    borderRadius: 28,
     borderWidth: 1,
-    borderColor: "#bfdbfe",
-    backgroundColor: "#eff6ff",
-    padding: 18,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceStrong,
+    padding: 22,
   },
   profileCardHeader: {
     gap: 4,
@@ -232,119 +261,122 @@ const styles = StyleSheet.create({
   profileEyebrow: {
     fontSize: 12,
     fontWeight: "700",
-    letterSpacing: 0.6,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
-    color: "#1d4ed8",
+    color: nurseryColors.inkMuted,
   },
   profileTitle: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   profileMeta: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   profileDetails: {
     gap: 12,
   },
   profileDetailRow: {
-    gap: 4,
+    gap: 6,
+    borderTopWidth: 1,
+    borderTopColor: nurseryColors.lineSoft,
+    paddingTop: 12,
   },
   profileDetailLabel: {
     fontSize: 12,
     fontWeight: "700",
-    letterSpacing: 0.4,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
-    color: "#475569",
+    color: nurseryColors.peachStrong,
   },
   profileDetailValue: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   supportingMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   errorBanner: {
     gap: 6,
-    borderRadius: 16,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    borderColor: "#fecaca",
-    backgroundColor: "#fef2f2",
-    padding: 16,
+    borderColor: nurseryColors.errorLine,
+    backgroundColor: nurseryColors.errorTint,
+    padding: 18,
   },
   errorBannerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#b91c1c",
+    color: nurseryColors.errorText,
   },
   errorBannerMessage: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#b91c1c",
+    color: nurseryColors.errorText,
   },
   primaryButton: {
-    marginTop: 8,
+    marginTop: 10,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    paddingVertical: 14,
-    backgroundColor: "#2563eb",
+    borderRadius: nurseryRadii.button,
+    paddingVertical: 18,
+    backgroundColor: nurseryColors.primary,
   },
   primaryButtonText: {
     color: "#ffffff",
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "700",
   },
   quickActionsSection: {
-    gap: 8,
-    marginTop: 8,
+    gap: 10,
+    marginTop: 10,
   },
   quickActionsTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   quickActionsSubtitle: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#475569",
+    color: nurseryColors.inkMuted,
   },
   quickActionsList: {
     gap: 12,
-    marginTop: 4,
+    marginTop: 8,
   },
   quickActionCard: {
     gap: 8,
-    borderRadius: 18,
+    borderRadius: nurseryRadii.card,
     borderWidth: 1,
-    padding: 16,
+    padding: 18,
   },
   quickActionCardEnabled: {
-    borderColor: "#cbd5f5",
-    backgroundColor: "#ffffff",
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surface,
   },
   quickActionCardDisabled: {
-    borderColor: "#e2e8f0",
-    backgroundColor: "#f8fafc",
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceMuted,
   },
   quickActionLabel: {
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: "700",
-    color: "#0f172a",
+    color: nurseryColors.ink,
   },
   quickActionDescription: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#334155",
+    color: nurseryColors.inkSoft,
   },
   quickActionMeta: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#475569",
+    color: nurseryColors.primaryStrong,
   },
 });
