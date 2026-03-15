@@ -3,8 +3,8 @@
 First-pass Expo caregiver app shell for AIbaby.
 
 This package now has a runnable Expo Router bootstrap around the implemented
-mobile routes, plus local session env wiring so the app can target the current
-local backend during development.
+mobile routes, plus centralized public-config wiring so the app can target the
+current local backend now and a hosted Supabase-backed stack later.
 
 ## Run locally
 
@@ -23,6 +23,8 @@ Useful scripts:
 
 Session/bootstrap env:
 
+- `EXPO_PUBLIC_SUPABASE_URL`
+- `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 - `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`
 - `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
@@ -69,7 +71,7 @@ The home route now also reloads the active baby profile and surfaces a compact s
 
 It now also exposes stable home quick actions for meal logging, today's timeline, and summary history, with baby-scoped route handoff so the next mobile slices can land on predictable destinations.
 
-This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can bootstrap an owner-scoped current profile and keep the baby profile route pointed at the same session context.
+This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can bootstrap the local session token flow and keep the baby profile route pointed at the same session context.
 
 A future PR can replace this bootstrap with real Supabase session plumbing and richer navigation once auth and additional screens land.
 

@@ -10,7 +10,19 @@ test('handleRequest serves the local web shell home page', async () => {
 
   assert.equal(response.status, 200);
   assert.match(html, /AIbaby Web/);
+  assert.match(html, /Runtime status/);
   assert.match(html, /GET \/health/);
+});
+
+test('handleRequest exposes runtime readiness details from the health route', async () => {
+  const response = await handleRequest(new Request('http://localhost/health'));
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(payload.ok, true);
+  assert.equal(payload.service, 'aibaby-web');
+  assert.equal(payload.runtime.mode, 'local-dev');
+  assert.equal(payload.runtime.supabaseServerConfigured, false);
 });
 
 test('handleRequest mounts an existing API route', async (t) => {

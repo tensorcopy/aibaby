@@ -6,7 +6,8 @@ This guide defines the current local-development baseline for the repository.
 
 The repository now has first-pass runnable mobile and web shells for local
 development. Prisma and Supabase wiring are still not implemented yet, so the
-current flow uses local JSON/blob persistence and owner-scoped dev headers.
+current flow uses local JSON/blob persistence and a local bearer session-token
+bootstrap for mobile-to-web auth.
 
 ## Prerequisites
 
@@ -90,6 +91,8 @@ The repository root `.env.example` should define placeholders for:
 - `TRIGGER_SECRET_KEY`
 
 Not every variable is used yet. The goal is to standardize names before implementation expands.
+The mobile and web shells now both read from centralized env helpers so this
+contract is the single source of truth for future Supabase/bootstrap work.
 
 ## Working rules for local env files
 
@@ -131,6 +134,8 @@ must point at your computer's LAN IP instead of `127.0.0.1`.
 For the full first-pass local walkthrough, follow `docs/local-e2e-flow.md`.
 
 For regression checks after local changes, follow `docs/smoke-checklist.md`.
+
+For the next hosted path beyond local development, follow `docs/deployment-plan.md`.
 
 ## Follow-up work expected after this doc
 

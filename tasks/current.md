@@ -58,6 +58,18 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-069 `done` Promote the loaded current baby profile into the mobile session so home quick actions activate after auth-only bootstrap
 - AIB-070 `done` Stabilize the mobile baby-profile screen-shell test so it does not fail when the calendar month boundary changes
 
+### Production hardening
+- AIB-080 `todo` Replace the local bearer session token flow with real Supabase auth bootstrap in Expo and backend token validation in web
+- AIB-081 `todo` Add the first real database schema and repository layer for babies, meals, reminders, reports, and export jobs
+- AIB-082 `todo` Replace baby-profile local JSON persistence with the real repository implementation
+- AIB-083 `todo` Replace meal, reminder, report, and export local JSON persistence with the real repository implementation
+- AIB-084 `todo` Replace the local upload blob flow with real storage upload negotiation and persisted asset metadata
+- AIB-085 `todo` Add real environment bootstrap and app configuration for Supabase auth, database access, and storage
+- AIB-086 `todo` Add real migration, seed, and reset commands for the database-backed local/dev stack
+- AIB-087 `todo` Run and document the first authenticated end-to-end smoke pass against the real auth/data/storage stack
+- AIB-088 `done` Define the first hosted deployment plan and environment mapping for moving from the local shell to phone-testable staging
+- AIB-089 `done` Centralize mobile/web runtime env parsing and expose Supabase-ready public config placeholders without changing the current local session bootstrap
+
 ## In Progress
 
 - No current in-progress tasks
@@ -112,6 +124,8 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-068 `done` Stabilize the demo seed baby id so repeated seeding does not break the mobile demo bootstrap
 - AIB-069 `done` Sync the loaded current baby profile id back into the mobile session after auth-scoped home loads
 - AIB-070 `done` Replace the month-boundary-sensitive screen-shell age assertion with a dynamic summary expectation during QA hardening
+- AIB-088 `done` Define the first hosted deployment path across Expo, Vercel, and Supabase, plus the env mapping needed to reach phone-only staging tests
+- AIB-089 `done` Centralize runtime env parsing for Expo and the local web shell so staged Supabase/bootstrap work builds on one repo-managed config contract
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
@@ -120,15 +134,17 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
 - AIB-102 `done` Split stack and data model decisions into dedicated implementation docs
+- AIB-103 `done` Add a three-team product roadmap with independent ownership areas and pick-up-ready work queues
 
 ## Blockers
 
-- No current blockers
+- Production hardening work (`AIB-080` onward) needs Supabase client dependencies and real project environment values; neither is available in this sandbox today
 
 ## Coordination notes
 
 - Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
 - Foundation choices are now documented well enough to start assigning implementation work
-- The web app is now locally runnable through the first-pass Node shell in `apps/web`; a full installed Next.js runtime remains a follow-up if and when we add the dependency
-- Next recommended execution order now: define the next backlog slice
+- The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
+- `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
+- Next recommended execution order now: `AIB-080`, `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

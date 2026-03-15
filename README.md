@@ -19,6 +19,8 @@ This repository follows the accepted stack and boundaries documented in:
 - `docs/obsidian-markdown-compatibility.md`
 - `docs/data-model.md`
 - `docs/local-development.md`
+- `docs/deployment-plan.md`
+- `docs/product-roadmap.md`
 
 ## Repository layout
 
@@ -37,6 +39,8 @@ The current repo is past scaffold-only. It now has:
 - a runnable Expo app shell in `apps/mobile`
 - first-pass local flows for baby profile, meal logging, timeline, summaries,
   reminders, review, and Markdown export
+- centralized mobile/web env parsing for the local shell and future hosted
+  Supabase configuration
 
 Database and auth are still local-dev placeholders; Prisma and Supabase wiring
 have not landed yet.
@@ -51,3 +55,4 @@ have not landed yet.
 - use `npm run dev:web` and `npm run dev:mobile` for the current local shells
 - follow `docs/local-e2e-flow.md` for the first end-to-end local walkthrough
 - use `docs/smoke-checklist.md` for repeatable local regression checks
+- use `docs/deployment-plan.md` for the first hosted deployment path

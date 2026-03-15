@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { getWebRuntimeStatus, readWebRuntimeEnv } from './env.ts';
 
 const routeTable = [
   {
@@ -144,13 +145,14 @@ export async function handleRequest(request) {
   const url = new URL(request.url);
 
   if (request.method === 'GET' && url.pathname === '/') {
-    return buildHtmlResponse(renderHomePage());
+    return buildHtmlResponse(renderHomePage(getWebRuntimeStatus(readWebRuntimeEnv())));
   }
 
   if (request.method === 'GET' && url.pathname === '/health') {
     return Response.json({
       ok: true,
       service: 'aibaby-web',
+      runtime: getWebRuntimeStatus(readWebRuntimeEnv()),
     });
   }
 
@@ -215,7 +217,7 @@ function buildHtmlResponse(html, status = 200) {
   });
 }
 
-function renderHomePage() {
+function renderHomePage(runtimeStatus) {
   const routeItems = routeTable.map((route) => {
     const patternLabel = route.pattern.source
       .replace(/^\^/, '')
@@ -239,12 +241,37 @@ function renderHomePage() {
       p { line-height: 1.6; color: #475569; }
       ul { line-height: 1.8; padding-left: 20px; }
       code { background: #eff6ff; padding: 2px 6px; border-radius: 8px; }
+      .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+      .status-item { border: 1px solid #cbd5e1; border-radius: 14px; padding: 14px; background: #f8fafc; }
+      .status-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin: 0 0 8px; }
+      .status-value { font-size: 18px; font-weight: 700; margin: 0; color: #0f172a; }
     </style>
   </head>
   <body>
     <main>
       <h1>AIbaby Web</h1>
       <p>This first-pass local web shell mounts the current API routes and exposes a simple landing page for development.</p>
+      <div class="card">
+        <strong>Runtime status</strong>
+        <div class="status-grid">
+          <div class="status-item">
+            <p class="status-label">Mode</p>
+            <p class="status-value">${runtimeStatus.mode}</p>
+          </div>
+          <div class="status-item">
+            <p class="status-label">Database</p>
+            <p class="status-value">${runtimeStatus.databaseConfigured ? 'configured' : 'local'}</p>
+          </div>
+          <div class="status-item">
+            <p class="status-label">Supabase</p>
+            <p class="status-value">${runtimeStatus.supabaseServerConfigured ? 'configured' : 'pending'}</p>
+          </div>
+          <div class="status-item">
+            <p class="status-label">Jobs</p>
+            <p class="status-value">${runtimeStatus.jobsConfigured ? 'configured' : 'pending'}</p>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <strong>Health check:</strong> <code>GET /health</code>
       </div>

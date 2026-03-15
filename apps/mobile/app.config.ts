@@ -1,4 +1,5 @@
 import type { ExpoConfig } from "expo/config";
+import { createMobileExpoExtra } from "./src/features/app-shell/publicConfig.ts";
 
 const config: ExpoConfig = {
   name: "AIbaby",
@@ -11,13 +12,7 @@ const config: ExpoConfig = {
   experiments: {
     typedRoutes: false,
   },
-  extra: {
-    aibaby: {
-      apiBaseUrl: process.env.EXPO_PUBLIC_AIBABY_API_BASE_URL ?? null,
-      sessionToken: process.env.EXPO_PUBLIC_AIBABY_SESSION_TOKEN ?? null,
-      currentBabyId: process.env.EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID ?? null,
-    },
-  },
+  extra: createMobileExpoExtra(),
 };
 
 export default config;
