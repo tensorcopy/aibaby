@@ -11,6 +11,7 @@ Planned responsibilities:
 
 Current first-pass implementation:
 
+- curated age-stage resolver in `src/age-stage.js`
 - deterministic daily summary generation contract in `src/daily-summary.js`
 - deterministic weekly summary aggregation in `src/weekly-summary.js`
 
