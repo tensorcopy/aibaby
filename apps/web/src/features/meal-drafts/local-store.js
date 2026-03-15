@@ -75,6 +75,33 @@ async function createDraftMealRecord({ ownerUserId, babyId, sourceMessageId }) {
     trigger_type: "draft_generation",
     payload_json: {
       kind: "draft_meal_record_generation",
+      sourceInput: {
+        messageId: source.message.id,
+        text: source.message.text,
+        quickAction: source.ingestionEvent?.payload_json?.sourceInput?.quickAction ?? null,
+        submittedAt:
+          source.ingestionEvent?.payload_json?.sourceInput?.submittedAt ??
+          source.message.created_at,
+      },
+      structuredOutput: {
+        mealRecord: {
+          mealRecordId,
+          mealType: mealRecord.meal_type,
+          eatenAt: mealRecord.eaten_at,
+          rawText: mealRecord.raw_text,
+          aiSummary: mealRecord.ai_summary,
+          status: mealRecord.status,
+          confidenceScore: mealRecord.confidence_score,
+          requiresConfirmation: mealRecord.requires_confirmation,
+          followUpQuestion: mealRecord.follow_up_question,
+        },
+        mealItems: mealItems.map((item) => ({
+          mealItemId: item.id,
+          foodName: item.food_name,
+          amountText: item.amount_text,
+          confidenceScore: item.confidence_score,
+        })),
+      },
       mealRecordId,
       mealItemIds: mealItems.map((item) => item.id),
     },
@@ -159,6 +186,30 @@ async function confirmDraftMealRecord({ ownerUserId, babyId, mealRecordId, mealT
     trigger_type: "confirmation",
     payload_json: {
       kind: "draft_meal_record_confirmation",
+      sourceInput: {
+        messageId: currentRecord.source_message_id,
+        rawText: currentRecord.raw_text,
+        mealRecordId: normalizedMealRecordId,
+      },
+      structuredOutput: {
+        mealRecord: {
+          mealRecordId: normalizedMealRecordId,
+          mealType,
+          eatenAt: updatedMealRecord.eaten_at,
+          rawText: updatedMealRecord.raw_text,
+          aiSummary: updatedMealRecord.ai_summary,
+          status: nextStatus,
+          confidenceScore: updatedMealRecord.confidence_score,
+          requiresConfirmation: updatedMealRecord.requires_confirmation,
+          followUpQuestion: updatedMealRecord.follow_up_question,
+        },
+        mealItems: updatedItems.map((item) => ({
+          mealItemId: item.id,
+          foodName: item.food_name,
+          amountText: item.amount_text,
+          confidenceScore: item.confidence_score,
+        })),
+      },
       mealRecordId: normalizedMealRecordId,
       mealType,
       status: nextStatus,

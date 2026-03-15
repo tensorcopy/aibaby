@@ -19,7 +19,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-023 `done` Build text-to-record parsing flow
 - AIB-024 `done` Build draft feeding record generation
 - AIB-025 `done` Build confirmation / correction flow for AI-generated records
-- AIB-026 `in_progress` Persist original input plus structured output
+- AIB-026 `done` Persist original input plus structured output
 - AIB-027 `done` Build today's timeline page
 - AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the current mobile landing screen with a chat-first AI assistant entry route
@@ -56,7 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-026 Persist original input plus structured output
+- No current in-progress tasks
 
 ## Done
 
@@ -81,6 +81,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-022 `done` Build the image upload negotiation, direct-storage handoff, and mobile upload completion flow
 - AIB-023 `done` Build the first-pass text-only parsing flow that classifies meal type and food items and returns a candidate record preview
 - AIB-024 `done` Build the first-pass draft feeding record generation flow from parsed text submissions and persist draft meal records plus meal items
+- AIB-026 `done` Persist original input plus structured output
 - AIB-027 `done` Build the first-pass web today timeline page and manual test shell on top of the local-dev API routes
 - AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the default mobile entry route with the chat-first AI meal logging surface and in-thread navigation shortcuts

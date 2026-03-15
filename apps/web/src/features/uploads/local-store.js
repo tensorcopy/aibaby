@@ -61,6 +61,29 @@ async function createUploadNegotiation({ ownerUserId, babyId, files, text, quick
     trigger_type: 'user_message',
     payload_json: {
       kind: 'upload_negotiation',
+      sourceInput: {
+        text: normalizedText ?? null,
+        quickAction: normalizedQuickAction ?? null,
+        files: files.map((file) => ({
+          fileName: file.fileName,
+          mimeType: file.mimeType,
+          byteSize: file.byteSize,
+          width: file.width ?? null,
+          height: file.height ?? null,
+        })),
+      },
+      structuredOutput: {
+        messageType: normalizedText ? 'user_mixed' : 'user_image',
+        mediaAssets: mediaAssets.map((asset) => ({
+          assetId: asset.id,
+          fileName: asset.file_name,
+          mimeType: asset.mime_type,
+          byteSize: asset.byte_size,
+          storageBucket: asset.storage_bucket,
+          storagePath: asset.storage_path,
+          uploadStatus: asset.upload_status,
+        })),
+      },
       text: normalizedText ?? null,
       quickAction: normalizedQuickAction ?? null,
       assetIds: mediaAssets.map((asset) => asset.id),
@@ -129,6 +152,36 @@ async function completeUploadNegotiation({ ownerUserId, babyId, messageId, asset
 
   message.ingestion_status = 'parsed';
   message.updated_at = new Date().toISOString();
+  data.ingestionEvents.push({
+    id: buildIngestionEventId(),
+    owner_user_id: normalizedOwnerUserId,
+    baby_id: normalizedBabyId,
+    source_message_id: normalizedMessageId,
+    source_type: 'message',
+    trigger_type: 'upload_completion',
+    payload_json: {
+      kind: 'upload_completion',
+      sourceInput: findSourceInputForMessage(data.ingestionEvents, normalizedMessageId),
+      structuredOutput: {
+        messageType: message.message_type,
+        mediaAssets: mediaAssets.map((asset) => ({
+          assetId: asset.id,
+          fileName: asset.file_name,
+          mimeType: asset.mime_type,
+          byteSize: asset.byte_size,
+          storageBucket: asset.storage_bucket,
+          storagePath: asset.storage_path,
+          uploadStatus: asset.upload_status,
+        })),
+      },
+      assetIds: mediaAssets.map((asset) => asset.id),
+    },
+    processing_status: 'parsed',
+    idempotency_key: `${normalizedMessageId}:upload_completion`,
+    error_text: null,
+    created_at: message.updated_at,
+    updated_at: message.updated_at,
+  });
 
   await writeStore(data);
 
@@ -289,6 +342,18 @@ function normalizeRequiredAssetIds(assetIds) {
   }
 
   return [...new Set(assetIds.map((assetId) => String(assetId).trim()).filter(Boolean))];
+}
+
+function findSourceInputForMessage(ingestionEvents, messageId) {
+  const event = [...ingestionEvents]
+    .reverse()
+    .find(
+      (candidate) =>
+        candidate.source_message_id === messageId &&
+        candidate.payload_json?.sourceInput,
+    );
+
+  return event?.payload_json?.sourceInput ?? null;
 }
 
 function normalizeOptionalString(value) {

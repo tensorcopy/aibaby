@@ -41,6 +41,14 @@ async function parseTextMealSubmission({ ownerUserId, babyId, text, quickAction,
     trigger_type: 'user_message',
     payload_json: {
       kind: 'text_parse',
+      sourceInput: {
+        text: normalizedText,
+        quickAction: quickAction ?? null,
+        submittedAt: submittedAt ?? null,
+      },
+      structuredOutput: {
+        parsedCandidate,
+      },
       quickAction: quickAction ?? null,
       parsedCandidate,
     },
@@ -90,7 +98,9 @@ async function getParsedTextMealSubmission({ ownerUserId, babyId, messageId }) {
         candidate.processing_status === 'parsed',
     );
 
-  const parsedCandidate = ingestionEvent?.payload_json?.parsedCandidate;
+  const parsedCandidate =
+    ingestionEvent?.payload_json?.structuredOutput?.parsedCandidate ??
+    ingestionEvent?.payload_json?.parsedCandidate;
 
   if (!ingestionEvent || !parsedCandidate) {
     throw new NotFoundRouteError('Parsed meal candidate not found for source message');
