@@ -123,6 +123,66 @@ test("loadBabyProfileScreenState loads the explicit baby id through the transpor
   assert.equal(state.babyId, "baby_123");
 });
 
+test("loadBabyProfileScreenState falls back to the owner-scoped current profile when an explicit baby id is stale", async () => {
+  const calls: Array<unknown> = [];
+
+  const state = await loadBabyProfileScreenState({
+    babyId: "baby_missing",
+    auth: { ownerUserId: "user_123" },
+    async executeLoadRequest(args) {
+      calls.push(args.request);
+
+      if (args.request.target === "explicit") {
+        throw new BabyProfileTransportError({
+          message: "Baby profile not found",
+          status: 404,
+          payload: { error: "Baby profile not found" },
+        });
+      }
+
+      return profile;
+    },
+  });
+
+  assert.deepEqual(calls, [
+    {
+      method: "GET",
+      path: "/api/babies/baby_missing",
+      target: "explicit",
+      babyId: "baby_missing",
+    },
+    {
+      method: "GET",
+      path: "/api/babies",
+      target: "current",
+    },
+  ]);
+  assert.equal(state.status, "ready");
+  assert.equal(state.loadTarget, "current");
+  assert.equal(state.babyId, "baby_123");
+  assert.equal(state.form.mode, "edit");
+});
+
+test("loadBabyProfileScreenState falls back to create mode when both explicit and current profiles are missing", async () => {
+  const state = await loadBabyProfileScreenState({
+    babyId: "baby_missing",
+    defaultTimezone: "America/Los_Angeles",
+    async executeLoadRequest() {
+      throw new BabyProfileTransportError({
+        message: "Baby profile not found",
+        status: 404,
+        payload: { error: "Baby profile not found" },
+      });
+    },
+  });
+
+  assert.equal(state.status, "ready");
+  assert.equal(state.loadTarget, "current");
+  assert.equal(state.babyId, undefined);
+  assert.equal(state.form.mode, "create");
+  assert.equal(state.form.values.timezone, "America/Los_Angeles");
+});
+
 test("updateBabyProfileScreenField keeps the derived age summary in sync", () => {
   const nextState = updateBabyProfileScreenField(
     createBabyProfileScreenState(),
@@ -284,7 +344,15 @@ test("createBabyProfileScreenErrorState captures the failed load message inline"
 test("loadBabyProfileScreenState returns an inline error state when an explicit profile load fails", async () => {
   const state = await loadBabyProfileScreenState({
     babyId: "baby_123",
-    async executeLoadRequest() {
+    async executeLoadRequest({ request }) {
+      if (request.target === "explicit") {
+        throw new BabyProfileTransportError({
+          message: "Baby profile not found",
+          status: 404,
+          payload: { error: "Baby profile not found" },
+        });
+      }
+
       throw new BabyProfileTransportError({
         message: "Request timed out",
         status: 504,

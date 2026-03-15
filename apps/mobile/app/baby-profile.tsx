@@ -136,12 +136,16 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
   }
 
   if (screenModel.kind === "error") {
+    const homeHref = createMobileHomeHref({
+      babyId,
+    });
     const chrome = createBabyProfileRouteErrorChrome({
       title: screenModel.title,
       subtitle: screenModel.subtitle,
       errorMessage: screenModel.errorMessage,
       retryLabel: screenModel.retryLabel,
       retryDisabled: screenModel.retryDisabled,
+      homeHref,
     });
 
     return (
@@ -166,6 +170,13 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
           ) : null}
           <Text style={styles.retryButtonText}>{chrome.retryLabel}</Text>
         </Pressable>
+        <Link asChild href={chrome.dismissHref}>
+          <Pressable accessibilityRole="button" style={styles.errorBannerDismissButton}>
+            <Text style={styles.errorBannerDismissButtonText}>
+              {chrome.dismissLabel}
+            </Text>
+          </Pressable>
+        </Link>
       </ScrollView>
     );
   }

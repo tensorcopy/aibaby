@@ -30,6 +30,7 @@ test("createBabyProfileRouteErrorChrome keeps the retry button disabled and labe
       errorMessage: "Request timed out",
       retryLabel: "Retrying…",
       retryDisabled: true,
+      homeHref: "/?babyId=baby_123",
     }),
     {
       kind: "error",
@@ -39,6 +40,8 @@ test("createBabyProfileRouteErrorChrome keeps the retry button disabled and labe
       retryLabel: "Retrying…",
       retryDisabled: true,
       showRetrySpinner: true,
+      dismissLabel: "Back to AI Baby",
+      dismissHref: "/?babyId=baby_123",
     },
   );
 });

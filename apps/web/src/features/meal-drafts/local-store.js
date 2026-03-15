@@ -4,8 +4,9 @@ const path = require("node:path");
 
 const { NotFoundRouteError, UnauthorizedRouteError } = require("../baby-profile/errors");
 const { getParsedTextMealSubmission } = require("../text-meal/local-store");
+const { resolveWebDevDataPath } = require("../dev-data-path");
 
-const defaultDataFilePath = path.resolve(__dirname, "../../../.data/meal-drafts.json");
+const defaultDataFilePath = resolveWebDevDataPath("meal-drafts.json");
 
 async function createDraftMealRecord({ ownerUserId, babyId, sourceMessageId }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);

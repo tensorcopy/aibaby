@@ -167,6 +167,31 @@ export async function loadBabyProfileScreenState({
     const profile = await executeLoadRequest({ request, auth, apiBaseUrl });
     return createBabyProfileScreenState(profile, request.target);
   } catch (error) {
+    if (request.target === "explicit" && isNotFoundTransportError(error)) {
+      try {
+        const fallbackRequest = toLoadRequest();
+        const profile = await executeLoadRequest({
+          request: fallbackRequest,
+          auth,
+          apiBaseUrl,
+        });
+
+        return createBabyProfileScreenState(profile, fallbackRequest.target);
+      } catch (fallbackError) {
+        if (isNotFoundTransportError(fallbackError)) {
+          return createBabyProfileScreenState(undefined, "current", {
+            defaultTimezone,
+          });
+        }
+
+        return createBabyProfileScreenErrorState({
+          babyId: request.babyId,
+          loadTarget: request.target,
+          error: fallbackError,
+        });
+      }
+    }
+
     if (request.target === "current" && isNotFoundTransportError(error)) {
       return createBabyProfileScreenState(undefined, request.target, {
         defaultTimezone,

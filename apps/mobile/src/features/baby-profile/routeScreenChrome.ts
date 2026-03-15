@@ -13,6 +13,8 @@ export type BabyProfileRouteErrorChrome = {
   retryLabel: string;
   retryDisabled: boolean;
   showRetrySpinner: boolean;
+  dismissLabel: string;
+  dismissHref: string;
 };
 
 export type BabyProfileRouteRequestErrorBanner = {
@@ -80,12 +82,14 @@ export function createBabyProfileRouteErrorChrome({
   errorMessage,
   retryLabel,
   retryDisabled,
+  homeHref,
 }: {
   title: string;
   subtitle: string;
   errorMessage: string;
   retryLabel: string;
   retryDisabled: boolean;
+  homeHref: string;
 }): BabyProfileRouteErrorChrome {
   return {
     kind: "error",
@@ -95,6 +99,8 @@ export function createBabyProfileRouteErrorChrome({
     retryLabel,
     retryDisabled,
     showRetrySpinner: retryDisabled,
+    dismissLabel: "Back to AI Baby",
+    dismissHref: homeHref,
   };
 }
 
