@@ -14,6 +14,8 @@ async function createUploadPresignAction({ ownerUserId, body, requestUrl, create
   const result = await createUploadNegotiation({
     ownerUserId,
     babyId: request.babyId,
+    text: request.text,
+    quickAction: request.quickAction,
     files: request.files,
   });
 

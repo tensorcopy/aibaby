@@ -23,7 +23,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-027 `done` Build today's timeline page
 - AIB-028 `todo` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the current mobile landing screen with a chat-first AI assistant entry route
-- AIB-057 `in_progress` Support a single mixed-send composer action that submits photos and text together as one conversational message
+- AIB-057 `done` Support a single mixed-send composer action that submits photos and text together as one conversational message
 - AIB-058 `todo` Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
 
 ### Summaries
@@ -56,7 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-057 Support a single mixed-send composer action that submits photos and text together as one conversational message
+- No current in-progress tasks
 
 ## Done
 
@@ -94,6 +94,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-053 `done` Define the canonical YAML frontmatter field set for exported notes
 - AIB-055 `done` Define the Scandinavian Nursery visual direction for AI Baby, including color, typography, spacing, and screen-level mockups for home, baby profile, and meal logging
 - AIB-056 `done` Apply the Scandinavian Nursery visual direction to the mobile home, baby profile, and log meal MVP screens
+- AIB-057 `done` Support a single mixed-send composer action that submits photos and text together as one conversational message
 - AIB-059 `done` Define the end-to-end MVP UX blueprint covering chat, profile, timeline, summaries, reminders, review pages, state behavior, and navigation before further feature implementation
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
