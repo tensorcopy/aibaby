@@ -4,8 +4,9 @@ const path = require('node:path');
 
 const { NotFoundRouteError, UnauthorizedRouteError } = require('../baby-profile/errors');
 const { parseTextMealInput } = require('../../../../../packages/ai/src/text-meal-parser.js');
+const { resolveWebDevDataPath } = require('../dev-data-path');
 
-const defaultDataFilePath = path.resolve(__dirname, '../../../.data/text-meal-submissions.json');
+const defaultDataFilePath = resolveWebDevDataPath('text-meal-submissions.json');
 
 async function parseTextMealSubmission({ ownerUserId, babyId, text, quickAction, submittedAt }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);

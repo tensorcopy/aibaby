@@ -246,6 +246,15 @@ export function MealChatExperience({
   const summariesHref = babyId
     ? `/summaries?babyId=${encodeURIComponent(babyId)}`
     : "/summaries";
+  const review7DayHref = babyId
+    ? `/review-7-day?babyId=${encodeURIComponent(babyId)}`
+    : "/review-7-day";
+  const review30DayHref = babyId
+    ? `/review-30-day?babyId=${encodeURIComponent(babyId)}`
+    : "/review-30-day";
+  const remindersHref = babyId
+    ? `/reminders?babyId=${encodeURIComponent(babyId)}`
+    : "/reminders";
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
@@ -269,6 +278,21 @@ export function MealChatExperience({
         <Link asChild href={summariesHref}>
           <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
             <Text style={styles.entryShortcutText}>Summaries</Text>
+          </Pressable>
+        </Link>
+        <Link asChild href={review7DayHref}>
+          <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
+            <Text style={styles.entryShortcutText}>7-day review</Text>
+          </Pressable>
+        </Link>
+        <Link asChild href={review30DayHref}>
+          <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
+            <Text style={styles.entryShortcutText}>30-day review</Text>
+          </Pressable>
+        </Link>
+        <Link asChild href={remindersHref}>
+          <Pressable accessibilityRole="button" style={styles.entryShortcutChip}>
+            <Text style={styles.entryShortcutText}>Reminders</Text>
           </Pressable>
         </Link>
       </View>

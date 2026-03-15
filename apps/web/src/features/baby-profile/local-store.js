@@ -3,8 +3,9 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 
 const { NotFoundRouteError, UnauthorizedRouteError } = require('./errors');
+const { resolveWebDevDataPath } = require('../dev-data-path');
 
-const defaultDataFilePath = path.resolve(__dirname, '../../../.data/baby-profiles.json');
+const defaultDataFilePath = resolveWebDevDataPath('baby-profiles.json');
 
 async function insertBabyProfile(insert) {
   const data = await readStore();

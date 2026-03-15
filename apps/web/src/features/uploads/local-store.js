@@ -4,9 +4,10 @@ const path = require('node:path');
 
 const { ConflictRouteError } = require('./errors');
 const { NotFoundRouteError, UnauthorizedRouteError } = require('../baby-profile/errors');
+const { resolveWebDevDataPath } = require('../dev-data-path');
 
-const defaultDataFilePath = path.resolve(__dirname, '../../../.data/uploads.json');
-const defaultUploadBlobRootPath = path.resolve(__dirname, '../../../.data/upload-blobs');
+const defaultDataFilePath = resolveWebDevDataPath('uploads.json');
+const defaultUploadBlobRootPath = resolveWebDevDataPath('upload-blobs');
 
 async function createUploadNegotiation({ ownerUserId, babyId, files, text, quickAction }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);

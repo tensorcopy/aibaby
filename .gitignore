@@ -9,6 +9,8 @@ node_modules
 
 .expo
 .next
+.data
+apps/web/.data
 dist
 build
 coverage
