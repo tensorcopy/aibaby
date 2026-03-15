@@ -109,6 +109,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Coordination notes
 
 - Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
+- Unless explicitly instructed to stop, agents should continue to pick up the next appropriate task after finishing and merging the current one
 - Foundation choices are now documented well enough to start assigning implementation work
 - The initial repo scaffold exists, but it is intentionally non-runnable until follow-up PRs add actual Expo, Next.js, Prisma, and Supabase setup
 - Next best parallel workstreams: app scaffold, auth wiring, media upload path, and daily-summary rules

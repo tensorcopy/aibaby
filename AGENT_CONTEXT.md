@@ -19,6 +19,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - Update repo state files when product intent, architecture, or task status changes
 - Keep commits small and scoped
 - Put all meaningful progress in commits and pull requests
+- Unless explicitly instructed to stop, continue to pick up the next appropriate task after finishing the current one
 
 ## Current project status
 
@@ -41,6 +42,7 @@ This repository is the shared source of truth for product intent, architecture, 
 3. Confirm the active task in `tasks/current.md`
 4. Do the implementation work on a non-`main` branch
 5. Update task status and relevant context files in that same branch before finishing
+6. After finishing and merging the current task, continue directly into the next appropriate task unless instructed otherwise
 
 PR title rule:
 - include the task ID in every task-related PR title using the format `type(AIB-123): short description`

@@ -34,6 +34,8 @@ If the PR changes project intent, architecture, or task status, update the relev
 
 When an agent picks up a task from `tasks/current.md`, it should do the implementation work in a single PR and update that task's status in the same branch.
 
+Unless explicitly instructed to stop, an agent should continue by picking up the next appropriate task after the current task is merged.
+
 Do not open a separate claim PR just to mark a task as `in_progress`.
 
 For task-related implementation PRs, include the claimed task ID in the PR title. Example:
