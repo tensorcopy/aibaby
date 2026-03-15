@@ -2,6 +2,7 @@ import {
   buildOwnerScopedHeaders,
   type BabyProfileAuth,
 } from "../baby-profile/transport.ts";
+import { resolveApiUrl } from "../app-shell/apiUrl.ts";
 
 import type { MealComposerAttachment, MealComposerSubmission } from "./composer.ts";
 
@@ -114,17 +115,6 @@ export async function executeMealUploadFlow({
     messageId: completeResponse.messageId,
     uploadedAssets: completeResponse.uploadedAssets,
   };
-}
-
-export function resolveApiUrl(path: string, apiBaseUrl?: string): string {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const normalizedBaseUrl = apiBaseUrl?.trim();
-
-  if (!normalizedBaseUrl) {
-    return normalizedPath;
-  }
-
-  return new URL(normalizedPath, normalizedBaseUrl.endsWith("/") ? normalizedBaseUrl : `${normalizedBaseUrl}/`).toString();
 }
 
 export async function createUploadBodyFromAttachmentUri(

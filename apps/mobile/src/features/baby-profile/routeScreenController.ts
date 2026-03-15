@@ -17,17 +17,24 @@ export function createBabyProfileRouteScreenLoadState(
 export async function loadBabyProfileRouteScreenState({
   babyId,
   auth,
+  apiBaseUrl,
   defaultTimezone,
   setCurrentBabyId,
   loadScreenState = loadBabyProfileScreenState,
 }: {
   babyId?: string;
   auth?: BabyProfileAuth;
+  apiBaseUrl?: string;
   defaultTimezone?: string;
   setCurrentBabyId?: MobileSessionCurrentBabyIdSetter;
   loadScreenState?: typeof loadBabyProfileScreenState;
 }): Promise<BabyProfileScreenState> {
-  const nextState = await loadScreenState({ babyId, auth, defaultTimezone });
+  const nextState = await loadScreenState({
+    babyId,
+    auth,
+    apiBaseUrl,
+    defaultTimezone,
+  });
 
   if (nextState.status === "ready" && nextState.babyId) {
     setCurrentBabyId?.(nextState.babyId);
@@ -49,15 +56,17 @@ export function createBabyProfileRouteScreenSavingState(
 export async function saveBabyProfileRouteScreenState({
   state,
   auth,
+  apiBaseUrl,
   setCurrentBabyId,
   saveScreenState = saveBabyProfileScreenState,
 }: {
   state: BabyProfileScreenReadyState;
   auth?: BabyProfileAuth;
+  apiBaseUrl?: string;
   setCurrentBabyId?: MobileSessionCurrentBabyIdSetter;
   saveScreenState?: typeof saveBabyProfileScreenState;
 }): Promise<BabyProfileScreenReadyState> {
-  const nextState = await saveScreenState({ state, auth });
+  const nextState = await saveScreenState({ state, auth, apiBaseUrl });
 
   if (nextState.babyId) {
     setCurrentBabyId?.(nextState.babyId);

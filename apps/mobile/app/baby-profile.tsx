@@ -95,6 +95,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
     void loadBabyProfileRouteScreenState({
       babyId,
       auth,
+      apiBaseUrl: session.apiBaseUrl,
       defaultTimezone,
       setCurrentBabyId: session.setCurrentBabyId,
     }).then((nextState) => {
@@ -175,6 +176,7 @@ export function BabyProfileRouteScreen({ babyId }: { babyId?: string }) {
       const saved = await saveBabyProfileRouteScreenState({
         state: savingState,
         auth,
+        apiBaseUrl: session.apiBaseUrl,
         setCurrentBabyId: session.setCurrentBabyId,
       });
       setState(saved);

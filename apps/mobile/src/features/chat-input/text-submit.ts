@@ -4,7 +4,7 @@ import {
 } from '../baby-profile/transport.ts';
 
 import type { MealComposerSubmission } from './composer.ts';
-import { resolveApiUrl } from './upload.ts';
+import { resolveApiUrl } from "../app-shell/apiUrl.ts";
 
 export type TextMealParseResult = {
   messageId: string;

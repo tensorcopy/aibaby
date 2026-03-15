@@ -104,6 +104,7 @@ test("loadBabyProfileRouteScreenState forwards the device timezone for create-mo
     {
       babyId: undefined,
       auth: undefined,
+      apiBaseUrl: undefined,
       defaultTimezone: "America/Los_Angeles",
     },
   ]);

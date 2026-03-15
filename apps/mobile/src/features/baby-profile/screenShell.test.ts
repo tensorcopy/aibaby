@@ -116,6 +116,7 @@ test("loadBabyProfileScreenState loads the explicit baby id through the transpor
         babyId: "baby_123",
       },
       auth: { ownerUserId: "user_123" },
+      apiBaseUrl: undefined,
     },
   ]);
   assert.equal(state.form.mode, "edit");
@@ -178,6 +179,7 @@ test("saveBabyProfileScreenState creates a profile and switches the screen into 
         },
       },
       auth: { ownerUserId: "user_123" },
+      apiBaseUrl: undefined,
     },
   ]);
   assert.equal(saved.form.mode, "edit");
@@ -244,6 +246,7 @@ test("saveBabyProfileScreenState PATCHes only changed fields for edit mode", asy
         },
       },
       auth: undefined,
+      apiBaseUrl: undefined,
     },
   ]);
   assert.equal(saved.form.mode, "edit");

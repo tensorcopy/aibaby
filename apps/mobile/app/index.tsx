@@ -57,6 +57,7 @@ export default function HomeRoute() {
     executeBabyProfileLoadRequest({
       request: toBabyProfileLoadRequest(babyId),
       auth: session.auth,
+      apiBaseUrl: session.apiBaseUrl,
     })
       .then((profile) => {
         if (!cancelled) {

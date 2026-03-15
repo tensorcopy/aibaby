@@ -2,6 +2,7 @@ import type { BabyProfilePayload } from "@aibaby/ui";
 
 import type { BabyProfileLoadRequest } from "./loadRequest.ts";
 import type { BabyProfileSubmitRequest } from "./submitRequest.ts";
+import { resolveApiUrl } from "../app-shell/apiUrl.ts";
 
 export type BabyProfileAuth =
   | string
@@ -41,15 +42,17 @@ export async function executeBabyProfileLoadRequest({
   request,
   fetchImpl = fetch,
   auth,
+  apiBaseUrl,
 }: {
   request: BabyProfileLoadRequest;
   fetchImpl?: typeof fetch;
   auth?: BabyProfileAuth;
+  apiBaseUrl?: string;
 }): Promise<BabyProfileResponse> {
   return requestBabyProfileJson({
     fetchImpl,
     auth,
-    url: request.path,
+    url: resolveApiUrl(request.path, apiBaseUrl),
     method: request.method,
   });
 }
@@ -58,15 +61,17 @@ export async function executeBabyProfileSubmitRequest({
   request,
   fetchImpl = fetch,
   auth,
+  apiBaseUrl,
 }: {
   request: BabyProfileSubmitRequest;
   fetchImpl?: typeof fetch;
   auth?: BabyProfileAuth;
+  apiBaseUrl?: string;
 }): Promise<BabyProfileResponse> {
   return requestBabyProfileJson({
     fetchImpl,
     auth,
-    url: request.path,
+    url: resolveApiUrl(request.path, apiBaseUrl),
     method: request.method,
     body: request.body,
   });

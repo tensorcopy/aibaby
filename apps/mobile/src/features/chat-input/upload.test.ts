@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { executeMealUploadFlow, resolveApiUrl } from "./upload.ts";
+import { resolveApiUrl } from "../app-shell/apiUrl.ts";
+import { executeMealUploadFlow } from "./upload.ts";
 
 test("resolveApiUrl prefixes configured mobile API hosts", () => {
   assert.equal(resolveApiUrl("/api/uploads/presign"), "/api/uploads/presign");
