@@ -19,7 +19,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-023 `done` Build text-to-record parsing flow
 - AIB-024 `done` Build draft feeding record generation
 - AIB-025 `done` Build confirmation / correction flow for AI-generated records
-- AIB-026 `todo` Persist original input plus structured output
+- AIB-026 `in_progress` Persist original input plus structured output
 - AIB-027 `done` Build today's timeline page
 - AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
 - AIB-029 `done` Replace the current mobile landing screen with a chat-first AI assistant entry route
@@ -56,7 +56,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-026 Persist original input plus structured output
 
 ## Done
 
