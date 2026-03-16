@@ -31,3 +31,21 @@ test("createMobileFeatureScreenModel explains missing baby context for downstrea
   assert.match(model.statusMessage, /Create a baby profile first/);
   assert.equal(model.homeHref, "/");
 });
+
+test("createMobileFeatureScreenModel reserves a stable growth route for future history and charts", () => {
+  assert.deepEqual(
+    createMobileFeatureScreenModel({
+      feature: "growth",
+      babyId: " baby_123 ",
+    }),
+    {
+      title: "Growth",
+      subtitle:
+        "This route is reserved for future weight, height, and chart cards once growth entries land.",
+      statusTitle: "Growth shell ready",
+      statusMessage:
+        "The home quick action can land here now while growth history and chart work ship in later Team 1 slices.",
+      homeHref: "/?babyId=baby_123",
+    },
+  );
+});

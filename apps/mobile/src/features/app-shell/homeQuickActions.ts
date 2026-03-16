@@ -1,4 +1,10 @@
-export type MobileHomeQuickActionKey = "log-meal" | "today-timeline" | "summary-history";
+export type MobileHomeQuickActionKey =
+  | "log-meal"
+  | "today-timeline"
+  | "review-window"
+  | "reminders"
+  | "summary-history"
+  | "growth";
 
 export type MobileHomeQuickAction = {
   key: MobileHomeQuickActionKey;
@@ -27,10 +33,31 @@ export function createMobileHomeQuickActions(babyId?: string): MobileHomeQuickAc
       enabled: Boolean(normalizedBabyId),
     }),
     createQuickAction({
+      key: "review-window",
+      label: "Review",
+      description: "Jump into the 7-day review window to spot trends before drilling into a specific day.",
+      href: createReviewWindowHref(normalizedBabyId),
+      enabled: Boolean(normalizedBabyId),
+    }),
+    createQuickAction({
+      key: "reminders",
+      label: "Reminders",
+      description: "Open the reminder timeline for age-stage guidance and follow-up nudges.",
+      href: createReminderHistoryHref(normalizedBabyId),
+      enabled: Boolean(normalizedBabyId),
+    }),
+    createQuickAction({
       key: "summary-history",
-      label: "Summary history",
-      description: "Open saved daily and weekly summaries for the active baby profile.",
+      label: "Summaries & exports",
+      description: "Review saved summaries and create the latest Markdown export bundle from one place.",
       href: createSummaryHistoryHref(normalizedBabyId),
+      enabled: Boolean(normalizedBabyId),
+    }),
+    createQuickAction({
+      key: "growth",
+      label: "Growth",
+      description: "Hold space for future weight and height tracking without waiting on backend changes.",
+      href: createGrowthHref(normalizedBabyId),
       enabled: Boolean(normalizedBabyId),
     }),
   ];
@@ -44,8 +71,26 @@ export function createTodayTimelineHref(babyId?: string): string {
   return createBabyScopedHref("/today", babyId);
 }
 
+export function createReviewWindowHref(babyId?: string): string {
+  const normalizedBabyId = normalizeBabyId(babyId);
+
+  if (!normalizedBabyId) {
+    return "/review?days=7";
+  }
+
+  return `/review?babyId=${encodeURIComponent(normalizedBabyId)}&days=7`;
+}
+
+export function createReminderHistoryHref(babyId?: string): string {
+  return createBabyScopedHref("/reminders", babyId);
+}
+
 export function createSummaryHistoryHref(babyId?: string): string {
   return createBabyScopedHref("/summaries", babyId);
+}
+
+export function createGrowthHref(babyId?: string): string {
+  return createBabyScopedHref("/growth", babyId);
 }
 
 function createQuickAction({
@@ -85,7 +130,8 @@ function createBabyScopedHref(pathname: string, babyId?: string): string {
     return pathname;
   }
 
-  return `${pathname}?babyId=${encodeURIComponent(normalizedBabyId)}`;
+  const separator = pathname.includes("?") ? "&" : "?";
+  return `${pathname}${separator}babyId=${encodeURIComponent(normalizedBabyId)}`;
 }
 
 function normalizeBabyId(babyId?: string): string {

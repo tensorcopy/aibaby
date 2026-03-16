@@ -15,7 +15,7 @@ test("createMobileRootNavigationModel points first-time users to create baby pro
   assert.equal(model.primaryAction.href, "/baby-profile");
   assert.match(model.subtitle, /Start with a baby profile/);
   assert.equal(model.statusBanner, undefined);
-  assert.equal(model.quickActions.length, 3);
+  assert.equal(model.quickActions.length, 6);
   assert.ok(model.quickActions.every((action) => action.href === undefined));
 });
 
@@ -24,13 +24,16 @@ test("createMobileRootNavigationModel keeps explicit baby profile navigation sta
 
   assert.equal(model.primaryAction.label, "Open baby profile");
   assert.equal(model.primaryAction.href, "/baby-profile?babyId=baby_123");
-  assert.match(model.subtitle, /launch point for logging/);
+  assert.match(model.subtitle, /launch point for logging, review, reminders, and exports/);
   assert.deepEqual(
     model.quickActions.map((action) => action.href),
     [
       "/log-meal?babyId=baby_123",
       "/today?babyId=baby_123",
+      "/review?babyId=baby_123&days=7",
+      "/reminders?babyId=baby_123",
       "/summaries?babyId=baby_123",
+      "/growth?babyId=baby_123",
     ],
   );
 });
