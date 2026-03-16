@@ -5,6 +5,7 @@ export type ReminderHistoryItem = {
   title: string;
   body: string;
   statusLabel: string;
+  detailHref: string;
 };
 
 export type ReminderHistoryScreenModel = {
@@ -54,19 +55,24 @@ export function createReminderHistoryScreenModel({
   const items = reminders
     .filter((reminder) => reminder.babyId === normalizedBabyId)
     .sort((left, right) => right.scheduledFor.localeCompare(left.scheduledFor))
-    .map((reminder) => ({
-      id: reminder.id ?? `reminder:${reminder.scheduledFor}`,
-      scheduledFor: reminder.scheduledFor,
-      stageLabel: formatStageLabel(reminder.ageStageKey),
-      title: reminder.metadata?.title ?? "Age-stage reminder",
-      body: reminder.metadata?.body ?? reminder.renderedText,
-      statusLabel:
-        reminder.notificationStatus === "delivered"
-          ? "Delivered"
-          : reminder.status === "scheduled"
-            ? "Scheduled"
-            : "Saved",
-    }));
+    .map((reminder) => {
+      const id = reminder.id ?? `reminder:${reminder.scheduledFor}`;
+
+      return {
+        id,
+        scheduledFor: reminder.scheduledFor,
+        stageLabel: formatStageLabel(reminder.ageStageKey),
+        title: reminder.metadata?.title ?? "Age-stage reminder",
+        body: reminder.metadata?.body ?? reminder.renderedText,
+        statusLabel:
+          reminder.notificationStatus === "delivered"
+            ? "Delivered"
+            : reminder.status === "scheduled"
+              ? "Scheduled"
+              : "Saved",
+        detailHref: `/reminders/${encodeURIComponent(id)}?babyId=${encodeURIComponent(normalizedBabyId)}`,
+      };
+    });
 
   return {
     title: "Reminders",

@@ -41,15 +41,18 @@ export default function RemindersRoute() {
                 <View style={styles.timelineDot} />
                 <View style={styles.timelineLine} />
               </View>
-              <View style={styles.itemCard}>
-                <View style={styles.itemHeader}>
-                  <Text style={styles.itemDate}>{item.scheduledFor}</Text>
-                  <Text style={styles.itemStatus}>{item.statusLabel}</Text>
-                </View>
-                <Text style={styles.itemStage}>{item.stageLabel}</Text>
-                <Text style={styles.itemTitle}>{item.title}</Text>
-                <Text style={styles.itemBody}>{item.body}</Text>
-              </View>
+              <Link asChild href={item.detailHref}>
+                <Pressable accessibilityRole="button" style={styles.itemCard}>
+                  <View style={styles.itemHeader}>
+                    <Text style={styles.itemDate}>{item.scheduledFor}</Text>
+                    <Text style={styles.itemStatus}>{item.statusLabel}</Text>
+                  </View>
+                  <Text style={styles.itemStage}>{item.stageLabel}</Text>
+                  <Text style={styles.itemTitle}>{item.title}</Text>
+                  <Text style={styles.itemBody}>{item.body}</Text>
+                  <Text style={styles.itemAction}>Open reminder</Text>
+                </Pressable>
+              </Link>
             </View>
           ))}
         </View>
@@ -185,6 +188,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: nurseryColors.inkSoft,
+  },
+  itemAction: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: nurseryColors.primaryStrong,
   },
   homeButton: {
     marginTop: 8,
