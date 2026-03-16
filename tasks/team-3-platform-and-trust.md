@@ -3,10 +3,10 @@
 ## Current State
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
-- State: review_ready
-- Current task: `AIB-085` real environment bootstrap and app configuration for Supabase auth, database access, and storage
-- Next step: commit the verified `AIB-085` slice, then move to `AIB-081` for the first real schema and repository layer
-- Blockers: real project environment values and provider setup are still required for hosted/device validation beyond repo-local tests
+- State: blocked
+- Current task: restack and merge `AIB-085` after PR `#177` hit broad conflicts against current `main`
+- Next step: rebuild or rebase the `AIB-085` slice onto the latest `main`, then re-run the verified web/mobile env test set
+- Blockers: PR `https://github.com/tensorcopy/aibaby/pull/177` is not mergeable because the branch was started from a stale local base and conflicts with newer `main`; real project environment values and provider setup are also still required for hosted/device validation beyond repo-local tests
 - Files: `.env.example`, `apps/mobile/.env.example`, `apps/mobile/app.config.ts`, `apps/mobile/src/features/app-shell/*`, `apps/web/.env.example`, `apps/web/src/features/baby-profile/auth.*`, `apps/web/src/runtime/*`, `docs/local-development.md`, `docs/deployment-plan.md`, `tasks/current.md`
 - Verification: `npm run test:runtime --workspace @aibaby/web`; `npm run test:app-shell --workspace @aibaby/mobile`; `TMPDIR=$PWD/.tmp npm run test:baby-profile-api --workspace @aibaby/web`
 - Last updated: 2026-03-15
@@ -33,3 +33,10 @@
 - Current task: finish integrating the verified `AIB-085` branch under the new commit/PR workflow.
 - Next task: start `AIB-081` once `AIB-085` is committed and merged or any merge blocker is recorded.
 - Blockers: real project environment values are still missing for hosted/device validation.
+
+### 2026-03-15 AIB-085 merge blocker
+
+- Completed: committed `feat(AIB-085): add staged env bootstrap and readiness`, pushed branch `feat/aib-085-env-bootstrap-ws`, and opened PR `#177`.
+- Current task: rebase or rebuild the slice onto current `main` because GitHub cannot create a clean merge commit.
+- Next task: once the branch is restacked and merged, return to `AIB-081`.
+- Blockers: PR `#177` currently conflicts with newer `main` across unrelated files because the branch base predates the new coordination/workflow commits and other recent app changes.

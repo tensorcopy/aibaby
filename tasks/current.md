@@ -141,6 +141,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## Blockers
 
 - Production hardening work from `AIB-081` onward still needs real project environment values and full provider setup. `AIB-080` and `AIB-085` now land the repo-managed auth/bootstrap and env contracts, but device-level validation is still pending outside this sandbox.
+- PR `#177` for `AIB-085` is currently not mergeable because the branch was started from a stale local base and now conflicts broadly with current `main`; the slice needs to be restacked before merge.
 
 ## Coordination notes
 
@@ -149,5 +150,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` now adds repo-managed app variants, env examples, storage bucket names, and hosted-readiness reporting on top of the shared runtime contract
+- `AIB-085` implementation is pushed in PR `#177`, but merge is blocked until the branch is restacked onto current `main`
 - Next recommended execution order now: `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work
