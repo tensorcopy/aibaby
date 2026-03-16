@@ -3,18 +3,19 @@
   "private": true,
   "version": "0.0.0",
   "description": "Initial monorepo scaffold for the AI Baby MVP",
+  "scripts": {
+    "dev:web": "npm run dev --workspace @aibaby/web",
+    "dev:mobile": "npm run dev --workspace @aibaby/mobile",
+    "demo:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/demo-data.mjs seed",
+    "demo:reset": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/demo-data.mjs reset",
+    "demo:session": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/dev-session-token.mjs",
+    "commander:sync": "node scripts/commander-sync.mjs",
+    "test:commander-sync": "node --test scripts/commander-sync.test.mjs",
+    "test": "npm run test:demo-data && npm test --workspaces --if-present",
+    "test:demo-data": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test scripts/demo-data.test.mjs"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "scripts": {
-    "dev:mobile": "npm --workspace @aibaby/mobile run start",
-    "dev:web": "npm --workspace @aibaby/web run dev",
-    "test:mobile": "npm --workspace @aibaby/mobile run test:app-shell && npm --workspace @aibaby/mobile run test:baby-profile-flow && npm --workspace @aibaby/mobile run test:chat-input && npm --workspace @aibaby/mobile run test:summary-history && npm --workspace @aibaby/mobile run test:review && npm --workspace @aibaby/mobile run test:reminders",
-    "test:web": "npm --workspace @aibaby/web run test:baby-profile-api && npm --workspace @aibaby/web run test:timeline-api && npm --workspace @aibaby/web run test:uploads-api && npm --workspace @aibaby/web run test:text-meal-api && npm --workspace @aibaby/web run test:meal-drafts-api"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.2",
-    "typescript": "^5.9.3"
-  }
+  ]
 }
