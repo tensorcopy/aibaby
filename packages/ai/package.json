@@ -8,6 +8,7 @@
     "test:daily-meal-recommendations": "node --test src/daily-meal-recommendations.test.js",
     "test:daily-meal-suggestion-set": "node --test src/daily-meal-suggestion-set.test.js",
     "test:daily-summary": "node --test src/daily-summary.test.js",
+    "test:growth-guidance-placeholder": "node --test src/growth-guidance-placeholder.test.js",
     "test:meal-correction-analytics": "node --test src/meal-correction-analytics.test.js",
     "test:reminder-content": "node --test src/reminder-content.test.js",
     "test:reminder-trigger": "node --test src/reminder-trigger.test.js",

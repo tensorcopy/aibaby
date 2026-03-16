@@ -34,6 +34,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-104 `done` Define the first-pass daily meal recommendation contract and deterministic gap signals for protein, iron-rich foods, vegetable variety, and repeated foods
 - AIB-105 `done` Add recipe-template content and deterministic one-day suggestion-set rendering rules on top of the daily meal recommendation contract
 - AIB-106 `done` Add deterministic correction analytics summarization so repeated parent edits can be grouped by category and food
+- AIB-107 `done` Add growth-aware placeholder guidance that can later consume weight and height entries without making measurement claims
 
 ### Reminders and review
 - AIB-040 `done` Build age-stage calculation logic
@@ -135,6 +136,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-104 `done` Define the first-pass daily meal recommendation contract in `packages/ai`, including deterministic gap signals for protein, iron-rich foods, vegetable variety, and repeated foods
 - AIB-105 `done` Add deterministic one-day suggestion-set rendering in `packages/ai` so future UI surfaces can consume recipe-template content without inventing their own wording rules
 - AIB-106 `done` Add deterministic meal correction analytics summarization in `packages/ai` so future review and guidance surfaces can summarize repeated parent edits by category
+- AIB-107 `done` Add deterministic growth-aware placeholder guidance in `packages/ai` so future UI surfaces can consume weight and height context without implying percentile or diagnostic interpretation
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options

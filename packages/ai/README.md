@@ -15,6 +15,7 @@ Current first-pass implementation:
 - deterministic daily meal recommendation contract in `src/daily-meal-recommendations.js`
 - deterministic one-day suggestion-set rendering in `src/daily-meal-suggestion-set.js`
 - deterministic daily summary generation contract in `src/daily-summary.js`
+- deterministic growth-aware placeholder guidance in `src/growth-guidance-placeholder.js`
 - deterministic meal correction analytics summarization in `src/meal-correction-analytics.js`
 - deterministic reminder content selection in `src/reminder-content.js`
 - deterministic reminder scheduling trigger in `src/reminder-trigger.js`
