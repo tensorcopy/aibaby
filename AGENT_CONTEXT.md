@@ -18,6 +18,7 @@ This repository is the shared source of truth for product intent, architecture, 
 
 - Treat the repository, not chat history, as the authoritative state
 - Pull the latest branch state before starting work
+- Start work in a dedicated git worktree
 - Make changes on a branch, not on `main`
 - Update repo state files when product intent, architecture, or task status changes
 - Keep commits small and scoped
@@ -25,11 +26,12 @@ This repository is the shared source of truth for product intent, architecture, 
 - Work autonomously inside the assigned team boundary and goal
 - Do not expand scope across team boundaries without writing down the dependency first
 - After finishing a task, immediately pick up the next open `todo` task in `tasks/current.md` only if it still fits the assigned team goal and no blocker or redirection exists
+- Do not leave completed or review-ready work only in a local checkout; commit it, push it, and move it through a pull request against `main`
 
 ## Current project status
 
 - Product requirements are captured in `docs/prd.md`
-- Work should still go through branches and PRs, but there is no separate governance workflow or claim-PR requirement
+- Work must go through branches and PRs; `main` is the protected base branch for merges
 - Shared task tracking lives in `tasks/current.md`
 - Architecture is not finalized and is tracked in `docs/architecture.md`
 - A minimal monorepo scaffold now exists for `apps/mobile`, `apps/web`, `packages/db`, `packages/ai`, `packages/ui`, and `content/age-stages`
@@ -122,13 +124,22 @@ Escalate only for:
 1. Pull the latest remote changes
 2. Read the required files in order
 3. Confirm the assigned team lane and goal
-4. Confirm the active task in `tasks/current.md`, or select a matching `Ready now` item from `docs/product-roadmap.md` if no task ID is assigned yet
-5. Update your assigned team file with the current plan, dependencies, and expected files
-6. Do the implementation work on a non-`main` branch
-7. Update task status and relevant context files in that same branch before finishing
+4. Create or switch to a dedicated git worktree and branch for the task
+5. Confirm the active task in `tasks/current.md`, or select a matching `Ready now` item from `docs/product-roadmap.md` if no task ID is assigned yet
+6. Update your assigned team file with the current plan, dependencies, and expected files
+7. Do the implementation work on a non-`main` branch inside that worktree
+8. Update task status and relevant context files in that same branch before finishing
 
 PR title rule:
 - include the task ID in every task-related PR title using the format `type(AIB-123): short description`
+
+## When a slice is ready
+
+- Commit the work on the task branch
+- Push the branch to GitHub
+- Open or update a pull request targeting `main`
+- Merge the pull request to `main` once repository policy allows it
+- After merge, return to the team queue and continue with the next best unblocked task
 
 ## When blocked
 
