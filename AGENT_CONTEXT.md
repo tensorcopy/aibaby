@@ -70,6 +70,26 @@ This repository is the shared source of truth for product intent, architecture, 
 - Teams update only their own team file
 - The commander updates only `tasks/commander.md`
 
+## Commander protocol
+
+- The commander should sync to the latest `main` before coordinating work
+- The commander should read `AGENT_CONTEXT.md`, `tasks/commander.md`, all 3 team log files, and relevant open-task context in `tasks/current.md`
+- The commander should treat repo files and GitHub state as the communication surface, not chat history
+- The commander should refresh `tasks/commander.md` with the latest team snapshot, cross-team dependencies, decisions, and interventions needed
+- The commander should not rewrite team logs except in exceptional cleanup or recovery situations; teams own their own file updates
+- When a team reports a blocker that can be resolved by coordination, the commander should write the resolution or decision into `tasks/commander.md`
+- When a pull request is merge-ready, the commander should merge it promptly or record the blocker preventing merge
+- If a team is idle because of a blocker, the commander should redirect it to the next best unblocked task in its lane and record that decision in `tasks/commander.md`
+
+Commander work cycle:
+1. sync to the latest `main`
+2. read `tasks/commander.md` and all team logs
+3. identify blockers, stale PRs, and cross-team dependencies
+4. update `tasks/commander.md` with current status and decisions
+5. merge ready PRs or record why they cannot merge
+6. redirect blocked teams to the next best unblocked task when appropriate
+7. leave a concise dated summary in `tasks/commander.md`
+
 ## Parallel execution protocol
 
 - Start from the assigned team lane and goal; if no exact task ID is provided, choose the best matching `Ready now` item from `docs/product-roadmap.md`
