@@ -27,6 +27,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - Do not expand scope across team boundaries without writing down the dependency first
 - After finishing a task, immediately pick up the next open `todo` task in `tasks/current.md` only if it still fits the assigned team goal and no blocker or redirection exists
 - Do not leave completed or review-ready work only in a local checkout; commit it, push it, and move it through a pull request against `main`
+- Do not leave pull requests open longer than necessary; merge them promptly or record the concrete blocker preventing merge
 
 ## Current project status
 
@@ -139,6 +140,7 @@ PR title rule:
 - Push the branch to GitHub
 - Open or update a pull request targeting `main`
 - Merge the pull request to `main` once repository policy allows it
+- Do not leave the pull request open as a parking state; merge it promptly or write down the blocker
 - After merge, return to the team queue and continue with the next best unblocked task
 
 ## When blocked
