@@ -5,7 +5,10 @@
   "description": "AI orchestration package scaffold placeholder for AI Baby",
   "scripts": {
     "test:age-stage": "node --test src/age-stage.test.js",
+    "test:daily-meal-recommendations": "node --test src/daily-meal-recommendations.test.js",
+    "test:daily-meal-suggestion-set": "node --test src/daily-meal-suggestion-set.test.js",
     "test:daily-summary": "node --test src/daily-summary.test.js",
+    "test:meal-correction-analytics": "node --test src/meal-correction-analytics.test.js",
     "test:reminder-content": "node --test src/reminder-content.test.js",
     "test:reminder-trigger": "node --test src/reminder-trigger.test.js",
     "test:text-meal-parser": "node --test src/text-meal-parser.test.js",
