@@ -20,6 +20,10 @@ Override with:
 
 - `AIBABY_WEB_HOST`
 - `AIBABY_WEB_PORT`
+- `AIBABY_ENV`
+- `AIBABY_WEB_URL`
+- `SUPABASE_STORAGE_BUCKET_MEAL_MEDIA`
+- `SUPABASE_STORAGE_BUCKET_DERIVED_MEDIA`
 
 Available local pages:
 
@@ -38,8 +42,11 @@ Included now:
 Not included yet:
 
 - installed Next.js runtime and production build pipeline
-- auth provider integration
 - deployment configuration
+
+The runtime env layer now exposes staged-readiness details through `GET /health`
+and the landing page, including whether the web URL, database URLs, Supabase
+auth, and storage bucket names are configured for a hosted stack.
 
 ## Baby profile scaffolding slice
 
@@ -60,7 +67,7 @@ The current reusable client/form layer now also includes:
 
 Current local-dev default bindings now:
 - fetch a single owner-scoped baby profile by id for the local App Router read path
-- resolve owner scope from `Authorization: Bearer <local-session-token>` for the current mobile shell, while still accepting the older dev bearer/header fallback during transition
+- resolve owner scope from either a verified Supabase bearer token or the local session-token/dev-header fallback while local-only development is still supported
 - persist baby profiles in `apps/web/.data/baby-profiles.json` (override with `AIBABY_DEV_DATA_FILE`)
 
 The current upload slice now also includes:

@@ -255,12 +255,24 @@ function renderHomePage(runtimeStatus) {
         <strong>Runtime status</strong>
         <div class="status-grid">
           <div class="status-item">
+            <p class="status-label">Environment</p>
+            <p class="status-value">${runtimeStatus.environment}</p>
+          </div>
+          <div class="status-item">
             <p class="status-label">Mode</p>
             <p class="status-value">${runtimeStatus.mode}</p>
           </div>
           <div class="status-item">
+            <p class="status-label">App URL</p>
+            <p class="status-value">${runtimeStatus.appUrlConfigured ? 'configured' : 'pending'}</p>
+          </div>
+          <div class="status-item">
             <p class="status-label">Database</p>
             <p class="status-value">${runtimeStatus.databaseConfigured ? 'configured' : 'local'}</p>
+          </div>
+          <div class="status-item">
+            <p class="status-label">Storage</p>
+            <p class="status-value">${runtimeStatus.storageConfigured ? 'configured' : 'pending'}</p>
           </div>
           <div class="status-item">
             <p class="status-label">Supabase</p>
@@ -274,6 +286,10 @@ function renderHomePage(runtimeStatus) {
       </div>
       <div class="card">
         <strong>Health check:</strong> <code>GET /health</code>
+      </div>
+      <div class="card">
+        <strong>Missing hosted env</strong>
+        <ul>${runtimeStatus.missingHostedEnv.length > 0 ? runtimeStatus.missingHostedEnv.map((name) => `<li><code>${name}</code></li>`).join('') : '<li><code>none</code></li>'}</ul>
       </div>
       <div class="card">
         <strong>Mounted API routes</strong>

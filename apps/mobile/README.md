@@ -23,14 +23,30 @@ Useful scripts:
 
 Session/bootstrap env:
 
+- `EXPO_PUBLIC_AIBABY_ENV`
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 - `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`
 - `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
+- `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP`
 
 Use `npm run demo:session -- demo-owner-1` to print a local session token for
 `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`.
+
+When `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` are set,
+`MobileSessionProvider` now attempts to hydrate a persisted Supabase session and
+prefers its bearer token over the local session-token fallback.
+
+`EXPO_PUBLIC_AIBABY_ENV` now also drives environment-specific Expo metadata:
+
+- `development` -> `AIbaby Dev` / `aibaby-dev`
+- `staging` -> `AIbaby Staging` / `aibaby-staging`
+- `production` -> `AIbaby` / `aibaby`
+
+Keep `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP=true` only for local
+development. Staging or production builds should disable it so only real
+Supabase auth is used there.
 
 The first-pass app shell currently includes:
 
@@ -40,7 +56,7 @@ The first-pass app shell currently includes:
 
 Not included yet:
 
-- real auth/session handoff
+- sign-in UI for creating a new Supabase session from inside the app shell
 - production asset set and native app metadata
 - release build configuration
 
@@ -71,9 +87,7 @@ The home route now also reloads the active baby profile and surfaces a compact s
 
 It now also exposes stable home quick actions for meal logging, today's timeline, and summary history, with baby-scoped route handoff so the next mobile slices can land on predictable destinations.
 
-This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can bootstrap the local session token flow and keep the baby profile route pointed at the same session context.
-
-A future PR can replace this bootstrap with real Supabase session plumbing and richer navigation once auth and additional screens land.
+This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can keep using the local session token flow for local-only work while Supabase-backed session hydration is available when the public Supabase config is present.
 
 This slice now also includes `src/features/baby-profile/screenShell.ts`, which composes the create/edit form state, load requests, and submit transport into a reviewable mobile screen-state lifecycle with loading, empty-create, and save-result handling.
 

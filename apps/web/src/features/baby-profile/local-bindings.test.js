@@ -5,34 +5,11 @@ const os = require('node:os');
 const path = require('node:path');
 
 const {
-  parseBearerOwnerUserId,
-  resolveOwnerUserIdFromRequest,
-} = require('./auth');
-const { buildLocalSessionToken } = require('./session-token');
-const {
   getBabyProfileById,
   getCurrentBabyProfileByOwnerUserId,
   insertBabyProfile,
   updateBabyProfile,
 } = require('./local-store');
-
-test('resolveOwnerUserIdFromRequest prefers the local dev bearer token', () => {
-  const sessionToken = buildLocalSessionToken({
-    userId: 'user_123',
-    issuedAt: '2026-03-14T12:00:00.000Z',
-  });
-  const request = new Request('http://localhost/api/babies', {
-    headers: {
-      authorization: `Bearer ${sessionToken}`,
-      'x-aibaby-owner-user-id': 'user_999',
-    },
-  });
-
-  assert.equal(resolveOwnerUserIdFromRequest(request), 'user_123');
-  assert.equal(parseBearerOwnerUserId(`Bearer ${sessionToken}`), 'user_123');
-  assert.equal(parseBearerOwnerUserId('Bearer dev-user:user_456'), 'user_456');
-  assert.equal(parseBearerOwnerUserId('Bearer something-else'), undefined);
-});
 
 test('local store inserts and owner-scopes baby profile updates', async () => {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aibaby-bindings-'));

@@ -5,9 +5,11 @@
 This guide defines the current local-development baseline for the repository.
 
 The repository now has first-pass runnable mobile and web shells for local
-development. Prisma and Supabase wiring are still not implemented yet, so the
-current flow uses local JSON/blob persistence and a local bearer session-token
-bootstrap for mobile-to-web auth.
+development. Prisma-backed persistence is still not implemented yet, and the
+repo still uses local JSON/blob stores for product data. The mobile/web auth
+boundary now supports a first-pass Supabase bearer flow, while keeping the
+older local session-token bootstrap available for local-only development when
+Supabase is not configured.
 
 ## Prerequisites
 
@@ -72,16 +74,22 @@ Use clear prefixes so ownership is obvious:
 
 The repository root `.env.example` should define placeholders for:
 
+- `AIBABY_ENV`
+- `AIBABY_WEB_URL`
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_STORAGE_BUCKET_MEAL_MEDIA`
+- `SUPABASE_STORAGE_BUCKET_DERIVED_MEDIA`
+- `EXPO_PUBLIC_AIBABY_ENV`
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 - `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`
 - `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
-- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
+- `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL_PARSING`
@@ -93,6 +101,11 @@ The repository root `.env.example` should define placeholders for:
 Not every variable is used yet. The goal is to standardize names before implementation expands.
 The mobile and web shells now both read from centralized env helpers so this
 contract is the single source of truth for future Supabase/bootstrap work.
+
+App-specific example files now exist at:
+
+- `apps/web/.env.example`
+- `apps/mobile/.env.example`
 
 ## Working rules for local env files
 
@@ -121,12 +134,34 @@ Current local run commands:
 
 For the current Expo shell slice, set these values in `apps/mobile/.env.local`:
 
+- `EXPO_PUBLIC_AIBABY_ENV`
+- `EXPO_PUBLIC_SUPABASE_URL`
+- `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 - `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`
 - `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
-- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
+- `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP`
 
-Use `npm run demo:session -- demo-owner-1` to generate a local session token, or
+Use `EXPO_PUBLIC_AIBABY_ENV=development` for simulator/local runs, `staging` for
+preview builds against a hosted stack, and `production` only for store-ready
+runtime config. The Expo app config now changes the app name, slug, deep-link
+scheme, and native package ids by that environment so dev/staging builds stay
+installable next to production.
+
+If you want Expo to hydrate a persisted Supabase session, the mobile workspace
+now includes the required packages:
+
+- `@supabase/supabase-js`
+- `expo-secure-store`
+- `react-native-url-polyfill`
+
+If you are staying on the local-only bootstrap flow, use
+`npm run demo:session -- demo-owner-1` to generate a local session token, or
 copy the `sessionToken` value returned by `npm run demo:seed`.
+
+Leave `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP=true` only in local
+development. Staging and production should set it to `false` so a stale local
+token cannot override real Supabase auth.
 
 If the mobile app is running on a physical device, `EXPO_PUBLIC_AIBABY_API_BASE_URL`
 must point at your computer's LAN IP instead of `127.0.0.1`.

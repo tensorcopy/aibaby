@@ -48,11 +48,15 @@ Do not share the same Supabase project across staging and production.
 
 ### Shared backend/server env
 
+- `AIBABY_ENV`
+- `AIBABY_WEB_URL`
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_STORAGE_BUCKET_MEAL_MEDIA`
+- `SUPABASE_STORAGE_BUCKET_DERIVED_MEDIA`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL_PARSING`
@@ -63,9 +67,11 @@ Do not share the same Supabase project across staging and production.
 
 ### Mobile public env
 
+- `EXPO_PUBLIC_AIBABY_ENV`
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
 - `EXPO_PUBLIC_AIBABY_API_BASE_URL`
+- `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP`
 
 ### Local-only mobile bootstrap env
 
@@ -74,6 +80,16 @@ Do not share the same Supabase project across staging and production.
 
 These local-only bootstrap values should not be used in staging or production.
 Real auth should replace them there.
+
+Recommended environment posture:
+
+- local: `AIBABY_ENV=development`, `EXPO_PUBLIC_AIBABY_ENV=development`, `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP=true`
+- staging: `AIBABY_ENV=staging`, `EXPO_PUBLIC_AIBABY_ENV=staging`, `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP=false`
+- production: `AIBABY_ENV=production`, `EXPO_PUBLIC_AIBABY_ENV=production`, `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP=false`
+
+The Expo app config now derives a distinct app name, slug, scheme, and native
+package ids from `EXPO_PUBLIC_AIBABY_ENV`, so preview builds can coexist with
+production installs on the same device.
 
 ## First deployment milestone
 

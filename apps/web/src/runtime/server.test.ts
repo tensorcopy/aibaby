@@ -21,8 +21,10 @@ test('handleRequest exposes runtime readiness details from the health route', as
   assert.equal(response.status, 200);
   assert.equal(payload.ok, true);
   assert.equal(payload.service, 'aibaby-web');
+  assert.equal(payload.runtime.environment, 'development');
   assert.equal(payload.runtime.mode, 'local-dev');
   assert.equal(payload.runtime.supabaseServerConfigured, false);
+  assert.match(payload.runtime.missingHostedEnv.join(','), /DATABASE_URL/);
 });
 
 test('handleRequest mounts an existing API route', async (t) => {
