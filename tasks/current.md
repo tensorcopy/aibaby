@@ -21,10 +21,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-025 `done` Build confirmation / correction flow for AI-generated records
 - AIB-026 `done` Persist original input plus structured output
 - AIB-027 `done` Build today's timeline page
-- AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
-- AIB-029 `done` Replace the current mobile landing screen with a chat-first AI assistant entry route
-- AIB-057 `done` Support a single mixed-send composer action that submits photos and text together as one conversational message
-- AIB-058 `done` Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
 
 ### Summaries
 - AIB-030 `done` Define daily summary rules and output format
@@ -47,14 +43,37 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-051 `done` Define Markdown note format for Obsidian compatibility
 - AIB-052 `done` Decide media export behavior: local files vs referenced URLs
 - AIB-053 `done` Define YAML frontmatter fields for exported notes
-- AIB-054 `todo` Build first-pass Markdown export flow
+- AIB-054 `done` Build first-pass Markdown export flow
 
-### UX and visual design
-- AIB-055 `done` Define a warmer baby-product visual direction for mobile and web, including color, typography, spacing, and component tone
-- AIB-056 `done` Apply the new baby-product UX direction to the current mobile MVP screens, starting with home, baby profile, and meal logging
-- AIB-059 `done` Define the end-to-end MVP UX blueprint across chat, profile, timeline, summaries, reminders, and review flows before feature implementation
+### Runnable app and integration
+- AIB-060 `done` Bootstrap a runnable Next.js web app shell with dev/start scripts and route mounting
+- AIB-061 `done` Bootstrap a runnable Expo app configuration for the existing mobile routes and session env
+- AIB-062 `done` Wire one documented end-to-end local flow between the mobile app and live local backend
+- AIB-063 `done` Add demo-data seed and reset commands for baby profile, meals, reports, reminders, and exports
+- AIB-064 `done` Add a first-pass export trigger surface in the mobile app for Markdown bundle generation
+- AIB-065 `done` Add a repo-managed smoke checklist for local startup, core flows, and export verification
+- AIB-066 `done` Replace local owner-header bootstrap with a first-pass real auth/session handoff
+- AIB-067 `done` Fix the Expo app config to expose the new session-token bootstrap instead of the removed owner-user-id field
+- AIB-068 `done` Make the demo seed flow stable across reruns so the mobile bootstrap baby id does not drift
+- AIB-069 `done` Promote the loaded current baby profile into the mobile session so home quick actions activate after auth-only bootstrap
+- AIB-070 `done` Stabilize the mobile baby-profile screen-shell test so it does not fail when the calendar month boundary changes
+
+### Production hardening
+- AIB-080 `done` Replace the local bearer session token flow with real Supabase auth bootstrap in Expo and backend token validation in web
+- AIB-081 `todo` Add the first real database schema and repository layer for babies, meals, reminders, reports, and export jobs
+- AIB-082 `todo` Replace baby-profile local JSON persistence with the real repository implementation
+- AIB-083 `todo` Replace meal, reminder, report, and export local JSON persistence with the real repository implementation
+- AIB-084 `todo` Replace the local upload blob flow with real storage upload negotiation and persisted asset metadata
+- AIB-085 `todo` Add real environment bootstrap and app configuration for Supabase auth, database access, and storage
+- AIB-086 `todo` Add real migration, seed, and reset commands for the database-backed local/dev stack
+- AIB-087 `todo` Run and document the first authenticated end-to-end smoke pass against the real auth/data/storage stack
+- AIB-088 `done` Define the first hosted deployment plan and environment mapping for moving from the local shell to phone-testable staging
+- AIB-089 `done` Centralize mobile/web runtime env parsing and expose Supabase-ready public config placeholders without changing the current local session bootstrap
 
 ## In Progress
+
+- No current in-progress tasks
+
 ## Done
 
 - AIB-000 `done` Move product requirements and shared project state into repository-managed files
@@ -77,41 +96,58 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-021 `done` Build the first-pass mobile chat input UI for text and image meal draft submission
 - AIB-022 `done` Build the image upload negotiation, direct-storage handoff, and mobile upload completion flow
 - AIB-023 `done` Build the first-pass text-only parsing flow that classifies meal type and food items and returns a candidate record preview
-- AIB-024 `done` Build the first-pass draft feeding record generation flow from parsed text submissions and persist draft meal records plus meal items
-- AIB-026 `done` Persist original input plus structured output
-- AIB-027 `done` Build the first-pass web today timeline page and manual test shell on top of the local-dev API routes
-- AIB-028 `done` Fix the mobile baby profile save flow so failed saves surface recovery actions and the user can navigate away cleanly
-- AIB-029 `done` Replace the default mobile entry route with the chat-first AI meal logging surface and in-thread navigation shortcuts
+- AIB-024 `done` Build the first-pass draft feeding-record generation flow, including shared meal-record schemas and local-dev persistence
+- AIB-025 `done` Build the first-pass confirm/correct flow for meal drafts, including inline mobile editing and `/api/meals/:mealId/confirm`
+- AIB-026 `done` Persist original parse input plus corrected structured output through ingestion events and local-dev stores
+- AIB-027 `done` Build the first-pass today's timeline route and `/api/babies/:babyId/meals?date=YYYY-MM-DD`
 - AIB-030 `done` Define the first-pass daily summary rules and user-facing output contract for nutrition feedback
 - AIB-031 `done` Build the first-pass deterministic daily summary generation flow in `packages/ai`
 - AIB-032 `done` Build the first-pass daily summary storage and retrieval contract in `packages/db`
 - AIB-033 `done` Define the first-pass weekly summary aggregation rules and output shape
 - AIB-034 `done` Build the first-pass deterministic weekly summary generation flow in `packages/ai`
-- AIB-035 `done` Build summary history view
-- AIB-040 `done` Build age-stage calculation logic
+- AIB-035 `done` Build the first-pass summary history screen and report-history APIs for daily and weekly summaries
+- AIB-040 `done` Build the first-pass deterministic age-stage band calculator and repository-managed baseline stage-band definitions
+- AIB-041 `done` Define the first-pass repository-managed reminder content model and stage-keyed templates
+- AIB-042 `done` Build the first-pass deterministic reminder trigger flow and `/api/babies/:babyId/reminders` APIs
+- AIB-043 `done` Build the first-pass 7-day review page with daily summaries, new-food highlights, and day-detail links
+- AIB-044 `done` Build the first-pass 30-day review page with common-food stats, weekly rollups, and reminder history
+- AIB-045 `done` Build the first-pass reminder history timeline screen
+- AIB-054 `done` Build the first-pass Markdown export generator and `/api/babies/:babyId/export/markdown` endpoint
+- AIB-060 `done` Build the first-pass runnable local web shell that mounts the current App Router-style route handlers through `npm run dev --workspace @aibaby/web`
+- AIB-061 `done` Build the first-pass Expo app shell config with app metadata, router bootstrap, and local session env defaults
+- AIB-062 `done` Document the first end-to-end local flow between Expo mobile and the local web runtime, including shared root scripts
+- AIB-063 `done` Add repeatable `demo:seed` and `demo:reset` commands for local baby profile, meals, reminders, reports coverage, and export data
+- AIB-064 `done` Add a first-pass mobile export trigger on the summaries screen for Markdown bundle generation
+- AIB-065 `done` Add a repository-managed local smoke checklist for startup, core user flows, and export verification
+- AIB-066 `done` Replace the mobile owner-header bootstrap with a first-pass bearer session-token handoff and local session-token tooling
+- AIB-067 `done` Fix the Expo public config to match the session-token mobile bootstrap used by the local QA flow
+- AIB-068 `done` Stabilize the demo seed baby id so repeated seeding does not break the mobile demo bootstrap
+- AIB-069 `done` Sync the loaded current baby profile id back into the mobile session after auth-scoped home loads
+- AIB-070 `done` Replace the month-boundary-sensitive screen-shell age assertion with a dynamic summary expectation during QA hardening
+- AIB-080 `done` Add first-pass Supabase session bootstrap in Expo and backend bearer validation against Supabase while preserving the local-dev auth fallback
+- AIB-088 `done` Define the first hosted deployment path across Expo, Vercel, and Supabase, plus the env mapping needed to reach phone-only staging tests
+- AIB-089 `done` Centralize runtime env parsing for Expo and the local web shell so staged Supabase/bootstrap work builds on one repo-managed config contract
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
 - AIB-053 `done` Define the canonical YAML frontmatter field set for exported notes
-- AIB-055 `done` Define the Scandinavian Nursery visual direction for AI Baby, including color, typography, spacing, and screen-level mockups for home, baby profile, and meal logging
-- AIB-056 `done` Apply the Scandinavian Nursery visual direction to the mobile home, baby profile, and log meal MVP screens
-- AIB-057 `done` Support a single mixed-send composer action that submits photos and text together as one conversational message
-- AIB-058 `done` Rework the mobile meal logging experience into a persistent AI chat thread instead of a utility form screen
-- AIB-059 `done` Define the end-to-end MVP UX blueprint covering chat, profile, timeline, summaries, reminders, review pages, state behavior, and navigation before further feature implementation
 - AIB-006 `done` Document the first-pass local setup guide and environment variable conventions for the current scaffold
 - AIB-100 `done` Add a repository-managed product ideas note
 - AIB-101 `done` Translate the PRD into an MVP implementation plan with milestones
 - AIB-102 `done` Split stack and data model decisions into dedicated implementation docs
+- AIB-103 `done` Add a three-team product roadmap with independent ownership areas and pick-up-ready work queues
 
 ## Blockers
 
-- No current blockers
+- Production hardening work from `AIB-085` onward still needs real project environment values and full provider setup. `AIB-080` landed reviewable Supabase auth/session plumbing, but device-level validation is still pending outside this sandbox.
 
 ## Coordination notes
 
+- Team-level progress and blockers now live in `tasks/team-1-caregiver-experience.md`, `tasks/team-2-intelligence-and-guidance.md`, and `tasks/team-3-platform-and-trust.md`
+- Org-level coordination summaries and commander decisions now live in `tasks/commander.md`
 - Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
-- Unless explicitly instructed to stop, agents should continue to pick up the next appropriate task after finishing and merging the current one
 - Foundation choices are now documented well enough to start assigning implementation work
-- The initial repo scaffold exists, but it is intentionally non-runnable until follow-up PRs add actual Expo, Next.js, Prisma, and Supabase setup
-- Next best parallel workstreams: app scaffold, auth wiring, media upload path, and daily-summary rules
+- The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
+- `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
+- Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work
