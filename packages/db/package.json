@@ -4,11 +4,18 @@
   "version": "0.0.0",
   "description": "Database and shared persistence layer for AI Baby",
   "dependencies": {
+    "@prisma/client": "^6.16.1",
     "zod": "^3.24.2"
   },
   "scripts": {
     "test:baby-profile": "node --test src/baby-profile.test.js",
     "test:daily-report": "node --test src/daily-report.test.js",
-    "test:weekly-report": "node --test src/weekly-report.test.js"
+    "test:weekly-report": "node --test src/weekly-report.test.js",
+    "test:prisma-schema": "node --test prisma/schema.test.js",
+    "test:prisma-repository": "node --test src/baby-profile-prisma.test.js src/daily-report-prisma.test.js src/weekly-report-prisma.test.js",
+    "prisma:validate": "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/aibaby_dev prisma validate --schema prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "prisma": "^6.16.1"
   }
 }

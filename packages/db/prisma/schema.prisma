@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FeedingStyle {
+  breast_milk
+  formula
+  mixed
+  solids_started
+}
+
+enum SexValue {
+  female
+  male
+  other
+  unknown
+}
+
+enum MessageType {
+  user_text
+  user_image
+  user_mixed
+  assistant_followup
+  assistant_summary
+}
+
+enum IngestionStatus {
+  pending
+  parsed
+  failed
+  ignored
+}
+
+enum MealRecordStatus {
+  draft
+  confirmed
+  edited
+}
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+  milk
+  supplement
+  unknown
+}
+
+enum UploadStatus {
+  uploaded
+  processing
+  failed
+  deleted
+}
+
+enum NotificationStatus {
+  pending
+  sent
+  failed
+}
+
+model User {
+  id                  String               @id @default(cuid()) @db.Text
+  email               String?              @db.Text
+  phone               String?              @db.Text
+  displayName         String?              @map("display_name") @db.Text
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  ownedBabies         Baby[]
+  notificationDevices NotificationDevice[]
+  caregiverLinks      Caregiver[]
+
+  @@map("users")
+}
+
+model Baby {
+  id                String             @id @default(cuid()) @db.Text
+  ownerUserId       String             @map("owner_user_id") @db.Text
+  name              String             @db.Text
+  birthDate         DateTime           @map("birth_date") @db.Date
+  sex               SexValue?
+  feedingStyle      FeedingStyle       @map("feeding_style")
+  allergiesJson     Json               @map("allergies_json")
+  supplementsJson   Json               @map("supplements_json")
+  timezone          String             @db.Text
+  primaryCaregiver  String?            @map("primary_caregiver") @db.Text
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  ownerUser         User               @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  settings          BabySettings?
+  caregivers        Caregiver[]
+  conversations     Conversation[]
+  messages          Message[]
+  mealRecords       MealRecord[]
+  mediaAssets       MediaAsset[]
+  dailyReports      DailyReport[]
+  weeklyReports     WeeklyReport[]
+  ageStageReminders AgeStageReminder[]
+  ingestionEvents   IngestionEvent[]
+
+  @@index([ownerUserId])
+  @@map("babies")
+}
+
+model BabySettings {
+  id                     String   @id @default(cuid()) @db.Text
+  babyId                 String   @unique @map("baby_id") @db.Text
+  dailySummaryEnabled    Boolean  @default(true) @map("daily_summary_enabled")
+  dailySummaryTimeLocal  String?  @map("daily_summary_time_local") @db.Text
+  weeklySummaryEnabled   Boolean  @default(true) @map("weekly_summary_enabled")
+  weeklySummaryDayOfWeek Int?     @map("weekly_summary_day_of_week")
+  weeklySummaryTimeLocal String?  @map("weekly_summary_time_local") @db.Text
+  stageRemindersEnabled  Boolean  @default(true) @map("stage_reminders_enabled")
+  pushNotificationsEnabled Boolean @default(false) @map("push_notifications_enabled")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+  baby                   Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+
+  @@map("baby_settings")
+}
+
+model NotificationDevice {
+  id                   String   @id @default(cuid()) @db.Text
+  userId               String   @map("user_id") @db.Text
+  platform             String   @db.Text
+  expoPushToken        String   @unique @map("expo_push_token") @db.Text
+  appBuild             String?  @map("app_build") @db.Text
+  lastSeenAt           DateTime? @map("last_seen_at")
+  notificationsEnabled Boolean  @default(true) @map("notifications_enabled")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notification_devices")
+}
+
+model Caregiver {
+  id        String   @id @default(cuid()) @db.Text
+  babyId    String   @map("baby_id") @db.Text
+  userId    String   @map("user_id") @db.Text
+  role      String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  baby      Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([babyId, userId])
+  @@index([userId])
+  @@map("caregivers")
+}
+
+model Conversation {
+  id        String    @id @default(cuid()) @db.Text
+  babyId    String    @map("baby_id") @db.Text
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  baby      Baby      @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@index([babyId])
+  @@map("conversations")
+}
+
+model Message {
+  id              String          @id @default(cuid()) @db.Text
+  ownerUserId     String          @map("owner_user_id") @db.Text
+  babyId          String          @map("baby_id") @db.Text
+  conversationId  String?         @map("conversation_id") @db.Text
+  senderType      String          @map("sender_type") @db.Text
+  text            String?         @db.Text
+  messageType     MessageType     @default(user_text) @map("message_type")
+  ingestionStatus IngestionStatus @default(pending) @map("ingestion_status")
+  metadataJson    Json?           @map("metadata_json")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  baby            Baby            @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  conversation    Conversation?   @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  mealRecords     MealRecord[]
+  mediaAssets     MediaAsset[]
+  ingestionEvents IngestionEvent[]
+
+  @@index([ownerUserId, babyId, createdAt])
+  @@index([conversationId])
+  @@map("messages")
+}
+
+model MealRecord {
+  id              String           @id @default(cuid()) @db.Text
+  ownerUserId     String           @map("owner_user_id") @db.Text
+  babyId          String           @map("baby_id") @db.Text
+  sourceMessageId String?          @map("source_message_id") @db.Text
+  mealType        MealType         @default(unknown) @map("meal_type")
+  eatenAt         DateTime?        @map("eaten_at")
+  rawText         String?          @map("raw_text") @db.Text
+  aiSummary       String?          @map("ai_summary") @db.Text
+  status          MealRecordStatus @default(draft)
+  confidenceScore Float?           @map("confidence_score")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  baby            Baby             @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  sourceMessage   Message?         @relation(fields: [sourceMessageId], references: [id], onDelete: SetNull)
+  items           MealItem[]
+  mediaAssets     MediaAsset[]
+
+  @@index([ownerUserId, babyId, eatenAt])
+  @@index([sourceMessageId])
+  @@map("meal_records")
+}
+
+model MealItem {
+  id              String    @id @default(cuid()) @db.Text
+  mealRecordId    String    @map("meal_record_id") @db.Text
+  foodName        String    @map("food_name") @db.Text
+  amountText      String?   @map("amount_text") @db.Text
+  amountValue     Float?    @map("amount_value")
+  amountUnit      String?   @map("amount_unit") @db.Text
+  preparationText String?   @map("preparation_text") @db.Text
+  nutritionTagsJson Json?   @map("nutrition_tags_json")
+  confidenceScore Float?    @map("confidence_score")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  mealRecord      MealRecord @relation(fields: [mealRecordId], references: [id], onDelete: Cascade)
+
+  @@index([mealRecordId])
+  @@map("meal_items")
+}
+
+model MediaAsset {
+  id             String       @id @default(cuid()) @db.Text
+  ownerUserId    String       @map("owner_user_id") @db.Text
+  babyId         String       @map("baby_id") @db.Text
+  messageId      String       @map("message_id") @db.Text
+  mealRecordId   String?      @map("meal_record_id") @db.Text
+  fileName       String?      @map("file_name") @db.Text
+  storagePath    String       @map("storage_path") @db.Text
+  storageBucket  String       @map("storage_bucket") @db.Text
+  mimeType       String       @map("mime_type") @db.Text
+  byteSize       Int?         @map("byte_size")
+  width          Int?
+  height         Int?
+  uploadStatus   UploadStatus @default(processing) @map("upload_status")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  baby           Baby         @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  message        Message      @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  mealRecord     MealRecord?  @relation(fields: [mealRecordId], references: [id], onDelete: SetNull)
+
+  @@index([ownerUserId, babyId, createdAt])
+  @@index([messageId])
+  @@index([mealRecordId])
+  @@map("media_assets")
+}
+
+model DailyReport {
+  id                String             @id @default(cuid()) @db.Text
+  babyId            String             @map("baby_id") @db.Text
+  reportDate        DateTime           @map("report_date") @db.Date
+  structuredSummary Json               @map("structured_summary_json")
+  renderedSummary   String             @map("rendered_summary") @db.Text
+  suggestionsText   String?            @map("suggestions_text") @db.Text
+  completenessScore Float              @map("completeness_score")
+  notificationStatus NotificationStatus @default(pending) @map("notification_status")
+  generatedByJobKey String             @map("generated_by_job_key") @db.Text
+  createdAt         DateTime           @default(now()) @map("created_at")
+  baby              Baby               @relation(fields: [babyId], references: [id], onDelete: Cascade)
+
+  @@unique([babyId, reportDate])
+  @@index([babyId, reportDate])
+  @@map("daily_reports")
+}
+
+model WeeklyReport {
+  id                String             @id @default(cuid()) @db.Text
+  babyId            String             @map("baby_id") @db.Text
+  weekStartDate     DateTime           @map("week_start_date") @db.Date
+  weekEndDate       DateTime           @map("week_end_date") @db.Date
+  structuredSummary Json               @map("structured_summary_json")
+  renderedSummary   String             @map("rendered_summary") @db.Text
+  suggestionsText   String?            @map("suggestions_text") @db.Text
+  notificationStatus NotificationStatus @default(pending) @map("notification_status")
+  generatedByJobKey String             @map("generated_by_job_key") @db.Text
+  createdAt         DateTime           @default(now()) @map("created_at")
+  baby              Baby               @relation(fields: [babyId], references: [id], onDelete: Cascade)
+
+  @@unique([babyId, weekStartDate])
+  @@index([babyId, weekStartDate])
+  @@map("weekly_reports")
+}
+
+model AgeStageReminder {
+  id                String             @id @default(cuid()) @db.Text
+  babyId            String             @map("baby_id") @db.Text
+  ageStageKey       String             @map("age_stage_key") @db.Text
+  scheduledFor      DateTime           @map("scheduled_for")
+  renderedText      String             @map("rendered_text") @db.Text
+  metadataJson      Json?              @map("metadata_json")
+  status            String             @db.Text
+  notificationStatus NotificationStatus @default(pending) @map("notification_status")
+  generatedByJobKey String?            @map("generated_by_job_key") @db.Text
+  createdAt         DateTime           @default(now()) @map("created_at")
+  baby              Baby               @relation(fields: [babyId], references: [id], onDelete: Cascade)
+
+  @@unique([babyId, ageStageKey, scheduledFor])
+  @@index([babyId, scheduledFor])
+  @@map("age_stage_reminders")
+}
+
+model IngestionEvent {
+  id               String      @id @default(cuid()) @db.Text
+  ownerUserId      String      @map("owner_user_id") @db.Text
+  babyId           String      @map("baby_id") @db.Text
+  sourceMessageId  String?     @map("source_message_id") @db.Text
+  sourceType       String      @map("source_type") @db.Text
+  triggerType      String      @map("trigger_type") @db.Text
+  payloadJson      Json        @map("payload_json")
+  processingStatus String      @map("processing_status") @db.Text
+  idempotencyKey   String      @unique @map("idempotency_key") @db.Text
+  errorText        String?     @map("error_text") @db.Text
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+  baby             Baby        @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  sourceMessage    Message?    @relation(fields: [sourceMessageId], references: [id], onDelete: SetNull)
+
+  @@index([ownerUserId, babyId, createdAt])
+  @@index([sourceMessageId])
+  @@map("ingestion_events")
+}

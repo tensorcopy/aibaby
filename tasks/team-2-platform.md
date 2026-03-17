@@ -4,11 +4,11 @@
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
 - State: review_ready
-- Current task: `AIB-085` staged env/bootstrap and readiness slice for Expo public config, Supabase session bootstrap, and web runtime auth/env wiring
-- Next step: if real env/provider access is still unavailable, start `AIB-081`; otherwise finish the remaining staged/device validation work for `AIB-085`
-- Blockers: later staging validation still depends on real project environment values and full provider setup
-- Files: `.env.example`, `apps/mobile/app.config.ts`, `apps/mobile/.env.example`, `apps/mobile/src/features/app-shell/*`, `apps/web/.env.example`, `apps/web/src/runtime/*`, `apps/web/src/features/baby-profile/*`, `docs/local-development.md`, `tasks/current.md`
-- Verification: `node --experimental-strip-types --test apps/mobile/src/features/app-shell/appConfig.test.ts apps/mobile/src/features/app-shell/publicConfig.test.ts apps/mobile/src/features/app-shell/mobileSession.test.ts apps/mobile/src/features/app-shell/supabaseSession.test.ts`; `node --experimental-strip-types --test apps/web/src/runtime/env.test.ts apps/web/src/features/baby-profile/auth.test.js`
+- Current task: `AIB-081` foundational Prisma schema plus repository adapters for baby profiles and report models
+- Next step: extend the repository bridge to meals, reminders, uploads, and export persistence, or move to `AIB-082` once the schema baseline is merged
+- Blockers: none for this slice; separate staged/device validation still depends on real project environment values and full provider setup
+- Files: `packages/db/package.json`, `packages/db/README.md`, `packages/db/prisma/schema.prisma`, `packages/db/src/*`, `tasks/current.md`
+- Verification: `npm run test:baby-profile --workspace @aibaby/db`; `npm run test:daily-report --workspace @aibaby/db`; `npm run test:weekly-report --workspace @aibaby/db`; `npm run test:prisma-schema --workspace @aibaby/db`; `npm run test:prisma-repository --workspace @aibaby/db`; `npm run prisma:validate --workspace @aibaby/db`
 - Last updated: 2026-03-17
 
 ## Active Queue
@@ -40,3 +40,15 @@
 - Updated env examples and local-development docs to describe the new staged contract.
 - Opened PR `#184` for this checkpoint branch.
 - Current blockers remain external: real project env values and the remaining runtime setup for full staged/device validation.
+
+### 2026-03-17 AIB-081 kickoff
+
+- `AIB-085` checkpoint was merged via PR `#184`, so the next Team 2 slice moves to `AIB-081`.
+- Planned first slice: add the core Prisma schema and Prisma-facing repository adapters for the existing baby profile and report contracts before wiring persistence replacements.
+
+### 2026-03-17 AIB-081 checkpoint
+
+- Added `packages/db/prisma/schema.prisma` with the first relational model for users, babies, settings, caregivers, conversations, messages, meal records, media assets, reports, reminders, and ingestion events.
+- Added Prisma-facing adapters for baby profiles, daily reports, and weekly reports so the existing DB contracts can bridge into Prisma incrementally.
+- Updated `packages/db` package metadata and docs so the schema and adapter verification path lives in repo scripts.
+- Verified the package contract tests plus `prisma validate` with a self-contained dummy `DATABASE_URL`.
