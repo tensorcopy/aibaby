@@ -4,11 +4,11 @@
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
 - State: review_ready
-- Current task: `AIB-081` foundational Prisma schema plus repository adapters for baby profiles and report models
-- Next step: extend the repository bridge to meals, reminders, uploads, and export persistence, or move to `AIB-082` once the schema baseline is merged
+- Current task: `AIB-082` replace baby-profile local JSON persistence with the real repository implementation
+- Next step: merge this baby-profile repository checkpoint, then continue the remaining persistence replacement work for `AIB-082` / `AIB-083`
 - Blockers: none for this slice; separate staged/device validation still depends on real project environment values and full provider setup
-- Files: `packages/db/package.json`, `packages/db/README.md`, `packages/db/prisma/schema.prisma`, `packages/db/src/*`, `tasks/current.md`
-- Verification: `npm run test:baby-profile --workspace @aibaby/db`; `npm run test:daily-report --workspace @aibaby/db`; `npm run test:weekly-report --workspace @aibaby/db`; `npm run test:prisma-schema --workspace @aibaby/db`; `npm run test:prisma-repository --workspace @aibaby/db`; `npm run prisma:validate --workspace @aibaby/db`
+- Files: `packages/db/src/baby-profile*.js`, `apps/web/src/features/baby-profile/*`, `tasks/current.md`
+- Verification: `npm run test:baby-profile-api --workspace @aibaby/web`; `npm run test:timeline-api --workspace @aibaby/web`; `npm run test:prisma-repository --workspace @aibaby/db`; `npm run prisma:validate --workspace @aibaby/db` failed in this fresh worktree because the `prisma` CLI is not installed here
 - Last updated: 2026-03-17
 
 ## Active Queue
@@ -52,3 +52,15 @@
 - Added Prisma-facing adapters for baby profiles, daily reports, and weekly reports so the existing DB contracts can bridge into Prisma incrementally.
 - Updated `packages/db` package metadata and docs so the schema and adapter verification path lives in repo scripts.
 - Verified the package contract tests plus `prisma validate` with a self-contained dummy `DATABASE_URL`.
+
+### 2026-03-17 AIB-082 kickoff
+
+- `AIB-081` was merged via PR `#186`, so Team 2 moved directly to `AIB-082` on a fresh branch from the updated `main`.
+- Planned first slice: replace the baby-profile JSON file bindings with a repository module backed by the Prisma baby-profile adapters while keeping the existing route contract stable.
+
+### 2026-03-17 AIB-082 checkpoint
+
+- Added `packages/db/src/baby-profile-repository.js` plus repository tests so the baby-profile persistence layer can target Prisma delegates while preserving the existing row contract used by the web routes.
+- Added `apps/web/src/features/baby-profile/repository-bindings.js` and rewired `route-dependencies.js` so baby-profile routes can use the real repository path when Prisma runtime dependencies are available, while preserving the current local-store fallback in no-DB environments.
+- Updated the timeline route and snapshot builder so selected-baby resolution can come from the baby-profile repository path instead of only `baby-profiles.json`, avoiding a regression when the profile API stops writing the local JSON file.
+- Verified the new repository, route-dependency, baby-profile API, and timeline tests; `prisma validate` itself could not be rerun here because this fresh worktree does not have the Prisma CLI installed.

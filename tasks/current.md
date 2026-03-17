@@ -77,7 +77,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-081 `in_progress` Land the first Prisma schema baseline and repository adapters for baby profiles plus daily/weekly reports
+- AIB-082 `in_progress` Replace baby-profile local JSON persistence with the real repository implementation
 - AIB-110 Add a first-pass notification center screen model and route shell
 
 ## Done
@@ -156,7 +156,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` merged via PR `#184`; remaining work there is the runtime/device validation pass once env values exist
-- `AIB-081` is now active on Team 2 with a first Prisma schema plus repository-adapter checkpoint branch
+- `AIB-081` merged via PR `#186`; Team 2 now has an `AIB-082` checkpoint branch that swaps baby-profile routes onto a repository-backed path and keeps timeline compatibility when no DB runtime is configured
 - `AIB-108` through `AIB-110` are on pushed Team 1 branches and now have task IDs assigned for compliant PR titles
 - Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

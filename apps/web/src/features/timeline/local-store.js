@@ -5,22 +5,28 @@ const { getDataFilePath: getTextMealFilePath } = require("../text-meal/local-sto
 const { getDataFilePath: getMealDraftsFilePath } = require("../meal-drafts/local-store.js");
 const { getDataFilePath: getUploadsFilePath } = require("../uploads/local-store.js");
 
-async function buildTodayTimelineSnapshot({ ownerUserId, babyId, timezone = "UTC", date }) {
+async function buildTodayTimelineSnapshot({
+  ownerUserId,
+  babyId,
+  timezone = "UTC",
+  date,
+  getCurrentBabyProfileByOwnerUserId,
+  getBabyProfileById,
+}) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
   const targetDate = normalizeDate(date) || getCurrentDateInTimezone(timezone);
 
-  const [profilesStore, textMealStore, mealDraftStore, uploadsStore] = await Promise.all([
-    readJsonFile(getBabyProfilesFilePath(), { babyProfiles: [] }),
+  const [selectedProfile, textMealStore, mealDraftStore, uploadsStore] = await Promise.all([
+    loadSelectedProfile({
+      ownerUserId: normalizedOwnerUserId,
+      babyId,
+      getCurrentBabyProfileByOwnerUserId,
+      getBabyProfileById,
+    }),
     readJsonFile(getTextMealFilePath(), { messages: [], ingestionEvents: [] }),
     readJsonFile(getMealDraftsFilePath(), { mealRecords: [], mealItems: [], ingestionEvents: [] }),
     readJsonFile(getUploadsFilePath(), { messages: [], mediaAssets: [], ingestionEvents: [] }),
   ]);
-
-  const profiles = asArray(profilesStore.babyProfiles)
-    .filter((profile) => profile.owner_user_id === normalizedOwnerUserId)
-    .sort((left, right) => String(right.updated_at || "").localeCompare(String(left.updated_at || "")));
-
-  const selectedProfile = selectProfile(profiles, babyId);
 
   if (!selectedProfile) {
     return {
@@ -46,6 +52,39 @@ async function buildTodayTimelineSnapshot({ ownerUserId, babyId, timezone = "UTC
     timezone,
     entries,
   };
+}
+
+async function loadSelectedProfile({
+  ownerUserId,
+  babyId,
+  getCurrentBabyProfileByOwnerUserId,
+  getBabyProfileById,
+}) {
+  if (
+    typeof getCurrentBabyProfileByOwnerUserId === "function"
+    && typeof getBabyProfileById === "function"
+  ) {
+    try {
+      if (normalizeOptionalString(babyId)) {
+        return await getBabyProfileById({ ownerUserId, babyId });
+      }
+
+      return await getCurrentBabyProfileByOwnerUserId({ ownerUserId });
+    } catch (error) {
+      if (error?.status === 404) {
+        return null;
+      }
+
+      throw error;
+    }
+  }
+
+  const profilesStore = await readJsonFile(getBabyProfilesFilePath(), { babyProfiles: [] });
+  const profiles = asArray(profilesStore.babyProfiles)
+    .filter((profile) => profile.owner_user_id === ownerUserId)
+    .sort((left, right) => String(right.updated_at || "").localeCompare(String(left.updated_at || "")));
+
+  return selectProfile(profiles, babyId);
 }
 
 function buildTextEntries(store, ownerUserId, babyId, timezone, targetDate) {
