@@ -3,12 +3,12 @@
 ## Current State
 
 - Goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
-- State: ready_to_start
-- Current task: add home-screen entry points for review, reminders, exports, and future growth
-- Next step: review the home route, then land the smallest navigation-first slice and continue the combined product queue
+- State: review_ready
+- Current task: `AIB-110` add a first-pass notification center route shell
+- Next step: keep PR `#185` moving, then open or update PRs for `AIB-108` and `AIB-109` before picking the next unblocked Team 1 slice
 - Blockers: none
-- Files: not started yet
-- Verification: not run yet
+- Files: `apps/mobile/app/notifications.tsx`, `apps/mobile/app/reminders.tsx`, `apps/mobile/src/features/notifications/center.ts`, `apps/mobile/src/features/notifications/center.test.ts`, `tasks/current.md`, `tasks/team-1-product.md`
+- Verification: `node --experimental-strip-types --test src/features/notifications/center.test.ts src/features/reminders/history.test.ts`; attempted `npm --workspace @aibaby/mobile run test:app-shell` and hit an unrelated existing `@aibaby/ui` resolution failure in `src/features/app-shell/homeProfileSummary.test.ts`
 - Last updated: 2026-03-17
 
 ## Active Queue
@@ -39,3 +39,18 @@
 - Log created as part of the 2-team migration.
 - Queue combines the previous Caregiver Experience and Intelligence and Guidance lanes.
 - Team should update `Current State` first, then append dated entries here as work progresses.
+
+### 2026-03-17 Work Log
+
+- Assigned Team 1 task IDs so the existing review-ready branches can use compliant PR titles: `AIB-108` for home entry points, `AIB-109` for the reminder detail shell, and `AIB-110` for the notification center shell.
+- Added a first-pass mobile notification center route at `/notifications` with a dedicated screen model covering missing-baby empty state, action-ready reminder/review cards, and summary/export update cards.
+- Linked the reminder timeline into the notification center so the new shell is reachable before the home-entry-point branch is merged.
+- Committed and pushed the notification-center shell on `feat/team1-notification-center-shell` so the work is preserved outside the local worktree.
+- Verification:
+  - `node --experimental-strip-types --test src/features/notifications/center.test.ts src/features/reminders/history.test.ts`
+- Noted the existing broader mobile verification issue remains unchanged:
+  - `npm --workspace @aibaby/mobile run test:app-shell`
+  - fails because `src/features/app-shell/homeProfileSummary.test.ts` cannot resolve `@aibaby/ui` in this workspace.
+- Current task: keep `AIB-110` review-ready with durable repo breadcrumbs.
+- Next task: move `AIB-108` through `AIB-110` through PRs and then pick the next unblocked Team 1 slice.
+- Blockers: none.

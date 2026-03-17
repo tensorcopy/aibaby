@@ -58,6 +58,11 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-069 `done` Promote the loaded current baby profile into the mobile session so home quick actions activate after auth-only bootstrap
 - AIB-070 `done` Stabilize the mobile baby-profile screen-shell test so it does not fail when the calendar month boundary changes
 
+### Team 1 product surfaces
+- AIB-108 `todo` Add home-screen entry points for review, reminders, exports, and future growth
+- AIB-109 `todo` Add a reminder detail screen shell with done / snooze / dismiss states
+- AIB-110 `todo` Add a first-pass notification center screen model and route shell
+
 ### Production hardening
 - AIB-080 `done` Replace the local bearer session token flow with real Supabase auth bootstrap in Expo and backend token validation in web
 - AIB-081 `todo` Add the first real database schema and repository layer for babies, meals, reminders, reports, and export jobs
@@ -73,6 +78,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-085 `in_progress` Land the staged env/bootstrap modules for Expo public config, local-session fallback, and web runtime/Supabase bearer readiness on top of `origin/main`
+- AIB-110 Add a first-pass notification center screen model and route shell
 
 ## Done
 
@@ -151,5 +157,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` now has staged mobile/web env+auth modules in progress on a Team 2 branch; remaining work is the dependency/runtime pass plus real staged validation once env values exist
 - `AIB-085` checkpoint PR: `#184` (`team2-autonomous-ws-20260317`)
+- `AIB-108` through `AIB-110` are on pushed Team 1 branches and now have task IDs assigned for compliant PR titles
 - Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work
