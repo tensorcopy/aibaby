@@ -1,4 +1,8 @@
-export type MobileFeatureScreenKey = "log-meal" | "today-timeline" | "summary-history";
+export type MobileFeatureScreenKey =
+  | "log-meal"
+  | "today-timeline"
+  | "summary-history"
+  | "growth";
 
 export type MobileFeatureScreenModel = {
   title: string;
@@ -42,6 +46,19 @@ export function createMobileFeatureScreenModel({
       statusMessage: normalizedBabyId
         ? "The home quick action now lands on a stable route for timeline work once records start flowing in."
         : "Create a baby profile first so the timeline knows whose day to show.",
+      homeHref,
+    };
+  }
+
+  if (feature === "growth") {
+    return {
+      title: "Growth",
+      subtitle:
+        "This route is reserved for future weight, height, and chart cards once growth entries land.",
+      statusTitle: normalizedBabyId ? "Growth shell ready" : "Baby profile still required",
+      statusMessage: normalizedBabyId
+        ? "The home quick action can land here now while growth history and chart work ship in later Team 1 slices."
+        : "Create a baby profile first so future growth entries stay tied to the right baby.",
       homeHref,
     };
   }
