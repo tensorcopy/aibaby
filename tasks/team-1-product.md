@@ -22,6 +22,12 @@
 7. add export history and bundle status surfaces in mobile
 8. add recipe-template content and rendering rules for one-day suggestion sets
 
+## Team Roles
+
+- Product engineer: product logic, feature implementation, transport wiring, and product-surface behavior
+- Designer specialist: UX structure, interaction polish, layout, discoverability, and visual decisions inside Product-owned files
+- Both roles work inside the same lane and should make their role explicit in `Work Log` entries when helpful
+
 ## Dependency Requests
 
 - None currently.
