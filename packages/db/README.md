@@ -18,3 +18,4 @@ Current implementation:
 - `src/weekly-report.js` defines the first-pass weekly summary persistence contract and retrieval helpers
 - `prisma/schema.prisma` defines the first relational schema for the core MVP entities, including babies, messages, meal records, media assets, reports, reminders, and ingestion events
 - `src/*-prisma.js` adds Prisma-facing adapters for baby profiles and report models so existing domain contracts can bridge into the real repository layer incrementally
+- `src/baby-profile-repository.js` adds the first repository-backed baby-profile persistence adapter that keeps the existing row contract while targeting Prisma delegates underneath
