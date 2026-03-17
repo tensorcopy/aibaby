@@ -45,6 +45,7 @@
 - Assigned Team 1 task IDs so the existing review-ready branches can use compliant PR titles: `AIB-108` for home entry points, `AIB-109` for the reminder detail shell, and `AIB-110` for the notification center shell.
 - Added a first-pass mobile notification center route at `/notifications` with a dedicated screen model covering missing-baby empty state, action-ready reminder/review cards, and summary/export update cards.
 - Linked the reminder timeline into the notification center so the new shell is reachable before the home-entry-point branch is merged.
+- Committed and pushed the notification-center shell on `feat/team1-notification-center-shell` so the work is preserved outside the local worktree.
 - Verification:
   - `node --experimental-strip-types --test src/features/notifications/center.test.ts src/features/reminders/history.test.ts`
 - Noted the existing broader mobile verification issue remains unchanged:
