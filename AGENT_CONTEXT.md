@@ -40,6 +40,7 @@ This repository is the shared source of truth for product intent, architecture, 
 ## Current commander intent
 
 - Team 1 default goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
+- Team 1 may include both a product engineer and a designer specialist working inside the same lane
 - Team 1 preferred work order:
   1. add home-screen entry points for review, reminders, exports, and future growth
   2. define a typed recommendation contract for daily meal suggestions
@@ -129,6 +130,13 @@ Command boundary rules:
 - Team 1 owns product-facing UX, guidance logic, recommendation behavior, and parent-visible product surfaces
 - Team 2 owns auth, data, storage, API/runtime integration, deployment, and operational readiness
 - Do not silently change another team's boundary contract; report it clearly
+
+Team 1 specialist rules:
+- A designer specialist may work inside Team 1 on UX structure, navigation, interaction polish, discoverability, and visual presentation
+- The designer specialist may change code directly for Product-owned UX work
+- The designer specialist must stay out of Platform-owned auth, data, storage, runtime, and deployment changes
+- If a design task needs a Platform contract or API change, record that dependency instead of improvising backend work
+- Product specialists should use the same Team 1 log and make their role explicit in `Work Log` entries when helpful
 
 Escalate only for:
 - destructive or irreversible changes
