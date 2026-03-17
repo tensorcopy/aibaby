@@ -41,9 +41,15 @@ The home route now also reloads the active baby profile and surfaces a compact s
 
 It now also exposes stable home quick actions for meal logging, today's timeline, and summary history, with baby-scoped route handoff so the next mobile slices can land on predictable destinations.
 
-This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can bootstrap an owner-scoped current profile and keep the baby profile route pointed at the same session context.
+This slice now also wires the Expo shell through a lightweight `MobileSessionProvider`, so `.env.local` can bootstrap a local session token and keep the baby profile route pointed at the same session context.
 
-A future PR can replace this bootstrap with real Supabase session plumbing and richer navigation once auth and additional screens land.
+The current Team 2 `AIB-085` slice also adds staged env/bootstrap helpers:
+
+- `app.config.ts` now builds Expo app identity from `EXPO_PUBLIC_AIBABY_ENV`
+- `src/features/app-shell/publicConfig.ts` normalizes the Expo-safe Supabase and local bootstrap env contract
+- `src/features/app-shell/supabaseSession.ts` adds the typed Supabase session/auth adapter used by future live session hydration
+
+Real on-device Supabase session hydration still needs real project values and the remaining runtime dependency/install pass.
 
 This slice now also includes `src/features/baby-profile/screenShell.ts`, which composes the create/edit form state, load requests, and submit transport into a reviewable mobile screen-state lifecycle with loading, empty-create, and save-result handling.
 

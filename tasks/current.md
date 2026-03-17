@@ -72,7 +72,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- No current in-progress tasks
+- AIB-085 `in_progress` Land the staged env/bootstrap modules for Expo public config, local-session fallback, and web runtime/Supabase bearer readiness on top of `origin/main`
 
 ## Done
 
@@ -139,7 +139,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## Blockers
 
-- Production hardening work from `AIB-085` onward still needs real project environment values and full provider setup. `AIB-080` landed reviewable Supabase auth/session plumbing, but device-level validation is still pending outside this sandbox.
+- Production hardening work from `AIB-085` onward still needs real project environment values and full provider setup. The staged env/bootstrap slice is now in progress, but device-level validation is still pending outside this sandbox.
 
 ## Coordination notes
 
@@ -149,5 +149,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - Foundation choices are now documented well enough to start assigning implementation work
 - The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
+- `AIB-085` now has staged mobile/web env+auth modules in progress on a Team 2 branch; remaining work is the dependency/runtime pass plus real staged validation once env values exist
 - Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

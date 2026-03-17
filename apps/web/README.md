@@ -36,8 +36,14 @@ The current reusable client/form layer now also includes:
 
 Current local-dev default bindings now:
 - fetch a single owner-scoped baby profile by id for the local App Router read path
-- resolve owner scope from `Authorization: Bearer dev-user:<userId>` or `x-aibaby-owner-user-id`
+- resolve owner scope from a local session bearer token, `Authorization: Bearer dev-user:<userId>`, a verified Supabase bearer token when configured, or `x-aibaby-owner-user-id`
 - persist baby profiles in `apps/web/.data/baby-profiles.json` (override with `AIBABY_DEV_DATA_FILE`)
+
+The current Team 2 `AIB-085` slice also adds:
+
+- `src/runtime/env.ts` for normalized server env parsing and hosted-readiness reporting
+- `src/features/baby-profile/session-token.js` for local session-token parsing alongside staged Supabase bearer verification
+- `apps/web/.env.example` as the app-local starting point for server/runtime env setup
 
 The current upload slice now also includes:
 - `POST /api/uploads/presign` and `POST /api/uploads/complete` for backend-controlled upload negotiation and completion
