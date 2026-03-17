@@ -8,7 +8,7 @@ The repository now supports a first-pass local run loop:
 - `apps/web` runs a local Next.js dev server that exposes the current API routes
 - `apps/mobile` runs the Expo shell for the current mobile slices
 
-Prisma, Supabase, and production auth are still not wired in. Local development currently uses the owner-scoped dev bootstrap and file-backed web persistence.
+Prisma-backed persistence is still not implemented, and local development still uses file-backed web persistence. The mobile/web auth boundary now supports a staged Supabase bearer contract while preserving the local session-token bootstrap for local-only runs.
 
 ## Prerequisites
 
@@ -70,18 +70,24 @@ Use clear prefixes so ownership is obvious:
 
 ## Current variable baseline
 
-The repository root `.env.example` should define placeholders for:
+The repository root `.env.example` now defines placeholders for:
 
+- `AIBABY_ENV`
+- `AIBABY_WEB_URL`
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_STORAGE_BUCKET_MEAL_MEDIA`
+- `SUPABASE_STORAGE_BUCKET_DERIVED_MEDIA`
+- `EXPO_PUBLIC_AIBABY_ENV`
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-- `EXPO_PUBLIC_AIBABY_OWNER_USER_ID`
+- `EXPO_PUBLIC_AIBABY_SESSION_TOKEN`
 - `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
 - `EXPO_PUBLIC_AIBABY_API_BASE_URL`
+- `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP`
 - `AI_PROVIDER`
 - `OPENAI_API_KEY`
 - `OPENAI_MODEL_PARSING`
@@ -90,11 +96,10 @@ The repository root `.env.example` should define placeholders for:
 - `SENTRY_DSN`
 - `TRIGGER_SECRET_KEY`
 
-For the current local run loop, the most important variables are:
+App-specific starter examples now also exist at:
 
-- `EXPO_PUBLIC_AIBABY_OWNER_USER_ID`
-- `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
-- `EXPO_PUBLIC_AIBABY_API_BASE_URL`
+- `apps/mobile/.env.example`
+- `apps/web/.env.example`
 
 ## Working rules for local env files
 
@@ -109,23 +114,26 @@ Current local run workflow:
 
 1. run `npm install`
 2. copy `.env.example` to `.env.local`
-3. set `EXPO_PUBLIC_AIBABY_OWNER_USER_ID` in `.env.local`
-4. optionally set `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID` if you already want the home route pointed at one saved profile
+3. copy `apps/mobile/.env.example` to `apps/mobile/.env.local`
+4. copy `apps/web/.env.example` to `apps/web/.env.local`
 5. set `EXPO_PUBLIC_AIBABY_API_BASE_URL` to your local backend URL, such as `http://192.168.1.10:3000`
-6. start the backend with `npm run dev:web`
-7. start Expo with `npm run dev:mobile`
+6. for local-only bootstrap, set `EXPO_PUBLIC_AIBABY_SESSION_TOKEN` and optionally `EXPO_PUBLIC_AIBABY_CURRENT_BABY_ID`
+7. start the backend with `npm run dev:web`
+8. start Expo with `npm run dev:mobile`
 
 Notes:
 - use your LAN IP instead of `localhost` if Expo is running on a physical device
 - `apps/web` persists local-dev data under `apps/web/.data/`
 - the mobile shell can still render without a backend, but create/edit and meal logging flows need the API to complete successfully
 - open `http://localhost:3000` to use the web manual-test shell for profile creation, text meal submission, draft generation, and today's timeline inspection
+- leave `EXPO_PUBLIC_AIBABY_ENABLE_LOCAL_BOOTSTRAP=true` only for local-only development; set it to `false` for staged or hosted validation so a stale local token does not override real bearer auth
+- the mobile app config now keys its name, slug, scheme, and native package IDs off `EXPO_PUBLIC_AIBABY_ENV` so dev and staging builds can stay installable alongside production
 
 ## Follow-up work expected after this doc
 
 Subsequent implementation PRs should:
 
-- replace the owner-scoped local bootstrap with real Supabase auth
 - replace file-backed local persistence with Prisma-backed storage
+- add the remaining runtime/dependency setup needed for live Expo Supabase sessions on device
 - add lint and build scripts once the runtime scaffolds stabilize
 - add concrete migration commands when the database layer is live

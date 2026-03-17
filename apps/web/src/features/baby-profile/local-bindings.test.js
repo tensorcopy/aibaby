@@ -15,7 +15,7 @@ const {
   updateBabyProfile,
 } = require('./local-store');
 
-test('resolveOwnerUserIdFromRequest prefers the local dev bearer token', () => {
+test('resolveOwnerUserIdFromRequest prefers the local dev bearer token', async () => {
   const request = new Request('http://localhost/api/babies', {
     headers: {
       authorization: 'Bearer dev-user:user_123',
@@ -23,7 +23,7 @@ test('resolveOwnerUserIdFromRequest prefers the local dev bearer token', () => {
     },
   });
 
-  assert.equal(resolveOwnerUserIdFromRequest(request), 'user_123');
+  assert.equal(await resolveOwnerUserIdFromRequest(request), 'user_123');
   assert.equal(parseBearerOwnerUserId('Bearer dev-user:user_456'), 'user_456');
   assert.equal(parseBearerOwnerUserId('Bearer something-else'), undefined);
 });
