@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
 import { nurseryColors, nurseryRadii } from "../src/features/app-shell/nurseryTheme.ts";
+import { createNotificationCenterHref } from "../src/features/notifications/center.ts";
 import { createReminderHistoryScreenModel } from "../src/features/reminders/history.ts";
 import { reviewFixtures } from "../src/features/review/fixtures.ts";
 
@@ -21,6 +22,11 @@ export default function RemindersRoute() {
       <Text style={styles.heroEyebrow}>Reminders</Text>
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
+      <Link asChild href={createNotificationCenterHref(babyId)}>
+        <Pressable accessibilityRole="button" style={styles.previewButton}>
+          <Text style={styles.previewButtonText}>Preview notification center</Text>
+        </Pressable>
+      </Link>
 
       {model.items.length === 0 ? (
         <View style={styles.emptyCard}>
@@ -80,6 +86,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     color: nurseryColors.inkMuted,
+  },
+  previewButton: {
+    alignSelf: "flex-start",
+    borderRadius: nurseryRadii.pill,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceStrong,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  previewButtonText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: nurseryColors.primaryStrong,
   },
   emptyCard: {
     gap: 8,
