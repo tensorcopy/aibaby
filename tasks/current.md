@@ -150,5 +150,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` now has staged mobile/web env+auth modules in progress on a Team 2 branch; remaining work is the dependency/runtime pass plus real staged validation once env values exist
+- `AIB-085` checkpoint PR: `#184` (`team2-autonomous-ws-20260317`)
 - Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

@@ -38,4 +38,5 @@
 - Added staged mobile env/bootstrap modules for Expo public config, app identity selection, and Supabase session auth normalization.
 - Added web runtime env parsing plus bearer auth verification that accepts local session tokens, legacy dev-user tokens, and configured Supabase access tokens.
 - Updated env examples and local-development docs to describe the new staged contract.
+- Opened PR `#184` for this checkpoint branch.
 - Current blockers remain external: real project env values and the remaining runtime setup for full staged/device validation.
