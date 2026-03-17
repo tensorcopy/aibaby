@@ -30,12 +30,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-034 `done` Build weekly summary generation flow
 - AIB-035 `done` Build summary history view
 
-### Guidance and recommendations
-- AIB-104 `done` Define the first-pass daily meal recommendation contract and deterministic gap signals for protein, iron-rich foods, vegetable variety, and repeated foods
-- AIB-105 `done` Add recipe-template content and deterministic one-day suggestion-set rendering rules on top of the daily meal recommendation contract
-- AIB-106 `done` Add deterministic correction analytics summarization so repeated parent edits can be grouped by category and food
-- AIB-107 `done` Add growth-aware placeholder guidance that can later consume weight and height entries without making measurement claims
-
 ### Reminders and review
 - AIB-040 `done` Build age-stage calculation logic
 - AIB-041 `done` Define reminder content model and templates
@@ -133,10 +127,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-080 `done` Add first-pass Supabase session bootstrap in Expo and backend bearer validation against Supabase while preserving the local-dev auth fallback
 - AIB-088 `done` Define the first hosted deployment path across Expo, Vercel, and Supabase, plus the env mapping needed to reach phone-only staging tests
 - AIB-089 `done` Centralize runtime env parsing for Expo and the local web shell so staged Supabase/bootstrap work builds on one repo-managed config contract
-- AIB-104 `done` Define the first-pass daily meal recommendation contract in `packages/ai`, including deterministic gap signals for protein, iron-rich foods, vegetable variety, and repeated foods
-- AIB-105 `done` Add deterministic one-day suggestion-set rendering in `packages/ai` so future UI surfaces can consume recipe-template content without inventing their own wording rules
-- AIB-106 `done` Add deterministic meal correction analytics summarization in `packages/ai` so future review and guidance surfaces can summarize repeated parent edits by category
-- AIB-107 `done` Add deterministic growth-aware placeholder guidance in `packages/ai` so future UI surfaces can consume weight and height context without implying percentile or diagnostic interpretation
 - AIB-050 `done` Define the first-pass export bundle layout for notes, media, and metadata
 - AIB-051 `done` Define the additive Obsidian-friendly conventions layered on top of the baseline Markdown diary export shape
 - AIB-052 `done` Accept copied local media as the default export mode, while leaving referenced and mixed modes as future options
@@ -153,7 +143,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## Coordination notes
 
-- Team-level progress and blockers now live in `tasks/team-1-caregiver-experience.md`, `tasks/team-2-intelligence-and-guidance.md`, and `tasks/team-3-platform-and-trust.md`
+- Team-level progress and blockers now live in `tasks/team-1-product.md` and `tasks/team-2-platform.md`
 - Org-level coordination summaries and commander decisions now live in `tasks/commander.md`
 - Task-related PR titles must include the task ID in the format `type(AIB-123): short description`
 - Foundation choices are now documented well enough to start assigning implementation work
