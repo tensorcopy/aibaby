@@ -5,18 +5,13 @@ import { pathToFileURL } from "node:url";
 const TEAM_FILES = [
   {
     key: "team1",
-    label: "Team 1: Caregiver Experience",
-    relativePath: "tasks/team-1-caregiver-experience.md",
+    label: "Team 1: Product",
+    relativePath: "tasks/team-1-product.md",
   },
   {
     key: "team2",
-    label: "Team 2: Intelligence and Guidance",
-    relativePath: "tasks/team-2-intelligence-and-guidance.md",
-  },
-  {
-    key: "team3",
-    label: "Team 3: Platform and Trust",
-    relativePath: "tasks/team-3-platform-and-trust.md",
+    label: "Team 2: Platform",
+    relativePath: "tasks/team-2-platform.md",
   },
 ];
 

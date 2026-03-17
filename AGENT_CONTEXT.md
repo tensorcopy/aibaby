@@ -39,18 +39,16 @@ This repository is the shared source of truth for product intent, architecture, 
 
 ## Current commander intent
 
-- Team 1 default goal: improve mobile discovery and workflow access without waiting on major backend changes
+- Team 1 default goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
 - Team 1 preferred work order:
   1. add home-screen entry points for review, reminders, exports, and future growth
-  2. add a reminder detail screen shell with done / snooze / dismiss states
-  3. add a first-pass notification center route shell
-- Team 2 default goal: define the next stable guidance contract and deterministic recommendation logic for future product surfaces
+  2. define a typed recommendation contract for daily meal suggestions
+  3. add a reminder detail screen shell with done / snooze / dismiss states
+  4. add deterministic meal-gap detection for protein, iron, vegetable variety, and repeats
+  5. add a first-pass notification center route shell
+  6. add correction analytics shape so repeated parent edits can be summarized by category
+- Team 2 default goal: advance the project from local MVP shell toward real staged infrastructure
 - Team 2 preferred work order:
-  1. define a typed recommendation contract for daily meal suggestions
-  2. add deterministic meal-gap detection for protein, iron, vegetable variety, and repeats
-  3. add correction analytics shape so repeated parent edits can be summarized by category
-- Team 3 default goal: advance the project from local MVP shell toward real staged infrastructure
-- Team 3 preferred work order:
   1. `AIB-085` real environment bootstrap and app configuration for Supabase auth, database access, and storage
   2. `AIB-081` first real database schema and repository layer
   3. `AIB-082` and `AIB-083` persistence replacement
@@ -63,7 +61,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - Codex is the primary implementation agent on the workstation
 - OpenClaw can continue work remotely, but should operate on the same Git repository state
 - If an agent makes planning decisions, those decisions should be written back into repo files in the same branch
-- Work is split across 3 lanes from `docs/product-roadmap.md`: Caregiver Experience, Intelligence and Guidance, Platform and Trust
+- Work is split across 2 lanes from `docs/product-roadmap.md`: Product and Platform
 - Each agent should stay inside one lane unless explicitly reassigned
 - The commander should be able to understand progress from repo markdown files without rereading long chat history
 - The source of truth for coordination is `tasks/commander.md` plus the per-team logs in `tasks/`
@@ -73,7 +71,7 @@ This repository is the shared source of truth for product intent, architecture, 
 ## Commander protocol
 
 - The commander should sync to the latest `main` before coordinating work
-- The commander should read `AGENT_CONTEXT.md`, `tasks/commander.md`, all 3 team log files, and relevant open-task context in `tasks/current.md`
+- The commander should read `AGENT_CONTEXT.md`, `tasks/commander.md`, both team log files, and relevant open-task context in `tasks/current.md`
 - The commander should treat repo files and GitHub state as the communication surface, not chat history
 - The commander should refresh `tasks/commander.md` with the latest team snapshot, cross-team dependencies, decisions, and interventions needed
 - The commander should not rewrite team logs except in exceptional cleanup or recovery situations; teams own their own file updates
@@ -128,9 +126,8 @@ Required team log update points:
 - at the end of a work cycle, append one concise `Work Log` entry with completed work, current task, next task, and blockers
 
 Command boundary rules:
-- Team 1 owns mobile UX, navigation, screen flows, and presentation behavior
-- Team 2 owns AI logic, rules, templates, structured outputs, and recommendation behavior
-- Team 3 owns auth, data, storage, API/runtime integration, deployment, and operational readiness
+- Team 1 owns product-facing UX, guidance logic, recommendation behavior, and parent-visible product surfaces
+- Team 2 owns auth, data, storage, API/runtime integration, deployment, and operational readiness
 - Do not silently change another team's boundary contract; report it clearly
 
 Escalate only for:
