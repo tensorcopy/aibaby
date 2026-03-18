@@ -4,11 +4,11 @@
 
 - Goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
 - State: review_ready
-- Current task: `AIB-114` unify mobile review links onto the shared `/review` route
-- Next step: open the `AIB-114` PR, merge it once the focused review-link checks stay green, then refresh the Team 1 queue on top of current `main`
+- Current task: `AIB-115` add a visible 7-day / 30-day switcher to the shared mobile review flow
+- Next step: open the `AIB-115` PR, merge it once the focused review checks stay green, then refresh the Team 1 queue on top of current `main`
 - Blockers: none
-- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/src/features/review/route.ts`, `apps/mobile/src/features/review/route.test.ts`, `apps/mobile/app/log-meal.tsx`, `apps/mobile/src/features/app-shell/homeQuickActions.ts`
-- Verification: `node --experimental-strip-types --test src/features/review/route.test.ts`; `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts`; `rg -n '/review-7-day|/review-30-day' apps/mobile/app/log-meal.tsx apps/mobile/src/features -S`
+- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/src/features/review/route.ts`, `apps/mobile/src/features/review/route.test.ts`, `apps/mobile/app/review-7-day.tsx`, `apps/mobile/app/review-30-day.tsx`
+- Verification: `node --experimental-strip-types --test src/features/review/route.test.ts`; `npm --workspace @aibaby/mobile run test:review`
 - Last updated: 2026-03-18
 
 ## Active Queue
@@ -158,4 +158,29 @@
 - Verified the helper contract with `node --experimental-strip-types --test src/features/review/route.test.ts` and `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts`, then confirmed the legacy review hrefs no longer appear in Team 1 entry-point files with `rg -n '/review-7-day|/review-30-day' apps/mobile/app/log-meal.tsx apps/mobile/src/features -S`.
 - Current task: move `AIB-114` through commit and PR flow.
 - Next task: merge `AIB-114`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
+- Blockers: none.
+
+### 2026-03-18 AIB-114 Merge
+
+- `AIB-114` merged on `main` via PR `#195` at commit `6e0d051`.
+- The repo task files were refreshed immediately afterward so Team 1 no longer treats the review-link unification as still active work.
+- Current task: re-read current Team 1 context and pick the next unfinished product slice on top of the merged `main`.
+- Next task: start the next slice on a fresh branch instead of continuing from the merged `AIB-114` branch.
+- Blockers: none.
+
+### 2026-03-18 AIB-115 Setup
+
+- After `AIB-114`, the shared `/review` route is stable, but the review screens still do not give parents a visible way to switch between the 7-day and 30-day windows once they arrive.
+- Chose `AIB-115` as the next slice so the shared review flow becomes self-navigable instead of relying on hidden query parameters or older shortcut paths.
+- Current task: add a small in-screen window switcher that links between `/review?days=7` and `/review?days=30`.
+- Next task: write the failing switcher-link test first, then implement the minimal review-window switcher UI.
+- Blockers: none.
+
+### 2026-03-18 AIB-115 Implementation
+
+- Added `createReviewWindowLinks` in `apps/mobile/src/features/review/route.ts` so both review windows can be rendered from the same shared route helper.
+- Updated `review-7-day.tsx` and `review-30-day.tsx` to show a visible 7-day / 30-day switcher that keeps the active window highlighted and links back through the shared `/review?...` contract.
+- Verified the switcher with `node --experimental-strip-types --test src/features/review/route.test.ts` and `npm --workspace @aibaby/mobile run test:review`.
+- Current task: move `AIB-115` through commit and PR flow.
+- Next task: merge `AIB-115`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
 - Blockers: none.

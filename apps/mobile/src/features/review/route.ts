@@ -17,3 +17,21 @@ export function createReviewHref({
 
   return `/review?babyId=${encodeURIComponent(normalizedBabyId)}&days=${days}`;
 }
+
+export function createReviewWindowLinks({
+  babyId,
+  activeDays,
+}: {
+  babyId?: string;
+  activeDays: 7 | 30;
+}): Array<{
+  label: string;
+  href: string;
+  isActive: boolean;
+}> {
+  return [7, 30].map((days) => ({
+    label: `${days} days`,
+    href: createReviewHref({ babyId, days: days as 7 | 30 }),
+    isActive: days === activeDays,
+  }));
+}
