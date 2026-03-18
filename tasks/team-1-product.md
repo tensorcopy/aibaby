@@ -4,12 +4,12 @@
 
 - Goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
 - State: review_ready
-- Current task: `AIB-110` add a first-pass notification center route shell
-- Next step: keep PR `#185` moving, then open or update PRs for `AIB-108` and `AIB-109` before picking the next unblocked Team 1 slice
+- Current task: `AIB-111` add export history and bundle status surfaces in mobile
+- Next step: open the `AIB-111` PR, merge it once the focused summary-history checks stay green, then pick the next unfinished Team 1 slice
 - Blockers: none
-- Files: `apps/mobile/app/notifications.tsx`, `apps/mobile/app/reminders.tsx`, `apps/mobile/src/features/notifications/center.ts`, `apps/mobile/src/features/notifications/center.test.ts`, `tasks/current.md`, `tasks/team-1-product.md`
-- Verification: `node --experimental-strip-types --test src/features/notifications/center.test.ts src/features/reminders/history.test.ts`; attempted `npm --workspace @aibaby/mobile run test:app-shell` and hit an unrelated existing `@aibaby/ui` resolution failure in `src/features/app-shell/homeProfileSummary.test.ts`
-- Last updated: 2026-03-17
+- Files: `apps/mobile/app/summaries.tsx`, `apps/mobile/src/features/summary-history/model.ts`, `apps/mobile/src/features/summary-history/model.test.ts`, `apps/mobile/src/features/summary-history/fixtures.ts`, `tasks/current.md`, `tasks/team-1-product.md`
+- Verification: `node --experimental-strip-types --test src/features/summary-history/model.test.ts`; `npm --workspace @aibaby/mobile run test:summary-history`
+- Last updated: 2026-03-18
 
 ## Active Queue
 
@@ -53,4 +53,32 @@
   - fails because `src/features/app-shell/homeProfileSummary.test.ts` cannot resolve `@aibaby/ui` in this workspace.
 - Current task: keep `AIB-110` review-ready with durable repo breadcrumbs.
 - Next task: move `AIB-108` through `AIB-110` through PRs and then pick the next unblocked Team 1 slice.
+- Blockers: none.
+
+### 2026-03-18 Work Log
+
+- Merged the previously queued Team 1 slices on `main`:
+  - `AIB-110` notification center via PR `#185`
+  - `AIB-108` home entry points via PR `#187`
+  - `AIB-109` reminder detail shell via PR `#189`
+- Rebased the older Team 1 branches onto current `origin/main` before opening their PRs, then re-ran focused verification on each slice before merge.
+- Verified that the recommendation-contract and guidance-side queue items are already present on `main`: `packages/ai/src/daily-meal-recommendations.js` already emits deterministic `gapSignals`, and `packages/ai/src/meal-correction-analytics.js` already exists.
+- Current task: refresh the stale Team 1 queue state in repo files, then move to the next unfinished product-surface slice.
+- Next task: inspect export history and bundle-status UX in mobile summaries, since that now appears to be the next real unfinished Team 1 product surface.
+- Blockers: none.
+
+### 2026-03-18 Checkpoint
+
+- Team 1 queue cleanup is complete: the repo now treats `AIB-111` export history and bundle status surfaces as the next unfinished Team 1 product slice.
+- Current task: start `AIB-111` by extending the mobile summaries experience with export history and bundle-status UI.
+- Next task: write the first failing model/UI tests for the smallest export-history/status view that fits the existing summaries route.
+- Blockers: none.
+
+### 2026-03-18 Implementation
+
+- `AIB-111` now extends the mobile summaries route with an export-history section backed by the existing summary-history model instead of introducing a new transport layer prematurely.
+- Added typed export-bundle inputs and export-card outputs in `apps/mobile/src/features/summary-history/model.ts`, then updated fixtures and the `summaries` route to render ready and generating bundle states with bundle-path visibility when available.
+- Verified the slice with `node --experimental-strip-types --test src/features/summary-history/model.test.ts` and `npm --workspace @aibaby/mobile run test:summary-history`.
+- Current task: move the verified branch through commit and PR flow.
+- Next task: merge `AIB-111`, then re-check the Team 1 queue against current `main` before starting the next slice.
 - Blockers: none.
