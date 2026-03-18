@@ -69,9 +69,21 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
+              name="reminders/[reminderId]"
+              options={{
+                title: "Reminder detail",
+              }}
+            />
+            <Stack.Screen
               name="growth"
               options={{
                 title: "Growth",
+              }}
+            />
+            <Stack.Screen
+              name="notifications"
+              options={{
+                title: "Notification center",
               }}
             />
           </Stack>
