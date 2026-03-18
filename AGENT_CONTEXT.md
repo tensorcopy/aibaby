@@ -28,6 +28,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - After finishing a task, immediately pick up the next open `todo` task in `tasks/current.md` only if it still fits the assigned team goal and no blocker or redirection exists
 - Do not leave completed or review-ready work only in a local checkout; commit it, push it, and move it through a pull request against `main`
 - Do not leave pull requests open longer than necessary; merge them promptly or record the concrete blocker preventing merge
+- A pull request is not considered complete unless the owning team log was updated before the PR and again after merge
 
 ## Current project status
 
@@ -78,6 +79,7 @@ This repository is the shared source of truth for product intent, architecture, 
 - The commander should not rewrite team logs except in exceptional cleanup or recovery situations; teams own their own file updates
 - When a team reports a blocker that can be resolved by coordination, the commander should write the resolution or decision into `tasks/commander.md`
 - When a pull request is merge-ready, the commander should merge it promptly or record the blocker preventing merge
+- If a pull request lands without the team log being updated, treat that as incomplete process work and correct it immediately
 - If a team is idle because of a blocker, the commander should redirect it to the next best unblocked task in its lane and record that decision in `tasks/commander.md`
 
 Commander work cycle:
@@ -124,6 +126,8 @@ Required team log update points:
 - after the first meaningful implementation checkpoint
 - immediately when blocked
 - when the work is ready for review
+- immediately before opening or updating a PR
+- immediately after a PR is merged, with shipped work and next task recorded
 - at the end of a work cycle, append one concise `Work Log` entry with completed work, current task, next task, and blockers
 
 Command boundary rules:
@@ -161,11 +165,13 @@ PR title rule:
 
 ## When a slice is ready
 
+- Update the team log first so `Current State` and `Work Log` reflect the work being proposed
 - Commit the work on the task branch
 - Push the branch to GitHub
 - Open or update a pull request targeting `main`
 - Merge the pull request to `main` once repository policy allows it
 - Do not leave the pull request open as a parking state; merge it promptly or write down the blocker
+- After merge, update the team log again with what shipped and the next queued task
 - After merge, return to the team queue and continue with the next best unblocked task
 
 ## When blocked
