@@ -37,10 +37,10 @@ export function createMobileRootNavigationModel({
   return {
     title: "AI Baby",
     subtitle: normalizedHandoff
-      ? "Baby profile saved. Continue from the app home while review, reminders, exports, and future growth keep filling in."
+      ? "Baby profile saved. Continue from the app home while review, meal ideas, reminders, exports, and future growth keep filling in."
       : hasBabyId
-        ? "Use the app home as the launch point for logging, review, reminders, and exports."
-        : "Start with a baby profile so logging, review, reminders, and future growth use the right baby context.",
+        ? "Use the app home as the launch point for logging, review, meal ideas, reminders, and exports."
+        : "Start with a baby profile so logging, review, meal ideas, reminders, and future growth use the right baby context.",
     statusBanner: createStatusBanner(normalizedHandoff),
     primaryAction: {
       label: hasBabyId ? "Open baby profile" : "Create baby profile",

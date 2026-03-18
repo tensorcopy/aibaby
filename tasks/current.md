@@ -62,7 +62,8 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-108 `done` Add home-screen entry points for review, reminders, exports, and future growth
 - AIB-109 `done` Add a reminder detail screen shell with done / snooze / dismiss states
 - AIB-110 `done` Add a first-pass notification center screen model and route shell
-- AIB-111 `in_progress` Add export history and bundle status surfaces in mobile
+- AIB-111 `done` Add export history and bundle status surfaces in mobile
+- AIB-112 `in_progress` Add a mobile meal-ideas route shell for the one-day suggestion set
 
 ### Production hardening
 - AIB-080 `done` Replace the local bearer session token flow with real Supabase auth bootstrap in Expo and backend token validation in web
@@ -79,7 +80,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-082 `in_progress` Replace baby-profile local JSON persistence with the real repository implementation
-- AIB-111 `in_progress` Add export history and bundle status surfaces in mobile
+- AIB-112 `in_progress` Add a mobile meal-ideas route shell for the one-day suggestion set
 
 ## Done
 
@@ -158,6 +159,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` merged via PR `#184`; remaining work there is the runtime/device validation pass once env values exist
 - `AIB-081` merged via PR `#186`; Team 2 now has an `AIB-082` checkpoint branch that swaps baby-profile routes onto a repository-backed path and keeps timeline compatibility when no DB runtime is configured
-- `AIB-108`, `AIB-109`, and `AIB-110` all merged on `main` via PRs `#187`, `#189`, and `#185`; `AIB-111` is now in progress on the Team 1 branch as the next product-surface slice
+- `AIB-108`, `AIB-109`, `AIB-110`, and `AIB-111` are all merged on `main` via PRs `#187`, `#189`, `#185`, and `#192`; Team 1 is now using `AIB-112` for the next product-facing gap: a mobile route shell for the existing one-day meal suggestion set
 - Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

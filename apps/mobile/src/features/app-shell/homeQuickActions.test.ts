@@ -5,6 +5,7 @@ import {
   createLogMealHref,
   createMobileHomeQuickActions,
   createGrowthHref,
+  createMealIdeasHref,
   createReminderHistoryHref,
   createReviewWindowHref,
   createSummaryHistoryHref,
@@ -32,6 +33,12 @@ test("createMobileHomeQuickActions enables all downstream mobile actions once a 
       href: "/review?babyId=baby_123&days=7",
     },
     {
+      key: "meal-ideas",
+      label: "Meal ideas",
+      description: "Open the next-day suggestion set shaped by recent gaps and age-stage guidance.",
+      href: "/meal-ideas?babyId=baby_123",
+    },
+    {
       key: "reminders",
       label: "Reminders",
       description: "Open the reminder timeline for age-stage guidance and follow-up nudges.",
@@ -55,7 +62,7 @@ test("createMobileHomeQuickActions enables all downstream mobile actions once a 
 test("createMobileHomeQuickActions keeps downstream actions disabled when no baby profile is active", () => {
   const actions = createMobileHomeQuickActions();
 
-  assert.equal(actions.length, 6);
+  assert.equal(actions.length, 7);
 
   for (const action of actions) {
     assert.equal(action.href, undefined);
@@ -67,6 +74,7 @@ test("baby-scoped home quick action href builders trim and encode baby ids", () 
   assert.equal(createLogMealHref("  baby 123  "), "/log-meal?babyId=baby%20123");
   assert.equal(createTodayTimelineHref("  baby 123  "), "/today?babyId=baby%20123");
   assert.equal(createReviewWindowHref("  baby 123  "), "/review?babyId=baby%20123&days=7");
+  assert.equal(createMealIdeasHref("  baby 123  "), "/meal-ideas?babyId=baby%20123");
   assert.equal(createReminderHistoryHref("  baby 123  "), "/reminders?babyId=baby%20123");
   assert.equal(createSummaryHistoryHref("  baby 123  "), "/summaries?babyId=baby%20123");
   assert.equal(createGrowthHref("  baby 123  "), "/growth?babyId=baby%20123");
