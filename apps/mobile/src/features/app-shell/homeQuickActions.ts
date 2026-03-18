@@ -2,6 +2,7 @@ export type MobileHomeQuickActionKey =
   | "log-meal"
   | "today-timeline"
   | "review-window"
+  | "meal-ideas"
   | "reminders"
   | "summary-history"
   | "growth";
@@ -37,6 +38,13 @@ export function createMobileHomeQuickActions(babyId?: string): MobileHomeQuickAc
       label: "Review",
       description: "Jump into the 7-day review window to spot trends before drilling into a specific day.",
       href: createReviewWindowHref(normalizedBabyId),
+      enabled: Boolean(normalizedBabyId),
+    }),
+    createQuickAction({
+      key: "meal-ideas",
+      label: "Meal ideas",
+      description: "Open the next-day suggestion set shaped by recent gaps and age-stage guidance.",
+      href: createMealIdeasHref(normalizedBabyId),
       enabled: Boolean(normalizedBabyId),
     }),
     createQuickAction({
@@ -79,6 +87,10 @@ export function createReviewWindowHref(babyId?: string): string {
   }
 
   return `/review?babyId=${encodeURIComponent(normalizedBabyId)}&days=7`;
+}
+
+export function createMealIdeasHref(babyId?: string): string {
+  return createBabyScopedHref("/meal-ideas", babyId);
 }
 
 export function createReminderHistoryHref(babyId?: string): string {
