@@ -6,13 +6,17 @@
   "scripts": {
     "dev:web": "npm run dev --workspace @aibaby/web",
     "dev:mobile": "npm run dev --workspace @aibaby/mobile",
-    "demo:seed": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/demo-data.mjs seed",
-    "demo:reset": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/demo-data.mjs reset",
-    "demo:session": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/dev-session-token.mjs",
     "commander:sync": "node scripts/commander-sync.mjs",
     "test:commander-sync": "node --test scripts/commander-sync.test.mjs",
-    "test": "npm run test:demo-data && npm test --workspaces --if-present",
-    "test:demo-data": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test scripts/demo-data.test.mjs"
+    "test:team-log-check": "node --test scripts/check-team-log-update.test.mjs",
+    "test": "npm run test:commander-sync && npm run test:team-log-check && npm test --workspaces --if-present"
+  },
+  "overrides": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "5.6.2",
+    "react-native-web": "0.21.2"
   },
   "workspaces": [
     "apps/*",
