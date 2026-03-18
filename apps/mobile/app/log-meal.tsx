@@ -16,6 +16,7 @@ import {
   nurseryRadii,
 } from "../src/features/app-shell/nurseryTheme.ts";
 import { useMobileSession } from "../src/features/app-shell/MobileSessionContext.tsx";
+import { createReviewHref } from "../src/features/review/route.ts";
 import {
   appendMealComposerAttachments,
   createMealComposerDraft,
@@ -246,12 +247,8 @@ export function MealChatExperience({
   const summariesHref = babyId
     ? `/summaries?babyId=${encodeURIComponent(babyId)}`
     : "/summaries";
-  const review7DayHref = babyId
-    ? `/review-7-day?babyId=${encodeURIComponent(babyId)}`
-    : "/review-7-day";
-  const review30DayHref = babyId
-    ? `/review-30-day?babyId=${encodeURIComponent(babyId)}`
-    : "/review-30-day";
+  const review7DayHref = createReviewHref({ babyId, days: 7 });
+  const review30DayHref = createReviewHref({ babyId, days: 30 });
   const remindersHref = babyId
     ? `/reminders?babyId=${encodeURIComponent(babyId)}`
     : "/reminders";
