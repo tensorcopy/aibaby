@@ -44,4 +44,26 @@ export const summaryHistoryFixtures = {
       },
     },
   ],
+  exportBundles: [
+    {
+      id: "export_2026_03_15",
+      babyId: "baby_123",
+      requestedAt: "2026-03-15T18:30:00.000Z",
+      bundleName: "aibaby-export-2026-03-15",
+      status: "ready",
+      exportPath: "/exports/aibaby-export-2026-03-15.zip",
+      noteCount: 14,
+      mediaCount: 6,
+    },
+    {
+      id: "export_2026_03_14",
+      babyId: "baby_123",
+      requestedAt: "2026-03-14T07:45:00.000Z",
+      bundleName: "aibaby-export-2026-03-14",
+      status: "generating",
+      exportPath: null,
+      noteCount: null,
+      mediaCount: null,
+    },
+  ],
 };

@@ -18,6 +18,7 @@ export default function SummariesRoute() {
     babyId,
     dailyReports: summaryHistoryFixtures.dailyReports,
     weeklyReports: summaryHistoryFixtures.weeklyReports,
+    exportBundles: summaryHistoryFixtures.exportBundles,
   });
 
   return (
@@ -62,6 +63,38 @@ export default function SummariesRoute() {
           ))}
         </View>
       )}
+
+      {model.exportCards.length > 0 ? (
+        <View style={styles.exportSection}>
+          <Text style={styles.exportSectionTitle}>Export history</Text>
+          <Text style={styles.exportSectionSubtitle}>
+            Keep the latest bundle status close without leaving the mobile summaries flow.
+          </Text>
+          <View style={styles.exportCardList}>
+            {model.exportCards.map((card) => (
+              <View key={card.id} style={styles.exportCard}>
+                <View style={styles.cardHeader}>
+                  <View>
+                    <Text style={styles.cardEyebrow}>Export</Text>
+                    <Text style={styles.cardTitle}>{card.bundleName}</Text>
+                  </View>
+                  <View style={styles.statusPill}>
+                    <Text style={styles.statusPillText}>{card.statusLabel}</Text>
+                  </View>
+                </View>
+                <Text style={styles.cardDate}>{card.requestedAtLabel}</Text>
+                <Text style={styles.cardSummary}>{card.detail}</Text>
+                {card.exportPath ? (
+                  <View style={styles.supportingBlock}>
+                    <Text style={styles.supportingLabel}>Bundle path</Text>
+                    <Text style={styles.supportingText}>{card.exportPath}</Text>
+                  </View>
+                ) : null}
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       <Link asChild href={model.homeHref}>
         <Pressable accessibilityRole="button" style={styles.homeButton}>
@@ -117,12 +150,36 @@ const styles = StyleSheet.create({
   cardList: {
     gap: 12,
   },
+  exportSection: {
+    gap: 10,
+  },
+  exportSectionTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: nurseryColors.ink,
+  },
+  exportSectionSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: nurseryColors.inkMuted,
+  },
+  exportCardList: {
+    gap: 12,
+  },
   card: {
     gap: 12,
     borderRadius: nurseryRadii.card,
     borderWidth: 1,
     borderColor: nurseryColors.line,
     backgroundColor: nurseryColors.surface,
+    padding: 20,
+  },
+  exportCard: {
+    gap: 12,
+    borderRadius: nurseryRadii.card,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surfaceStrong,
     padding: 20,
   },
   cardHeader: {
