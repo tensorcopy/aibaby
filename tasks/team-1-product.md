@@ -4,11 +4,11 @@
 
 - Goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
 - State: review_ready
-- Current task: `AIB-112` add a mobile meal-ideas route shell for the one-day suggestion set
-- Next step: open the `AIB-112` PR, merge it once the focused mobile-shell checks stay green, then refresh the Team 1 queue on top of current `main`
+- Current task: `AIB-113` restore the mobile `/review` route targeted by home quick actions and notifications
+- Next step: open the `AIB-113` PR, merge it once the review and entry-point checks stay green, then refresh the Team 1 queue on top of current `main`
 - Blockers: none
-- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/app/_layout.tsx`, `apps/mobile/app/meal-ideas.tsx`, `apps/mobile/src/features/meal-ideas/model.ts`, `apps/mobile/src/features/meal-ideas/model.test.ts`, `apps/mobile/src/features/meal-ideas/fixtures.ts`, `apps/mobile/src/features/app-shell/homeQuickActions.ts`, `apps/mobile/src/features/app-shell/homeQuickActions.test.ts`, `apps/mobile/src/features/app-shell/rootNavigation.ts`, `apps/mobile/src/features/app-shell/rootNavigation.test.ts`
-- Verification: `node --experimental-strip-types --test src/features/meal-ideas/model.test.ts`; `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts src/features/app-shell/rootNavigation.test.ts`; attempted `npm --workspace @aibaby/mobile run test:app-shell` and hit the existing unrelated `@aibaby/ui` resolution failure in `src/features/app-shell/homeProfileSummary.test.ts`
+- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/app/review.tsx`, `apps/mobile/src/features/review/route.test.ts`, `apps/mobile/src/features/review/route.ts`
+- Verification: `node --experimental-strip-types --test src/features/review/route.test.ts`; `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts src/features/notifications/center.test.ts`; `npm --workspace @aibaby/mobile run test:review`
 - Last updated: 2026-03-18
 
 ## Active Queue
@@ -108,4 +108,29 @@
 - Re-checked `npm --workspace @aibaby/mobile run test:app-shell`; it still fails for the pre-existing `@aibaby/ui` resolution problem in `src/features/app-shell/homeProfileSummary.test.ts`, not for this slice.
 - Current task: move `AIB-112` through commit and PR flow.
 - Next task: merge `AIB-112`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
+- Blockers: none.
+
+### 2026-03-18 AIB-112 Merge
+
+- `AIB-112` merged on `main` via PR `#193` at commit `47fd327`.
+- The repo task files were refreshed immediately afterward so Team 1 no longer treats the meal-ideas shell as still active work.
+- Current task: re-read current Team 1 context and pick the next unfinished product slice on top of the merged `main`.
+- Next task: start the next slice on a fresh branch instead of continuing from the merged `AIB-112` branch.
+- Blockers: none.
+
+### 2026-03-18 AIB-113 Setup
+
+- Re-read current `main` after the `AIB-112` merge and found a live product mismatch: Team 1 quick actions and notification cards link to `/review?...`, but the app only exposes `review-7-day.tsx` and `review-30-day.tsx`.
+- Chose `AIB-113` as the next slice so the existing review entry points land on a real route instead of a missing screen.
+- Current task: add the missing `/review` route with stable `days` handling while keeping existing Team 1 hrefs intact.
+- Next task: write the failing route-selection test first, then implement the missing route shell on top of the existing review model and fixtures.
+- Blockers: none.
+
+### 2026-03-18 AIB-113 Implementation
+
+- Added the missing `apps/mobile/app/review.tsx` route so Team 1 quick actions and notification cards now land on a real review screen without changing their existing href contract.
+- Added `resolveReviewWindowDays` in `apps/mobile/src/features/review/route.ts` so `/review` safely defaults to 7 days, honors `days=30`, and ignores unsupported query values.
+- Verified the route fix with `node --experimental-strip-types --test src/features/review/route.test.ts`, `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts src/features/notifications/center.test.ts`, and `npm --workspace @aibaby/mobile run test:review`.
+- Current task: move `AIB-113` through commit and PR flow.
+- Next task: merge `AIB-113`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
 - Blockers: none.
