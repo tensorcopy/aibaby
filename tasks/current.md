@@ -65,7 +65,8 @@ This file is the lightweight shared backlog for human and agent coordination.
 - AIB-111 `done` Add export history and bundle status surfaces in mobile
 - AIB-112 `done` Add a mobile meal-ideas route shell for the one-day suggestion set
 - AIB-113 `done` Restore the mobile review route so quick actions and notifications land on a real screen
-- AIB-114 `in_progress` Unify mobile review links onto the shared `/review` route
+- AIB-114 `done` Unify mobile review links onto the shared `/review` route
+- AIB-115 `in_progress` Add a visible 7-day / 30-day switcher to the shared mobile review flow
 
 ### Production hardening
 - AIB-080 `done` Replace the local bearer session token flow with real Supabase auth bootstrap in Expo and backend token validation in web
@@ -82,7 +83,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 ## In Progress
 
 - AIB-082 `in_progress` Replace baby-profile local JSON persistence with the real repository implementation
-- AIB-114 `in_progress` Unify mobile review links onto the shared `/review` route
+- AIB-115 `in_progress` Add a visible 7-day / 30-day switcher to the shared mobile review flow
 
 ## Done
 
@@ -161,6 +162,6 @@ This file is the lightweight shared backlog for human and agent coordination.
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` merged via PR `#184`; remaining work there is the runtime/device validation pass once env values exist
 - `AIB-081` merged via PR `#186`; Team 2 now has an `AIB-082` checkpoint branch that swaps baby-profile routes onto a repository-backed path and keeps timeline compatibility when no DB runtime is configured
-- `AIB-108`, `AIB-109`, `AIB-110`, `AIB-111`, `AIB-112`, and `AIB-113` are all merged on `main` via PRs `#187`, `#189`, `#185`, `#192`, `#193`, and `#194`; Team 1 is now using `AIB-114` to converge remaining review links on the shared `/review` route
+- `AIB-108`, `AIB-109`, `AIB-110`, `AIB-111`, `AIB-112`, `AIB-113`, and `AIB-114` are all merged on `main` via PRs `#187`, `#189`, `#185`, `#192`, `#193`, `#194`, and `#195`; Team 1 is now using `AIB-115` to make both review windows discoverable inside the shared `/review` flow
 - Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

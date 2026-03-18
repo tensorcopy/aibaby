@@ -5,6 +5,7 @@ import { useMobileSession } from "../src/features/app-shell/MobileSessionContext
 import { nurseryColors, nurseryRadii } from "../src/features/app-shell/nurseryTheme.ts";
 import { reviewFixtures } from "../src/features/review/fixtures.ts";
 import { createReviewScreenModel } from "../src/features/review/model.ts";
+import { createReviewWindowLinks } from "../src/features/review/route.ts";
 
 export default function Review7DayRoute() {
   const params = useLocalSearchParams<{ babyId?: string | string[] }>();
@@ -18,12 +19,35 @@ export default function Review7DayRoute() {
     weeklyReports: reviewFixtures.weeklyReports,
     reminders: reviewFixtures.reminders,
   });
+  const windowLinks = createReviewWindowLinks({ babyId, activeDays: 7 });
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heroEyebrow}>Review</Text>
       <Text style={styles.title}>{model.title}</Text>
       <Text style={styles.subtitle}>{model.subtitle}</Text>
+      <View style={styles.windowSwitcherRow}>
+        {windowLinks.map((link) => (
+          <Link key={link.label} asChild href={link.href}>
+            <Pressable
+              accessibilityRole="button"
+              style={[
+                styles.windowSwitcherChip,
+                link.isActive ? styles.windowSwitcherChipActive : null,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.windowSwitcherText,
+                  link.isActive ? styles.windowSwitcherTextActive : null,
+                ]}
+              >
+                {link.label}
+              </Text>
+            </Pressable>
+          </Link>
+        ))}
+      </View>
 
       {model.windowCards.length === 0 ? (
         <View style={styles.emptyCard}>
@@ -141,6 +165,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: nurseryColors.inkMuted,
+  },
+  windowSwitcherRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  windowSwitcherChip: {
+    borderRadius: nurseryRadii.pill,
+    borderWidth: 1,
+    borderColor: nurseryColors.line,
+    backgroundColor: nurseryColors.surface,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  windowSwitcherChipActive: {
+    backgroundColor: nurseryColors.primaryStrong,
+    borderColor: nurseryColors.primaryStrong,
+  },
+  windowSwitcherText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: nurseryColors.ink,
+  },
+  windowSwitcherTextActive: {
+    color: "#ffffff",
   },
   windowCardRow: {
     gap: 12,
