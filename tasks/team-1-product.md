@@ -4,11 +4,11 @@
 
 - Goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
 - State: review_ready
-- Current task: `AIB-113` restore the mobile `/review` route targeted by home quick actions and notifications
-- Next step: open the `AIB-113` PR, merge it once the review and entry-point checks stay green, then refresh the Team 1 queue on top of current `main`
+- Current task: `AIB-114` unify mobile review links onto the shared `/review` route
+- Next step: open the `AIB-114` PR, merge it once the focused review-link checks stay green, then refresh the Team 1 queue on top of current `main`
 - Blockers: none
-- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/app/review.tsx`, `apps/mobile/src/features/review/route.test.ts`, `apps/mobile/src/features/review/route.ts`
-- Verification: `node --experimental-strip-types --test src/features/review/route.test.ts`; `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts src/features/notifications/center.test.ts`; `npm --workspace @aibaby/mobile run test:review`
+- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/src/features/review/route.ts`, `apps/mobile/src/features/review/route.test.ts`, `apps/mobile/app/log-meal.tsx`, `apps/mobile/src/features/app-shell/homeQuickActions.ts`
+- Verification: `node --experimental-strip-types --test src/features/review/route.test.ts`; `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts`; `rg -n '/review-7-day|/review-30-day' apps/mobile/app/log-meal.tsx apps/mobile/src/features -S`
 - Last updated: 2026-03-18
 
 ## Active Queue
@@ -133,4 +133,29 @@
 - Verified the route fix with `node --experimental-strip-types --test src/features/review/route.test.ts`, `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts src/features/notifications/center.test.ts`, and `npm --workspace @aibaby/mobile run test:review`.
 - Current task: move `AIB-113` through commit and PR flow.
 - Next task: merge `AIB-113`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
+- Blockers: none.
+
+### 2026-03-18 AIB-113 Merge
+
+- `AIB-113` merged on `main` via PR `#194` at commit `d6b1d6d`.
+- The repo task files were refreshed immediately afterward so Team 1 no longer treats the review-route fix as still active work.
+- Current task: re-read current Team 1 context and pick the next unfinished product slice on top of the merged `main`.
+- Next task: start the next slice on a fresh branch instead of continuing from the merged `AIB-113` branch.
+- Blockers: none.
+
+### 2026-03-18 AIB-114 Setup
+
+- After the `AIB-113` route fix, re-scanned review entry points and found one remaining inconsistency: `log-meal.tsx` still links to the legacy `/review-7-day` and `/review-30-day` paths instead of the shared `/review` route now used elsewhere.
+- Chose `AIB-114` as the next slice so Team 1 review navigation converges on one route contract instead of keeping split legacy paths alive.
+- Current task: add a shared review href helper and update the remaining legacy links to use it.
+- Next task: write the failing helper test first, then update the remaining review link builders.
+- Blockers: none.
+
+### 2026-03-18 AIB-114 Implementation
+
+- Added `createReviewHref` in `apps/mobile/src/features/review/route.ts` so Team 1 can build stable 7-day and 30-day review links from one place.
+- Updated `homeQuickActions.ts` and `log-meal.tsx` to use the shared `/review?...` href helper instead of keeping the old `/review-7-day` and `/review-30-day` paths alive.
+- Verified the helper contract with `node --experimental-strip-types --test src/features/review/route.test.ts` and `node --experimental-strip-types --test src/features/app-shell/homeQuickActions.test.ts`, then confirmed the legacy review hrefs no longer appear in Team 1 entry-point files with `rg -n '/review-7-day|/review-30-day' apps/mobile/app/log-meal.tsx apps/mobile/src/features -S`.
+- Current task: move `AIB-114` through commit and PR flow.
+- Next task: merge `AIB-114`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
 - Blockers: none.

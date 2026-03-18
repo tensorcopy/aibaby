@@ -1,3 +1,5 @@
+import { createReviewHref } from "../review/route.ts";
+
 export type MobileHomeQuickActionKey =
   | "log-meal"
   | "today-timeline"
@@ -80,13 +82,7 @@ export function createTodayTimelineHref(babyId?: string): string {
 }
 
 export function createReviewWindowHref(babyId?: string): string {
-  const normalizedBabyId = normalizeBabyId(babyId);
-
-  if (!normalizedBabyId) {
-    return "/review?days=7";
-  }
-
-  return `/review?babyId=${encodeURIComponent(normalizedBabyId)}&days=7`;
+  return createReviewHref({ babyId, days: 7 });
 }
 
 export function createMealIdeasHref(babyId?: string): string {
