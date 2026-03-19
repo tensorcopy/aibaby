@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
 const TEAM_FILES = [
@@ -20,11 +21,15 @@ async function main() {
   const repoRoot = path.resolve(options.repoRoot ?? process.cwd());
   const commanderPath = path.join(repoRoot, "tasks", "commander.md");
   const commanderSource = await fs.readFile(commanderPath, "utf8");
+  const sourceRef = options.sourceRef ?? "origin/main";
+
+  await refreshSourceRef(repoRoot, sourceRef, options);
   const teams = await Promise.all(
     TEAM_FILES.map(async (team) => {
-      const source = await fs.readFile(path.join(repoRoot, team.relativePath), "utf8");
+      const { source, sourceLabel } = await readTeamLog(repoRoot, team.relativePath, sourceRef, options);
       return {
         ...team,
+        sourceLabel,
         ...parseTeamLog(source),
       };
     }),
@@ -91,7 +96,7 @@ function buildTeamSnapshot(teams) {
 - Current task: ${team.currentTask}
 - Next task: ${nextTask}
 - Blockers: ${team.blockers}
-- Source: \`${team.relativePath}\``;
+- Source: \`${team.sourceLabel ?? team.relativePath}\``;
     })
     .join("\n\n");
 }
@@ -174,10 +179,72 @@ function parseArgs(args) {
     if (arg === "--now") {
       options.now = value;
       index += 1;
+      continue;
+    }
+
+    if (arg === "--source-ref") {
+      options.sourceRef = value;
+      index += 1;
+      continue;
+    }
+
+    if (arg === "--skip-fetch") {
+      options.skipFetch = true;
     }
   }
 
   return options;
+}
+
+async function refreshSourceRef(repoRoot, sourceRef, options) {
+  if (options.skipFetch || !shouldFetchSourceRef(sourceRef)) {
+    return;
+  }
+
+  const [remoteName, ...branchParts] = sourceRef.split("/");
+  const branchName = branchParts.join("/");
+  const fetchArgs = ["fetch", remoteName];
+
+  if (branchName) {
+    fetchArgs.push(branchName);
+  }
+
+  try {
+    await runGit(repoRoot, fetchArgs);
+  } catch (error) {
+    console.warn(
+      `commander-sync: unable to refresh ${sourceRef}; falling back to the latest local ref state. ${error.message}`,
+    );
+  }
+}
+
+async function readTeamLog(repoRoot, relativePath, sourceRef, options) {
+  if (!sourceRef) {
+    return {
+      source: await fs.readFile(path.join(repoRoot, relativePath), "utf8"),
+      sourceLabel: relativePath,
+    };
+  }
+
+  try {
+    const source = await runGit(repoRoot, ["show", `${sourceRef}:${relativePath}`]);
+    return {
+      source,
+      sourceLabel: `${sourceRef}:${relativePath}`,
+    };
+  } catch (error) {
+    console.warn(
+      `commander-sync: unable to read ${relativePath} from ${sourceRef}; falling back to the working tree. ${error.message}`,
+    );
+    return {
+      source: await fs.readFile(path.join(repoRoot, relativePath), "utf8"),
+      sourceLabel: relativePath,
+    };
+  }
+}
+
+function shouldFetchSourceRef(sourceRef) {
+  return sourceRef.startsWith("origin/");
 }
 
 function parseBullets(section) {
@@ -254,6 +321,33 @@ function formatUtc(date) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+async function runGit(repoRoot, args) {
+  const child = spawn("git", args, {
+    cwd: repoRoot,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  let stdout = "";
+  let stderr = "";
+  child.stdout.on("data", (chunk) => {
+    stdout += chunk.toString();
+  });
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk.toString();
+  });
+
+  const exitCode = await new Promise((resolve, reject) => {
+    child.on("error", reject);
+    child.on("close", resolve);
+  });
+
+  if (exitCode !== 0) {
+    throw new Error(stderr.trim() || `git ${args.join(" ")} exited with ${exitCode}`);
+  }
+
+  return stdout;
 }
 
 if (isDirectExecution()) {
