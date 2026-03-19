@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 const TEAM_LOGS = new Set(["tasks/team-1-product.md", "tasks/team-2-platform.md"]);
 const BYPASS_EXACT = new Set(["AGENT_CONTEXT.md", "tasks/commander.md", "tasks/current.md"]);
 const BYPASS_PREFIXES = [".github/", "docs/"];
+const BYPASS_SCRIPT_PATTERNS = [/^scripts\/commander-sync(\.test)?\.mjs$/];
 
 export function evaluateChangedFiles(changedFiles) {
   const files = changedFiles.filter(Boolean);
@@ -27,7 +28,11 @@ export function evaluateChangedFiles(changedFiles) {
 }
 
 function isBypassFile(file) {
-  return BYPASS_EXACT.has(file) || BYPASS_PREFIXES.some((prefix) => file.startsWith(prefix));
+  return (
+    BYPASS_EXACT.has(file) ||
+    BYPASS_PREFIXES.some((prefix) => file.startsWith(prefix)) ||
+    BYPASS_SCRIPT_PATTERNS.some((pattern) => pattern.test(file))
+  );
 }
 
 function parseArgs(args) {
