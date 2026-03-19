@@ -3,13 +3,13 @@
 ## Current State
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
-- State: review_ready
+- State: in_progress
 - Current task: `AIB-083` replace meal, reminder, report, and export local JSON persistence with the real repository implementation
-- Next step: merge the first `AIB-083` checkpoint for text-meal and meal-draft repository bindings, then continue the remaining reminder, report history, and export persistence replacements
-- Blockers: none for the first `AIB-083` slice; separate staged/device validation still depends on real project environment values and full provider setup
-- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `packages/db/src/*repository*.js`, `packages/db/package.json`, `packages/db/README.md`, `apps/web/src/features/text-meal/*`, `apps/web/src/features/meal-drafts/*`, `apps/web/package.json`
-- Verification: `npm run test:text-meal-api --workspace @aibaby/web`; `npm run test:meal-drafts-api --workspace @aibaby/web`; `npm run test:prisma-repository --workspace @aibaby/db`
-- Last updated: 2026-03-18
+- Next step: record the merged text-meal / meal-draft checkpoint, then start the remaining reminder, report-history, and export persistence replacement slice on a fresh branch
+- Blockers: none for the next `AIB-083` slice; separate staged/device validation still depends on real project environment values and full provider setup
+- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `apps/web/src/features/reminders/*`, `apps/web/src/features/report-history/*`, `apps/web/src/features/export-markdown/*`, `packages/db/src/*repository*.js`
+- Verification: merged `AIB-083` checkpoint verified `npm run test:text-meal-api --workspace @aibaby/web`; `npm run test:meal-drafts-api --workspace @aibaby/web`; `npm run test:prisma-repository --workspace @aibaby/db`
+- Last updated: 2026-03-19
 
 ## Active Queue
 
@@ -79,3 +79,9 @@
 - Added repository-binding and route-dependency coverage for `apps/web/src/features/text-meal/*` and `apps/web/src/features/meal-drafts/*`, including the same Prisma-when-available and local-store fallback pattern used in `AIB-082`.
 - Updated package test scripts and db docs so the new repository-backed slice is part of the regular focused verification path.
 - Verified `npm run test:text-meal-api --workspace @aibaby/web`, `npm run test:meal-drafts-api --workspace @aibaby/web`, and `npm run test:prisma-repository --workspace @aibaby/db`.
+
+### 2026-03-19 AIB-083 post-merge refresh
+
+- The first `AIB-083` checkpoint shipped via PR `#198`; parsed text-meal submission persistence and meal-draft generation/confirmation now use repository-backed bindings when Prisma runtime dependencies are available.
+- Team 2 remains on `AIB-083` for the remaining reminder, report-history, and export persistence surfaces.
+- Next slice should keep the same repository-binding plus local-store fallback pattern so staged environments move toward the real database path without breaking no-DB local development.
