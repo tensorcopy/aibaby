@@ -10,10 +10,18 @@ const {
   resetBabyProfileRouteDependencies,
   setBabyProfileRouteDependenciesForTest,
 } = require("../baby-profile/route-dependencies.js");
+const {
+  resetTimelineRouteDependencies,
+  setTimelineRouteDependenciesForTest,
+} = require("./route-dependencies.js");
 
 async function importTimelineRoute() {
   return import(`../../../app/api/timeline/route.ts?test=${Date.now()}-${Math.random()}`);
 }
+
+test.afterEach(() => {
+  resetTimelineRouteDependencies();
+});
 
 test("GET /api/timeline returns current-day entries for the selected baby", async () => {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "aibaby-timeline-"));
@@ -247,6 +255,122 @@ test("GET /api/timeline can resolve the selected baby from repository-backed bab
     assert.equal(payload.babyProfile?.name, "Yiyi");
     assert.equal(payload.entries.length, 1);
     assert.equal(payload.entries[0].kind, "text_message");
+  } finally {
+    resetBabyProfileRouteDependencies();
+  }
+});
+
+test("GET /api/timeline can use repository-backed meal entries while keeping uploads on the local-store path", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "aibaby-timeline-"));
+  const today = new Date();
+  const todayIso = today.toISOString();
+
+  process.env.AIBABY_DEV_DATA_FILE = path.join(tempDir, "baby-profiles.json");
+  process.env.AIBABY_TEXT_PARSE_DEV_DATA_FILE = path.join(tempDir, "text-meal-submissions.json");
+  process.env.AIBABY_MEAL_DRAFT_DEV_DATA_FILE = path.join(tempDir, "meal-drafts.json");
+  process.env.AIBABY_UPLOAD_DEV_DATA_FILE = path.join(tempDir, "uploads.json");
+
+  setBabyProfileRouteDependenciesForTest({
+    async getCurrentBabyProfileByOwnerUserId({ ownerUserId }: { ownerUserId: string }) {
+      return {
+        id: "baby_123",
+        owner_user_id: ownerUserId.trim(),
+        name: "Yiyi",
+        birth_date: "2025-10-15",
+        sex: null,
+        feeding_style: "mixed",
+        timezone: "America/Los_Angeles",
+        allergies_json: [],
+        supplements_json: ["iron"],
+        primary_caregiver: "Zhen",
+        created_at: "2026-03-17T20:55:00.000Z",
+        updated_at: "2026-03-17T20:56:00.000Z",
+      };
+    },
+  });
+
+  setTimelineRouteDependenciesForTest({
+    async listTimelineEntriesForDate() {
+      return [
+        {
+          id: "text:msg_123",
+          kind: "text_message",
+          occurredAt: todayIso,
+          title: "Text meal note",
+          status: "parsed",
+          detail: "banana and oatmeal",
+          metadata: {
+            messageId: "msg_123",
+          },
+        },
+        {
+          id: "meal:meal_123",
+          kind: "meal_record",
+          occurredAt: todayIso,
+          title: "Draft breakfast record",
+          status: "draft",
+          detail: "Parsed a breakfast with banana and oatmeal.",
+          metadata: {
+            mealRecordId: "meal_123",
+            itemNames: ["banana", "oatmeal"],
+            sourceMessageId: "msg_123",
+          },
+        },
+      ];
+    },
+  });
+
+  await fs.writeFile(
+    process.env.AIBABY_UPLOAD_DEV_DATA_FILE,
+    JSON.stringify(
+      {
+        messages: [
+          {
+            id: "upload_msg_123",
+            owner_user_id: "user_123",
+            baby_id: "baby_123",
+            created_at: todayIso,
+            ingestion_status: "uploaded",
+          },
+        ],
+        mediaAssets: [
+          {
+            id: "asset_123",
+            message_id: "upload_msg_123",
+            upload_status: "uploaded",
+          },
+        ],
+        ingestionEvents: [],
+      },
+      null,
+      2,
+    ),
+  );
+
+  try {
+    const { GET } = await importTimelineRoute();
+    const targetDate = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Los_Angeles",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(today);
+
+    const response = await GET(
+      new Request(`http://localhost/api/timeline?timezone=America/Los_Angeles&date=${targetDate}`, {
+        headers: {
+          "x-aibaby-owner-user-id": "user_123",
+        },
+      }),
+    );
+
+    assert.equal(response.status, 200);
+
+    const payload = await response.json();
+    assert.equal(payload.entries.length, 3);
+    assert.equal(payload.entries[0].kind, "text_message");
+    assert.equal(payload.entries[1].kind, "meal_record");
+    assert.equal(payload.entries[2].kind, "image_upload");
   } finally {
     resetBabyProfileRouteDependencies();
   }

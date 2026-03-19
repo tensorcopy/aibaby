@@ -3,12 +3,12 @@
 ## Current State
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
-- State: in_progress
+- State: review_ready
 - Current task: `AIB-083` replace meal, reminder, report, and export local JSON persistence with the real repository implementation
-- Next step: record the merged text-meal / meal-draft checkpoint, then start the remaining reminder, report-history, and export persistence replacement slice on a fresh branch
-- Blockers: none for the next `AIB-083` slice; separate staged/device validation still depends on real project environment values and full provider setup
-- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `apps/web/src/features/reminders/*`, `apps/web/src/features/report-history/*`, `apps/web/src/features/export-markdown/*`, `packages/db/src/*repository*.js`
-- Verification: merged `AIB-083` checkpoint verified `npm run test:text-meal-api --workspace @aibaby/web`; `npm run test:meal-drafts-api --workspace @aibaby/web`; `npm run test:prisma-repository --workspace @aibaby/db`
+- Next step: merge the repository-backed timeline checkpoint, then continue the remaining `AIB-083` surfaces only where they still exist on current `main`; keep uploads on the local-store path until `AIB-084`
+- Blockers: none for the timeline slice; separate staged/device validation still depends on real project environment values and full provider setup
+- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `apps/web/src/features/timeline/*`, `apps/web/app/api/timeline/route.ts`, `packages/db/src/timeline-repository*.js`, `packages/db/package.json`, `packages/db/README.md`
+- Verification: `npm run test:timeline-api --workspace @aibaby/web`; `node --test packages/db/src/timeline-repository.test.js`; `npm run test:prisma-repository --workspace @aibaby/db`
 - Last updated: 2026-03-19
 
 ## Active Queue
@@ -85,3 +85,15 @@
 - The first `AIB-083` checkpoint shipped via PR `#198`; parsed text-meal submission persistence and meal-draft generation/confirmation now use repository-backed bindings when Prisma runtime dependencies are available.
 - Team 2 remains on `AIB-083` for the remaining reminder, report-history, and export persistence surfaces.
 - Next slice should keep the same repository-binding plus local-store fallback pattern so staged environments move toward the real database path without breaking no-DB local development.
+
+### 2026-03-19 AIB-083 timeline slice kickoff
+
+- Current `main` no longer has dedicated reminder/report/export web feature folders to swap next; the live JSON-backed meal surface that still remains in the web runtime is `apps/web/src/features/timeline/local-store.js`.
+- Planned next slice: add a repository-backed timeline path for text-message and meal-record entries while leaving upload/media timeline entries on the existing local-store path until `AIB-084`.
+- Goal for this branch: keep the existing `/api/timeline` response shape stable while removing the remaining direct meal/text JSON reads from the timeline flow when Prisma runtime dependencies are available.
+
+### 2026-03-19 AIB-083 timeline checkpoint
+
+- Added `packages/db/src/timeline-repository.js` so owner/baby-scoped `messages` and `meal_records` can map into the existing timeline entry shape without reading the meal/text JSON files directly.
+- Added `apps/web/src/features/timeline/route-dependencies.js` plus route and test coverage so `/api/timeline` prefers the repository-backed meal/text path when Prisma runtime dependencies are available, while preserving the existing upload local-store path until `AIB-084`.
+- Kept the timeline response contract stable and left the upload/media timeline seam untouched so the storage-specific work remains isolated to `AIB-084`.

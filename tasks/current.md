@@ -165,6 +165,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 - `AIB-081` merged via PR `#186`; the first Prisma schema and repository layer are now on `main`
 - `AIB-082` merged via PR `#188`; baby-profile routes now use a repository-backed path when Prisma runtime dependencies are available, while preserving the local-store fallback
 - `AIB-083` first checkpoint merged via PR `#198`; text-meal and meal-draft routes now use repository-backed bindings when Prisma runtime dependencies are available, while preserving the local-store fallback
+- `AIB-083` now has a second checkpoint that swaps timeline meal/text entries onto a repository-backed path while intentionally leaving upload/media timeline entries on the local-store path until `AIB-084`
 - `AIB-108`, `AIB-109`, `AIB-110`, `AIB-111`, `AIB-112`, `AIB-113`, `AIB-114`, and `AIB-115` are all merged on `main` via PRs `#187`, `#189`, `#185`, `#192`, `#193`, `#194`, `#195`, and `#196`
 - `AIB-116` is the next recommended Team 1 slice: land the first dedicated growth route now that the home entry point and review/reminder/export discovery work are complete
 - `AIB-117` is Platform-owned because the `@aibaby/ui` failure is a cross-workspace Node/test-harness issue, not a product-surface regression

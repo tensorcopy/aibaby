@@ -12,19 +12,32 @@ async function buildTodayTimelineSnapshot({
   date,
   getCurrentBabyProfileByOwnerUserId,
   getBabyProfileById,
+  listTimelineEntriesForDate,
 }) {
   const normalizedOwnerUserId = normalizeRequiredOwnerUserId(ownerUserId);
   const targetDate = normalizeDate(date) || getCurrentDateInTimezone(timezone);
 
-  const [selectedProfile, textMealStore, mealDraftStore, uploadsStore] = await Promise.all([
+  const [selectedProfile, repositoryEntries, textMealStore, mealDraftStore, uploadsStore] = await Promise.all([
     loadSelectedProfile({
       ownerUserId: normalizedOwnerUserId,
       babyId,
       getCurrentBabyProfileByOwnerUserId,
       getBabyProfileById,
     }),
-    readJsonFile(getTextMealFilePath(), { messages: [], ingestionEvents: [] }),
-    readJsonFile(getMealDraftsFilePath(), { mealRecords: [], mealItems: [], ingestionEvents: [] }),
+    typeof listTimelineEntriesForDate === "function"
+      ? listTimelineEntriesForDate({
+          ownerUserId: normalizedOwnerUserId,
+          babyId: normalizeOptionalString(babyId),
+          timezone,
+          date: targetDate,
+        })
+      : [],
+    typeof listTimelineEntriesForDate === "function"
+      ? { messages: [], ingestionEvents: [] }
+      : readJsonFile(getTextMealFilePath(), { messages: [], ingestionEvents: [] }),
+    typeof listTimelineEntriesForDate === "function"
+      ? { mealRecords: [], mealItems: [], ingestionEvents: [] }
+      : readJsonFile(getMealDraftsFilePath(), { mealRecords: [], mealItems: [], ingestionEvents: [] }),
     readJsonFile(getUploadsFilePath(), { messages: [], mediaAssets: [], ingestionEvents: [] }),
   ]);
 
@@ -40,6 +53,7 @@ async function buildTodayTimelineSnapshot({
 
   const selectedBabyId = selectedProfile.id;
   const entries = [
+    ...asArray(repositoryEntries),
     ...buildTextEntries(textMealStore, normalizedOwnerUserId, selectedBabyId, timezone, targetDate),
     ...buildUploadEntries(uploadsStore, normalizedOwnerUserId, selectedBabyId, timezone, targetDate),
     ...buildMealDraftEntries(mealDraftStore, normalizedOwnerUserId, selectedBabyId, timezone, targetDate),
