@@ -3,24 +3,21 @@
 ## Current State
 
 - Goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
-- State: review_ready
-- Current task: `AIB-115` add a visible 7-day / 30-day switcher to the shared mobile review flow
-- Next step: open the `AIB-115` PR, merge it once the focused review checks stay green, then refresh the Team 1 queue on top of current `main`
+- State: planning
+- Current task: `AIB-116` add a dedicated growth route with weight and height entry history plus chart cards
+- Next step: start a fresh Team 1 branch for `AIB-116`, write the first failing growth-route tests, then implement the smallest reviewable route shell on top of current `main`
 - Blockers: none
-- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/src/features/review/route.ts`, `apps/mobile/src/features/review/route.test.ts`, `apps/mobile/app/review-7-day.tsx`, `apps/mobile/app/review-30-day.tsx`
-- Verification: `node --experimental-strip-types --test src/features/review/route.test.ts`; `npm --workspace @aibaby/mobile run test:review`
-- Last updated: 2026-03-18
+- Files: `tasks/current.md`, `tasks/team-1-product.md`, `apps/mobile/app`, `apps/mobile/src/features/app-shell`, `apps/mobile/src/features/growth`
+- Verification: `AIB-115` previously verified with `node --experimental-strip-types --test src/features/review/route.test.ts`; `npm --workspace @aibaby/mobile run test:review`
+- Last updated: 2026-03-19
 
 ## Active Queue
 
-1. add home-screen entry points for review, reminders, exports, and future growth
-2. define a typed recommendation contract for daily meal suggestions
-3. add a reminder detail screen shell with done / snooze / dismiss states
-4. add deterministic meal-gap detection for protein, iron, vegetable variety, and repeats
-5. add a first-pass notification center route shell
-6. add correction analytics shape so repeated parent edits can be summarized by category
-7. add export history and bundle status surfaces in mobile
-8. add recipe-template content and rendering rules for one-day suggestion sets
+1. `AIB-116` add a dedicated growth route with weight and height entry history plus chart cards
+2. improve meal-thread correction UX for multi-item edits and repeated confirms
+3. deepen reminder and notification interaction states beyond the current route shells
+4. add recipe-template content and rendering rules for one-day suggestion sets
+5. tighten mobile empty, loading, retry, and confirmation states on the highest-traffic caregiver surfaces
 
 ## Team Roles
 
@@ -183,4 +180,13 @@
 - Verified the switcher with `node --experimental-strip-types --test src/features/review/route.test.ts` and `npm --workspace @aibaby/mobile run test:review`.
 - Current task: move `AIB-115` through commit and PR flow.
 - Next task: merge `AIB-115`, then refresh Team 1 logs against the new `main` state before choosing the next slice.
+- Blockers: none.
+
+### 2026-03-19 Commander Cleanup
+
+- `AIB-115` merged on `main` via PR `#196`, but the post-merge Team 1 log refresh did not land with the feature branch.
+- As commander cleanup, the Team 1 queue is now corrected on `main`: `AIB-116` is the next recommended Team 1 slice because the review, reminder, export, notification, meal-ideas, and review-navigation work is already merged.
+- The long-running `@aibaby/ui` resolution failure in Node-based mobile tests is treated as Platform-owned follow-up `AIB-117`, not as a reason for Team 1 to stop shipping focused product slices.
+- Current task: start `AIB-116` on a fresh branch.
+- Next task: add the first dedicated growth route shell with history cards and chart placeholders, then expand from there if the slice stays coherent.
 - Blockers: none.

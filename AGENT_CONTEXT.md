@@ -43,17 +43,17 @@ This repository is the shared source of truth for product intent, architecture, 
 - Team 1 default goal: improve mobile discovery and guidance capabilities without waiting on major backend changes where avoidable
 - Team 1 may include both a product engineer and a designer specialist working inside the same lane
 - Team 1 preferred work order:
-  1. add home-screen entry points for review, reminders, exports, and future growth
-  2. define a typed recommendation contract for daily meal suggestions
-  3. add a reminder detail screen shell with done / snooze / dismiss states
-  4. add deterministic meal-gap detection for protein, iron, vegetable variety, and repeats
-  5. add a first-pass notification center route shell
-  6. add correction analytics shape so repeated parent edits can be summarized by category
+  1. `AIB-116` add a dedicated growth route with weight and height entry history plus chart cards
+  2. improve meal-thread correction UX for multi-item edits and repeated confirms
+  3. deepen reminder and notification interaction states beyond the current route shells
+  4. add recipe-template content and rendering rules for one-day suggestion sets
+  5. tighten mobile empty, loading, retry, and confirmation states on the highest-traffic caregiver surfaces
+  6. do not reopen already-landed recommendation-contract, gap-signal, correction-analytics, notification-shell, export-history, meal-ideas, or review-navigation work unless current `main` shows a real regression
 - Team 2 default goal: advance the project from local MVP shell toward real staged infrastructure
 - Team 2 preferred work order:
   1. `AIB-085` real environment bootstrap and app configuration for Supabase auth, database access, and storage
-  2. `AIB-081` first real database schema and repository layer
-  3. `AIB-082` and `AIB-083` persistence replacement
+  2. `AIB-083` persistence replacement for meals, reminders, reports, and exports
+  3. `AIB-117` fix workspace package resolution for `@aibaby/ui` in Node-based mobile test commands
   4. `AIB-084` real upload and storage flow
   5. `AIB-086` migrations and real seed/reset commands
   6. `AIB-087` authenticated end-to-end smoke pass
@@ -133,6 +133,7 @@ Required team log update points:
 Command boundary rules:
 - Team 1 owns product-facing UX, guidance logic, recommendation behavior, and parent-visible product surfaces
 - Team 2 owns auth, data, storage, API/runtime integration, deployment, and operational readiness
+- Team 2 also owns cross-workspace package resolution, shared test harness reliability, and Node-based workspace execution issues such as the `@aibaby/ui` mobile test-resolution failure
 - Do not silently change another team's boundary contract; report it clearly
 
 Team 1 specialist rules:
@@ -173,6 +174,7 @@ PR title rule:
 - Do not leave the pull request open as a parking state; merge it promptly or write down the blocker
 - After merge, update the team log again with what shipped and the next queued task
 - After merge, return to the team queue and continue with the next best unblocked task
+- If the merge happened before the post-merge team-log refresh landed, ship that refresh immediately in a small standalone follow-up branch and PR to `main`; do not defer it to the next feature branch
 
 ## When blocked
 

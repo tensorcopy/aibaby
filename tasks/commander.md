@@ -40,11 +40,15 @@ dependencies, and record decisions that help teams keep working.
 - Teams update only their own team file.
 - The commander updates only this file.
 - Human review is expected at low frequency; teams should keep working inside their lane unless blocked by a true dependency or risk.
+- Commander decision, 2026-03-19: Team 1's stale queue is refreshed. `AIB-116` growth tracking is now the next best Product slice after the merged `AIB-108` through `AIB-115` work.
+- Commander decision, 2026-03-19: the `@aibaby/ui` module-resolution failure in Node-based mobile tests is Team 2 / Platform work (`AIB-117`) because it is a cross-workspace test-harness problem, not a Team 1 product-surface regression.
+- Commander decision, 2026-03-19: if a PR merges before the post-merge team-log refresh lands, ship that log refresh immediately as a small standalone follow-up PR to `main`; do not defer it to the next active feature branch.
 
 ## Interventions Needed
 
 <!-- commander-sync:start interventions-needed -->
-- None at this sync.
+- Team 1 should stop treating the old discovery/recommendation queue as active and start `AIB-116` on a fresh branch.
+- Team 2 should keep `AIB-083` moving, but own the `AIB-117` `@aibaby/ui` resolution issue when it is time to restore the broader mobile Node test surface.
 <!-- commander-sync:end interventions-needed -->
 
 ## Daily Summary Log
