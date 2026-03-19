@@ -32,6 +32,18 @@ test("passes for docs and coordination only changes", () => {
   assert.equal(result.ok, true);
 });
 
+test("passes for commander coordination script changes", () => {
+  const result = evaluateChangedFiles([
+    "scripts/check-team-log-update.mjs",
+    "scripts/check-team-log-update.test.mjs",
+    "scripts/commander-sync.mjs",
+    "scripts/commander-sync.test.mjs",
+    "docs/commander-cron.md",
+  ]);
+
+  assert.equal(result.ok, true);
+});
+
 test("fails for code changes without a team log update", () => {
   const result = evaluateChangedFiles([
     "apps/mobile/app/index.tsx",

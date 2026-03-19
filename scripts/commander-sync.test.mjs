@@ -137,9 +137,185 @@ old summary
   }
 });
 
+test("commander sync can read team logs from a git ref instead of the stale working tree", async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "aibaby-commander-sync-git-ref-"));
+  const repoRoot = path.join(tempRoot, "repo");
+
+  await fs.mkdir(path.join(repoRoot, "tasks"), { recursive: true });
+  await runCommand("git", ["init", "-b", "main"], { cwd: repoRoot });
+  await runCommand("git", ["config", "user.name", "Codex"], { cwd: repoRoot });
+  await runCommand("git", ["config", "user.email", "codex@example.com"], { cwd: repoRoot });
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "team-1-product.md"),
+    `# Team 1 Log: Product
+
+## Current State
+
+- Goal: committed product goal
+- State: review_ready
+- Current task: committed product task
+- Next step: committed product next step
+- Blockers: none
+- Files: committed-product.ts
+- Verification: committed product verification
+- Last updated: 2026-03-18
+
+## Active Queue
+
+1. committed product task
+
+## Dependency Requests
+
+- None currently.
+
+## Work Log
+`,
+    "utf8",
+  );
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "team-2-platform.md"),
+    `# Team 2 Log: Platform
+
+## Current State
+
+- Goal: committed platform goal
+- State: in_progress
+- Current task: committed platform task
+- Next step: committed platform next step
+- Blockers: none
+- Files: committed-platform.ts
+- Verification: committed platform verification
+- Last updated: 2026-03-18
+
+## Active Queue
+
+1. committed platform task
+
+## Dependency Requests
+
+- None currently.
+
+## Work Log
+`,
+    "utf8",
+  );
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "commander.md"),
+    `# Commander Coordination
+
+## Mission
+
+Commander mission text.
+
+## Team Snapshot
+
+<!-- commander-sync:start team-snapshot -->
+stale snapshot
+<!-- commander-sync:end team-snapshot -->
+
+## Cross-Team Dependencies
+
+<!-- commander-sync:start cross-team-dependencies -->
+stale dependencies
+<!-- commander-sync:end cross-team-dependencies -->
+
+## Decisions
+
+- Existing decisions stay intact.
+
+## Interventions Needed
+
+<!-- commander-sync:start interventions-needed -->
+stale interventions
+<!-- commander-sync:end interventions-needed -->
+
+## Daily Summary Log
+
+<!-- commander-sync:start daily-summary-log -->
+old summary
+<!-- commander-sync:end daily-summary-log -->
+`,
+    "utf8",
+  );
+
+  await runCommand("git", ["add", "tasks"], { cwd: repoRoot });
+  await runCommand("git", ["commit", "-m", "seed commander sync fixtures"], { cwd: repoRoot });
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "team-1-product.md"),
+    `# Team 1 Log: Product
+
+## Current State
+
+- Goal: stale local product goal
+- State: blocked
+- Current task: stale local product task
+- Next step: stale local product next step
+- Blockers: stale local blocker
+- Files: stale-local-product.ts
+- Verification: stale local product verification
+- Last updated: 2026-03-18
+
+## Active Queue
+
+1. stale local product task
+
+## Dependency Requests
+
+- None currently.
+
+## Work Log
+`,
+    "utf8",
+  );
+
+  try {
+    await runNodeScript(path.join(process.cwd(), "scripts", "commander-sync.mjs"), [
+      "--repo-root",
+      repoRoot,
+      "--source-ref",
+      "HEAD",
+      "--skip-fetch",
+      "--now",
+      "2026-03-18T22:00:00Z",
+    ]);
+  } finally {
+    const commanderPath = path.join(repoRoot, "tasks", "commander.md");
+    const commanderContents = await fs.readFile(commanderPath, "utf8");
+
+    assert.match(commanderContents, /committed product goal/);
+    assert.match(commanderContents, /committed product task/);
+    assert.doesNotMatch(commanderContents, /stale local product goal/);
+    assert.doesNotMatch(commanderContents, /stale local product task/);
+    await fs.rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
 async function runNodeScript(scriptPath, args) {
   const child = spawn(process.execPath, [scriptPath, ...args], {
     cwd: process.cwd(),
+    stdio: "pipe",
+  });
+
+  let stderr = "";
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk.toString();
+  });
+
+  const exitCode = await new Promise((resolve, reject) => {
+    child.on("error", reject);
+    child.on("close", resolve);
+  });
+
+  assert.equal(exitCode, 0, stderr || `expected exit code 0, got ${exitCode}`);
+}
+
+async function runCommand(command, args, options) {
+  const child = spawn(command, args, {
+    cwd: options.cwd,
     stdio: "pipe",
   });
 
