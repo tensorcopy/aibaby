@@ -41,3 +41,27 @@ A running note for future product planning, user value, and architecture directi
 ### Principle
 - Build the app around structured data.
 - Let users take their memories with them in Markdown.
+
+## 2026-03-19
+
+### Meal planning and household load reduction
+- Meal logging should remain a core product workflow.
+- In addition to logging, the app should reduce the daily mental load of deciding what to cook for both parent and baby.
+- The app should help with the specific constraint that babies may need low-salt, low-spice, age-appropriate meal variants.
+
+### User problems to solve
+- It is mentally expensive to decide every day what to cook for the parent and what to cook for the baby.
+- It is hard to adapt one household meal into a baby-safe version without effectively planning two separate meals.
+- The user wants suggestions based on what is already in the fridge instead of starting from scratch.
+- The user wants the app to help with grocery planning so future meals are easier, not just today’s logging.
+
+### Product opportunities
+- Fridge-aware meal suggestions using ingredients the family already has.
+- “Cook once, split later” meal ideas that show how to make one base meal and branch it into a baby-safe portion.
+- Baby-safe adaptation guidance for salt, spice, texture, and stage-appropriate preparation.
+- Short-horizon grocery planning based on upcoming meal gaps and pantry/fridge inventory.
+- Prep recommendations that make tomorrow easier, not just today’s meal decision.
+
+### Product principle
+- The product should evolve from “meal logging only” into “meal logging plus household decision support.”
+- Planning, fridge usage, and grocery support should reduce cognitive load, not add more data-entry burden.
