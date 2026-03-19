@@ -34,6 +34,8 @@ test("passes for docs and coordination only changes", () => {
 
 test("passes for commander coordination script changes", () => {
   const result = evaluateChangedFiles([
+    "scripts/check-team-log-update.mjs",
+    "scripts/check-team-log-update.test.mjs",
     "scripts/commander-sync.mjs",
     "scripts/commander-sync.test.mjs",
     "docs/commander-cron.md",

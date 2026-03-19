@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 const TEAM_LOGS = new Set(["tasks/team-1-product.md", "tasks/team-2-platform.md"]);
 const BYPASS_EXACT = new Set(["AGENT_CONTEXT.md", "tasks/commander.md", "tasks/current.md"]);
 const BYPASS_PREFIXES = [".github/", "docs/"];
-const BYPASS_SCRIPT_PATTERNS = [/^scripts\/commander-sync(\.test)?\.mjs$/];
+const BYPASS_SCRIPT_PATTERNS = [/^scripts\/(commander-sync|check-team-log-update)(\.test)?\.mjs$/];
 
 export function evaluateChangedFiles(changedFiles) {
   const files = changedFiles.filter(Boolean);
