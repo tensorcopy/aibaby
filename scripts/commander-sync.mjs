@@ -24,9 +24,10 @@ async function main() {
   const sourceRef = options.sourceRef ?? "origin/main";
 
   await refreshSourceRef(repoRoot, sourceRef, options);
+  const currentTaskStatuses = await readCurrentTaskStatuses(repoRoot, sourceRef, options);
   const teams = await Promise.all(
     TEAM_FILES.map(async (team) => {
-      const { source, sourceLabel } = await readTeamLog(repoRoot, team.relativePath, sourceRef, options);
+      const { source, sourceLabel } = await readRepoFile(repoRoot, team.relativePath, sourceRef, options);
       return {
         ...team,
         sourceLabel,
@@ -37,9 +38,18 @@ async function main() {
 
   const now = new Date(options.now ?? Date.now());
   const formattedNow = formatUtc(now);
-  const nextCommander = updateCommander(commanderSource, teams, formattedNow);
+  const nextCommander = updateCommander(commanderSource, teams, formattedNow, currentTaskStatuses);
 
   await fs.writeFile(commanderPath, nextCommander, "utf8");
+}
+
+async function readCurrentTaskStatuses(repoRoot, sourceRef, options) {
+  try {
+    const { source } = await readRepoFile(repoRoot, "tasks/current.md", sourceRef, options);
+    return parseCurrentTasks(source);
+  } catch {
+    return new Map();
+  }
 }
 
 export function parseTeamLog(source) {
@@ -66,10 +76,10 @@ export function parseTeamLog(source) {
   };
 }
 
-export function updateCommander(source, teams, formattedNow) {
+export function updateCommander(source, teams, formattedNow, currentTaskStatuses = new Map()) {
   const teamSnapshot = buildTeamSnapshot(teams);
   const crossTeamDependencies = buildCrossTeamDependencies(teams);
-  const interventions = buildInterventions(teams);
+  const interventions = buildInterventions(teams, currentTaskStatuses);
   const existingSummaryLog = getMarkedSection(source, "daily-summary-log").trim();
   const preservedSummaryLog = existingSummaryLog.startsWith("### ") ? existingSummaryLog : "";
   const latestSummary = buildSummaryEntry(teams, formattedNow);
@@ -117,10 +127,17 @@ function buildCrossTeamDependencies(teams) {
   return lines.join("\n");
 }
 
-function buildInterventions(teams) {
+function buildInterventions(teams, currentTaskStatuses) {
   const lines = [];
 
   for (const team of teams) {
+    const taskId = extractTaskId(team.currentTask);
+    if (taskId && currentTaskStatuses.get(taskId) === "done") {
+      lines.push(
+        `- ${team.label} current task ${taskId} is already marked done in tasks/current.md. ${team.label} should refresh its queue and continue to the next lane-appropriate task without waiting for commander approval.`,
+      );
+    }
+
     if (team.state === "review_ready") {
       lines.push(`- Review-ready work exists for ${team.label}. Check or merge the PR promptly.`);
     }
@@ -219,6 +236,10 @@ async function refreshSourceRef(repoRoot, sourceRef, options) {
 }
 
 async function readTeamLog(repoRoot, relativePath, sourceRef, options) {
+  return readRepoFile(repoRoot, relativePath, sourceRef, options);
+}
+
+async function readRepoFile(repoRoot, relativePath, sourceRef, options) {
   if (!sourceRef) {
     return {
       source: await fs.readFile(path.join(repoRoot, relativePath), "utf8"),
@@ -245,6 +266,17 @@ async function readTeamLog(repoRoot, relativePath, sourceRef, options) {
 
 function shouldFetchSourceRef(sourceRef) {
   return sourceRef.startsWith("origin/");
+}
+
+export function parseCurrentTasks(source) {
+  const taskStatuses = new Map();
+  const taskPattern = /^-\s+(AIB-\d+)\s+`([^`]+)`/gm;
+
+  for (const match of source.matchAll(taskPattern)) {
+    taskStatuses.set(match[1], match[2].toLowerCase());
+  }
+
+  return taskStatuses;
 }
 
 function parseBullets(section) {
@@ -321,6 +353,10 @@ function formatUtc(date) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractTaskId(text) {
+  return text.match(/\bAIB-\d+\b/)?.[0] ?? null;
 }
 
 async function runGit(repoRoot, args) {

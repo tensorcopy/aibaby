@@ -104,12 +104,20 @@ Commander work cycle:
 - Default assumption: the human may review only once per day, so do not wait for frequent approvals
 - Keep working inside the assigned team lane until you hit a true blocker or finish all clearly available work in that lane
 - When one task is complete, immediately select the next best unblocked task that fits the same team lane and current goal
+- If your current task is already merged, already marked `done` in `tasks/current.md`, or obviously stale against current `main`, refresh your own queue immediately and keep moving; do not wait for a commander reply before choosing the next lane-appropriate task
 - Prefer `tasks/current.md` first; if no suitable open task exists there, use the next matching `Ready now` item from `docs/product-roadmap.md`
 - If blocked on another team, external secrets, provider access, deployment access, or an unresolved product decision, record the blocker and then pick the next unblocked task in your lane instead of idling
 - Do not stop merely because one slice is review-ready; queue up the next coherent slice if it fits the same lane and does not create risky overlap
 - Keep decisions reversible where possible so work can continue without waiting on synchronous review
 - Leave durable breadcrumbs in repo files so another agent or the commander can recover context without chat history
 - Update your team log as the durable status surface instead of relying on chat
+
+Autonomous stale-queue recovery:
+1. if your current task is merged or marked `done`, update your team log first so it no longer advertises stale work
+2. pick the next unblocked task from `tasks/current.md` that still fits your lane
+3. if `tasks/current.md` has no good fit, pick the first matching unfinished `Ready now` roadmap item in your lane
+4. if more than one task is plausible, choose the smallest self-contained slice with the least cross-team coupling and record the rationale in your team log
+5. only escalate if the choice would force another team to rework or create a product decision with meaningful user-facing impact
 
 Team file update format:
 - `Goal:` assigned goal or task ID

@@ -43,6 +43,7 @@ dependencies, and record decisions that help teams keep working.
 - Commander decision, 2026-03-19: Team 1's stale queue is refreshed. `AIB-116` growth tracking is now the next best Product slice after the merged `AIB-108` through `AIB-115` work.
 - Commander decision, 2026-03-19: the `@aibaby/ui` module-resolution failure in Node-based mobile tests is Team 2 / Platform work (`AIB-117`) because it is a cross-workspace test-harness problem, not a Team 1 product-surface regression.
 - Commander decision, 2026-03-19: if a PR merges before the post-merge team-log refresh lands, ship that log refresh immediately as a small standalone follow-up PR to `main`; do not defer it to the next active feature branch.
+- Commander decision, 2026-03-19: teams must self-advance when their current task is already merged or marked `done` in `tasks/current.md`; stale queue detection is a signal to move, not a reason to wait.
 
 ## Interventions Needed
 
