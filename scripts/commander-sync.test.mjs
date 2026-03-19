@@ -294,6 +294,146 @@ old summary
   }
 });
 
+test("commander sync flags a stale team queue when the current task is already done in tasks/current.md", async () => {
+  const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "aibaby-commander-sync-stale-queue-"));
+  const repoRoot = path.join(tempRoot, "repo");
+
+  await fs.mkdir(path.join(repoRoot, "tasks"), { recursive: true });
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "team-1-product.md"),
+    `# Team 1 Log: Product
+
+## Current State
+
+- Goal: improve mobile discovery
+- State: review_ready
+- Current task: \`AIB-115\` add a visible 7-day / 30-day switcher to the shared mobile review flow
+- Next step: merge the ready PR and then refresh the queue
+- Blockers: none
+- Files: apps/mobile/src/features/review/route.ts
+- Verification: npm --workspace @aibaby/mobile run test:review
+- Last updated: 2026-03-19
+
+## Active Queue
+
+1. \`AIB-115\` add a visible 7-day / 30-day switcher to the shared mobile review flow
+2. \`AIB-116\` add a dedicated growth route with weight and height entry history plus chart cards
+
+## Dependency Requests
+
+- None currently.
+
+## Work Log
+`,
+    "utf8",
+  );
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "team-2-platform.md"),
+    `# Team 2 Log: Platform
+
+## Current State
+
+- Goal: advance staged infrastructure
+- State: in_progress
+- Current task: \`AIB-083\` replace meal persistence
+- Next step: keep the repository-backed route swaps moving
+- Blockers: none
+- Files: apps/web/src/features/meals
+- Verification: npm --workspace @aibaby/web run test:meals
+- Last updated: 2026-03-19
+
+## Active Queue
+
+1. \`AIB-083\` replace meal persistence
+
+## Dependency Requests
+
+- None currently.
+
+## Work Log
+`,
+    "utf8",
+  );
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "current.md"),
+    `# Current Tasks
+
+## Active
+
+### Team 1 product surfaces
+- AIB-115 \`done\` Add a visible 7-day / 30-day switcher to the shared mobile review flow
+- AIB-116 \`todo\` Add a dedicated growth route with weight and height entry history plus chart cards
+
+## In Progress
+
+- AIB-083 \`in_progress\` Replace meal persistence
+`,
+    "utf8",
+  );
+
+  await fs.writeFile(
+    path.join(repoRoot, "tasks", "commander.md"),
+    `# Commander Coordination
+
+## Mission
+
+Commander mission text.
+
+## Team Snapshot
+
+<!-- commander-sync:start team-snapshot -->
+stale snapshot
+<!-- commander-sync:end team-snapshot -->
+
+## Cross-Team Dependencies
+
+<!-- commander-sync:start cross-team-dependencies -->
+stale dependencies
+<!-- commander-sync:end cross-team-dependencies -->
+
+## Decisions
+
+- Existing decisions stay intact.
+
+## Interventions Needed
+
+<!-- commander-sync:start interventions-needed -->
+stale interventions
+<!-- commander-sync:end interventions-needed -->
+
+## Daily Summary Log
+
+<!-- commander-sync:start daily-summary-log -->
+old summary
+<!-- commander-sync:end daily-summary-log -->
+`,
+    "utf8",
+  );
+
+  try {
+    await runNodeScript(path.join(process.cwd(), "scripts", "commander-sync.mjs"), [
+      "--repo-root",
+      repoRoot,
+      "--source-ref",
+      "HEAD",
+      "--skip-fetch",
+      "--now",
+      "2026-03-19T16:00:00Z",
+    ]);
+  } finally {
+    const commanderPath = path.join(repoRoot, "tasks", "commander.md");
+    const commanderContents = await fs.readFile(commanderPath, "utf8");
+
+    assert.match(commanderContents, /AIB-115/);
+    assert.match(commanderContents, /already marked done in tasks\/current\.md/i);
+    assert.match(commanderContents, /refresh its queue and continue to the next lane-appropriate task/i);
+    await fs.rm(tempRoot, { recursive: true, force: true });
+  }
+});
+
 async function runNodeScript(scriptPath, args) {
   const child = spawn(process.execPath, [scriptPath, ...args], {
     cwd: process.cwd(),
