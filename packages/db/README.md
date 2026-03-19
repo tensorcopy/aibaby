@@ -21,3 +21,4 @@ Current implementation:
 - `src/baby-profile-repository.js` adds the first repository-backed baby-profile persistence adapter that keeps the existing row contract while targeting Prisma delegates underneath
 - `src/text-meal-submission-repository.js` persists parsed text meal submissions into `messages` and `ingestion_events` while keeping the existing route-facing row shape
 - `src/draft-meal-record-repository.js` persists draft meal generation and confirmation flows into `meal_records`, `meal_items`, and `ingestion_events`
+- `src/timeline-repository.js` maps stored `messages` and `meal_records` into the existing timeline entry shape so the timeline can stop reading meal/text JSON files directly
