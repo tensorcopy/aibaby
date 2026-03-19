@@ -70,8 +70,8 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ### Production hardening
 - AIB-080 `done` Replace the local bearer session token flow with real Supabase auth bootstrap in Expo and backend token validation in web
-- AIB-081 `todo` Add the first real database schema and repository layer for babies, meals, reminders, reports, and export jobs
-- AIB-082 `todo` Replace baby-profile local JSON persistence with the real repository implementation
+- AIB-081 `done` Add the first real database schema and repository layer for babies, meals, reminders, reports, and export jobs
+- AIB-082 `done` Replace baby-profile local JSON persistence with the real repository implementation
 - AIB-083 `todo` Replace meal, reminder, report, and export local JSON persistence with the real repository implementation
 - AIB-084 `todo` Replace the local upload blob flow with real storage upload negotiation and persisted asset metadata
 - AIB-085 `todo` Add real environment bootstrap and app configuration for Supabase auth, database access, and storage
@@ -82,7 +82,7 @@ This file is the lightweight shared backlog for human and agent coordination.
 
 ## In Progress
 
-- AIB-082 `in_progress` Replace baby-profile local JSON persistence with the real repository implementation
+- AIB-083 `in_progress` Replace meal, reminder, report, and export local JSON persistence with the real repository implementation
 - AIB-115 `in_progress` Add a visible 7-day / 30-day switcher to the shared mobile review flow
 
 ## Done
@@ -161,7 +161,9 @@ This file is the lightweight shared backlog for human and agent coordination.
 - The current local MVP shell is runnable and QA-hardened, but production auth, database, and storage integration are still the next major gap
 - `AIB-089` landed the shared env/bootstrap contract, so `AIB-085` can now focus on real framework/provider integration instead of env naming cleanup
 - `AIB-085` merged via PR `#184`; remaining work there is the runtime/device validation pass once env values exist
-- `AIB-081` merged via PR `#186`; Team 2 now has an `AIB-082` checkpoint branch that swaps baby-profile routes onto a repository-backed path and keeps timeline compatibility when no DB runtime is configured
+- `AIB-081` merged via PR `#186`; the first Prisma schema and repository layer are now on `main`
+- `AIB-082` merged via PR `#188`; baby-profile routes now use a repository-backed path when Prisma runtime dependencies are available, while preserving the local-store fallback
+- `AIB-083` now has a first checkpoint that swaps the text-meal and meal-draft routes onto repository-backed bindings when Prisma runtime dependencies are available, while preserving the local-store fallback
 - `AIB-108`, `AIB-109`, `AIB-110`, `AIB-111`, `AIB-112`, `AIB-113`, and `AIB-114` are all merged on `main` via PRs `#187`, `#189`, `#185`, `#192`, `#193`, `#194`, and `#195`; Team 1 is now using `AIB-115` to make both review windows discoverable inside the shared `/review` flow
-- Next recommended execution order now: `AIB-085`, `AIB-081`, `AIB-082`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
+- Next recommended execution order now: `AIB-085`, `AIB-083`, `AIB-084`, `AIB-086`, then `AIB-087`
 - Keep architecture and task files updated in the same branch as implementation work

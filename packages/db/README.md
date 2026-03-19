@@ -19,3 +19,5 @@ Current implementation:
 - `prisma/schema.prisma` defines the first relational schema for the core MVP entities, including babies, messages, meal records, media assets, reports, reminders, and ingestion events
 - `src/*-prisma.js` adds Prisma-facing adapters for baby profiles and report models so existing domain contracts can bridge into the real repository layer incrementally
 - `src/baby-profile-repository.js` adds the first repository-backed baby-profile persistence adapter that keeps the existing row contract while targeting Prisma delegates underneath
+- `src/text-meal-submission-repository.js` persists parsed text meal submissions into `messages` and `ingestion_events` while keeping the existing route-facing row shape
+- `src/draft-meal-record-repository.js` persists draft meal generation and confirmation flows into `meal_records`, `meal_items`, and `ingestion_events`

@@ -4,12 +4,12 @@
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
 - State: review_ready
-- Current task: `AIB-082` replace baby-profile local JSON persistence with the real repository implementation
-- Next step: merge this baby-profile repository checkpoint, then continue the remaining persistence replacement work for `AIB-082` / `AIB-083`
-- Blockers: none for this slice; separate staged/device validation still depends on real project environment values and full provider setup
-- Files: `packages/db/src/baby-profile*.js`, `apps/web/src/features/baby-profile/*`, `tasks/current.md`
-- Verification: `npm run test:baby-profile-api --workspace @aibaby/web`; `npm run test:timeline-api --workspace @aibaby/web`; `npm run test:prisma-repository --workspace @aibaby/db`; `npm run prisma:validate --workspace @aibaby/db` failed in this fresh worktree because the `prisma` CLI is not installed here
-- Last updated: 2026-03-17
+- Current task: `AIB-083` replace meal, reminder, report, and export local JSON persistence with the real repository implementation
+- Next step: merge the first `AIB-083` checkpoint for text-meal and meal-draft repository bindings, then continue the remaining reminder, report history, and export persistence replacements
+- Blockers: none for the first `AIB-083` slice; separate staged/device validation still depends on real project environment values and full provider setup
+- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `packages/db/src/*repository*.js`, `packages/db/package.json`, `packages/db/README.md`, `apps/web/src/features/text-meal/*`, `apps/web/src/features/meal-drafts/*`, `apps/web/package.json`
+- Verification: `npm run test:text-meal-api --workspace @aibaby/web`; `npm run test:meal-drafts-api --workspace @aibaby/web`; `npm run test:prisma-repository --workspace @aibaby/db`
+- Last updated: 2026-03-18
 
 ## Active Queue
 
@@ -64,3 +64,18 @@
 - Added `apps/web/src/features/baby-profile/repository-bindings.js` and rewired `route-dependencies.js` so baby-profile routes can use the real repository path when Prisma runtime dependencies are available, while preserving the current local-store fallback in no-DB environments.
 - Updated the timeline route and snapshot builder so selected-baby resolution can come from the baby-profile repository path instead of only `baby-profiles.json`, avoiding a regression when the profile API stops writing the local JSON file.
 - Verified the new repository, route-dependency, baby-profile API, and timeline tests; `prisma validate` itself could not be rerun here because this fresh worktree does not have the Prisma CLI installed.
+
+### 2026-03-18 AIB-083 kickoff
+
+- `AIB-082` is now merged on `main`, so Team 2 moved forward to `AIB-083`.
+- First planned slice: replace the text-meal and meal-draft JSON persistence path with repository-backed bindings while preserving the current route contract and local-store fallback in no-DB environments.
+- Current task: wire repository-backed text parse and draft meal persistence into the existing web route dependencies.
+- Next task: extend the same persistence replacement pattern to the remaining reminder, report history, and export surfaces once the first slice is merged.
+- Blockers: none for this slice beyond the longer-running staged environment setup needed for later end-to-end validation.
+
+### 2026-03-18 AIB-083 checkpoint
+
+- Added `packages/db/src/text-meal-submission-repository.js` and `packages/db/src/draft-meal-record-repository.js` so parsed text submissions and draft meal records can persist against Prisma delegates while preserving the existing row-shaped web contract.
+- Added repository-binding and route-dependency coverage for `apps/web/src/features/text-meal/*` and `apps/web/src/features/meal-drafts/*`, including the same Prisma-when-available and local-store fallback pattern used in `AIB-082`.
+- Updated package test scripts and db docs so the new repository-backed slice is part of the regular focused verification path.
+- Verified `npm run test:text-meal-api --workspace @aibaby/web`, `npm run test:meal-drafts-api --workspace @aibaby/web`, and `npm run test:prisma-repository --workspace @aibaby/db`.
