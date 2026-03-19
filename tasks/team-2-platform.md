@@ -3,12 +3,12 @@
 ## Current State
 
 - Goal: advance the project from local MVP shell toward real staged infrastructure
-- State: review_ready
+- State: in_progress
 - Current task: `AIB-083` replace meal, reminder, report, and export local JSON persistence with the real repository implementation
-- Next step: merge the repository-backed timeline checkpoint, then continue the remaining `AIB-083` surfaces only where they still exist on current `main`; keep uploads on the local-store path until `AIB-084`
+- Next step: record the merged timeline checkpoint, then reassess the remaining `AIB-083` surfaces against current `main` before choosing between the last persistence seams and `AIB-117`
 - Blockers: none for the timeline slice; separate staged/device validation still depends on real project environment values and full provider setup
-- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `apps/web/src/features/timeline/*`, `apps/web/app/api/timeline/route.ts`, `packages/db/src/timeline-repository*.js`, `packages/db/package.json`, `packages/db/README.md`
-- Verification: `npm run test:timeline-api --workspace @aibaby/web`; `node --test packages/db/src/timeline-repository.test.js`; `npm run test:prisma-repository --workspace @aibaby/db`
+- Files: `tasks/team-2-platform.md`, `tasks/current.md`, `apps/web/src/features/timeline/*`, `packages/db/src/timeline-repository*.js`, `apps/mobile/**`, `packages/ui/**`
+- Verification: merged timeline checkpoint verified `npm run test:timeline-api --workspace @aibaby/web`; `node --test packages/db/src/timeline-repository.test.js`; `npm run test:prisma-repository --workspace @aibaby/db`
 - Last updated: 2026-03-19
 
 ## Active Queue
@@ -97,3 +97,9 @@
 - Added `packages/db/src/timeline-repository.js` so owner/baby-scoped `messages` and `meal_records` can map into the existing timeline entry shape without reading the meal/text JSON files directly.
 - Added `apps/web/src/features/timeline/route-dependencies.js` plus route and test coverage so `/api/timeline` prefers the repository-backed meal/text path when Prisma runtime dependencies are available, while preserving the existing upload local-store path until `AIB-084`.
 - Kept the timeline response contract stable and left the upload/media timeline seam untouched so the storage-specific work remains isolated to `AIB-084`.
+
+### 2026-03-19 AIB-083 timeline post-merge refresh
+
+- The second `AIB-083` checkpoint shipped via PR `#202`; `/api/timeline` now prefers repository-backed meal/text entries when Prisma runtime dependencies are available.
+- Upload/media timeline entries intentionally remain on the local-store path until `AIB-084`.
+- Next Team 2 decision is whether current `main` still has any real `AIB-083` persistence seams beyond that upload boundary, or whether the lane should move to `AIB-117`.
